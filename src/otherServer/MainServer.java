@@ -31,9 +31,7 @@ public class MainServer {
   }
 
   private void sendTree() throws UnknownHostException {
-    byte[] node2IPBy* Ser1 -> Node 1  -> Node 2 -> Node 3
-            *           |
-     *         Node 4te = InetAddress.getByName(Common.Constants.Node2IP).getAddress();
+    byte[] node2IPByte = InetAddress.getByName(Common.Constants.Node2IP).getAddress();
     byte[] bytesPort2 = convertIntToByteArray(Constants.portNode2);
 
     byte[] node3IPByte = InetAddress.getByName(Common.Constants.Node3IP).getAddress();
