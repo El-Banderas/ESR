@@ -25,3 +25,6 @@ hs_err_pid*
 # ignore files from IDEA Jetbrains
 .DS_Store
 .idea
+*.iml
+out/production/ESR/movie.Mjpeg
+out/production/ESR/out/production/ProgEx/movie.Mjpeg

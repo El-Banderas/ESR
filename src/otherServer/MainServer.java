@@ -6,6 +6,8 @@ import TransmitData.SendData;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 public class MainServer {
 
@@ -24,9 +26,18 @@ public class MainServer {
     }
   }
 
-  
-  private void sendTree(){
+  private byte[] convertIntToByteArray(int x){
+    return ByteBuffer.allocate(4).putInt(x).array();
+  }
 
+  private void sendTree() throws UnknownHostException {
+    byte[] node2IPBy* Ser1 -> Node 1  -> Node 2 -> Node 3
+            *           |
+     *         Node 4te = InetAddress.getByName(Common.Constants.Node2IP).getAddress();
+    byte[] bytesPort2 = convertIntToByteArray(Constants.portNode2);
+
+    byte[] node3IPByte = InetAddress.getByName(Common.Constants.Node3IP).getAddress();
+    byte[] bytesPort3 = convertIntToByteArray(Constants.portNode3);
   }
 
 }
