@@ -6,18 +6,30 @@
    ---------------------- */
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
+import java.util.Map;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class Servidor extends JFrame implements ActionListener {
+public class Servidor //extends JFrame implements ActionListener
+ {
+
+/* 
+
+
 
   //GUI:
   //----------------
   JLabel label;
+
+
+  */
 
   //RTP variables:
   //----------------
@@ -25,7 +37,12 @@ public class Servidor extends JFrame implements ActionListener {
   DatagramSocket RTPsocket; //socket to be used to send and receive UDP packet
   int RTP_dest_port = 25000; //destination port for RTP packets 
   InetAddress ClientIPAddr; //Client IP address
+  byte[] sBuf; // bufer 
+
+
+ 
   
+  /*
   static String VideoFileName; //video file to request to the server
 
   //Video constants:
@@ -39,33 +56,89 @@ public class Servidor extends JFrame implements ActionListener {
   Timer sTimer; //timer used to send the images at the video frame rate
   byte[] sBuf; //buffer used to store the images to send to the client 
 
+   */
+
+
+
+  public DatagramPacket getSenddp() {
+    return senddp;
+  }
+
+  public void setSenddp(DatagramPacket senddp) {
+    this.senddp = senddp;
+  }
+
+  public DatagramSocket getRTPsocket() {
+    return RTPsocket;
+  }
+
+  public void setRTPsocket(DatagramSocket rTPsocket) {
+    RTPsocket = rTPsocket;
+  }
+
+  public int getRTP_dest_port() {
+    return RTP_dest_port;
+  }
+
+  public void setRTP_dest_port(int rTP_dest_port) {
+    RTP_dest_port = rTP_dest_port;
+  }
+
+  public InetAddress getClientIPAddr() {
+    return ClientIPAddr;
+  }
+
+  public void setClientIPAddr(InetAddress clientIPAddr) {
+    ClientIPAddr = clientIPAddr;
+  }
+
+  public byte[] getsBuf() {
+    return sBuf;
+  }
+
+  public void setsBuf(byte[] sBuf) {
+    this.sBuf = sBuf;
+  }
+
+
   //--------------------------
   //Constructor
   //--------------------------
   public Servidor() {
+
+    /* 
     //init Frame
     super("Servidor");
 
     // init para a parte do servidor
     sTimer = new Timer(FRAME_PERIOD, this); //init Timer para servidor
     sTimer.setInitialDelay(0);
-    sTimer.setCoalesce(true);
+    sTimer.setCoalesce(true); */
+
     sBuf = new byte[15000]; //allocate memory for the sending buffer
 
     try {
 	RTPsocket = new DatagramSocket(); //init RTP socket
     ClientIPAddr = InetAddress.getByName("127.0.0.1");
     System.out.println("Servidor: socket " + ClientIPAddr);
+
+    /*
 	video = new VideoStream(VideoFileName); //init the VideoStream object:
     System.out.println("Servidor: vai enviar video da file " + VideoFileName);
+
+     */
 
     } catch (SocketException e) {
         System.out.println("Servidor: erro no socket: " + e.getMessage());
     } catch (Exception e) {
-        System.out.println("Servidor: erro no video: " + e.getMessage());
+       // System.out.println("Servidor: erro no video: " + e.getMessage());
     }
 
+
+
+    /* 
     //Handler to close the main window
+
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
 	//stop the timer and exit
@@ -78,13 +151,110 @@ public class Servidor extends JFrame implements ActionListener {
     getContentPane().add(label, BorderLayout.CENTER);
           
     sTimer.start();
+     */
   }
 
   //------------------------------------
   //main
   //------------------------------------
-  public static void main(String argv[]) throws Exception
-  {
+  public static void main(String argv[]) throws Exception {
+
+
+    Socket socket = null;
+    InputStreamReader input = null;
+    OutputStreamWriter output = null;
+    BufferedReader br = null;
+    BufferedWriter bw = null;
+    ServerSocket sv = null;
+    Layout l ;
+
+    l = new Layout();
+    l.parse("config.txt");
+
+    Map<String, List<String>> rede ;
+    List<Nodo> nodos ;
+
+    rede = l.getRede();
+    nodos = l.getNodos();
+
+
+
+      sv = new ServerSocket (1234);
+
+      while(true){
+
+        try{
+
+      socket =sv.accept();
+      
+      input = new InputStreamReader(socket.getInputStream());
+      output = new OutputStreamWriter(socket.getOutputStream());
+
+      br = new BufferedReader(input);
+      bw = new BufferedWriter(output);
+
+      while(true){
+        String msgfromBoot = br.readLine();
+        String[] msg = msgfromBoot.split( "/");
+
+        System.out.println("Bootsttrap: " + msg[1]);
+        
+        String idNodo = msg[0];
+        List<String> vizinhos = rede.get(idNodo);
+
+        for(Nodo i : nodos){
+          if(i.getidNodo().equals(idNodo)){
+           i.setBootStrap();
+          }
+        }
+  
+        bw.write("Os teus vizinhos são: " + vizinhos);
+        bw.newLine();
+        bw.flush();
+
+        break;
+      }
+
+      socket.close();
+      input.close();
+      output.close();
+      bw.close();
+      br.close();
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+
+    for(Nodo a : nodos){
+
+      
+      System.out.println(a.toString());
+    }
+
+
+  }
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* 
     //get video filename to request:
     if (argv.length >= 1 ) {
         VideoFileName = argv[0];
@@ -103,11 +273,16 @@ public class Servidor extends JFrame implements ActionListener {
         //s.setVisible(true);
     } else
         System.out.println("Ficheiro de video não existe: " + VideoFileName);
+
+        */
   }
+
+ 
 
   //------------------------
   //Handler for timer
   //------------------------
+  /* 
   public void actionPerformed(ActionEvent e) {
 
     //if the current image nb is less than the length of the video
@@ -155,3 +330,6 @@ public class Servidor extends JFrame implements ActionListener {
   }
 
 }//end of Class Servidor
+*/
+
+}
