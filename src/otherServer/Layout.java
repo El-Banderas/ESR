@@ -1,3 +1,7 @@
+package otherServer;
+
+import Common.InfoNodo;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,7 +14,7 @@ import java.util.Map;
 public class Layout {
     
     private Map<String, List<String>> rede;
-    private List<Nodo> nodos;
+    private List<InfoNodo> nodos;
 
 
 
@@ -25,7 +29,7 @@ public class Layout {
     }
 
 
-    public List<Nodo> getNodos(){
+    public List<InfoNodo> getNodos(){
         return this.nodos;
     }
 
@@ -47,8 +51,8 @@ public class Layout {
 
                 // loop through all neighbours of a node
             String[] aux = parts[0].split(" *: *");
-            InetAddress ip = InetAddress.getByName(aux[1]);    
-            Nodo n = new Nodo(aux[0],ip);
+            InetAddress ip = InetAddress.getByName(aux[1]);
+            InfoNodo n = new InfoNodo(aux[0],ip);
             nodos.add(n);
 
             String[] vizinhos = parts[1].split(" *, *");

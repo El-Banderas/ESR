@@ -1,3 +1,4 @@
+package Common;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -5,13 +6,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Nodo {
+public class InfoNodo {
     public String idNodo;
     public InetAddress ip;
     public int bootsttrap; //1 se for
 
   
-    public Nodo(String id,InetAddress ip ) {
+    public InfoNodo(String id, InetAddress ip ) {
         this.idNodo = id;
         this.ip = ip;
         this.bootsttrap=0;

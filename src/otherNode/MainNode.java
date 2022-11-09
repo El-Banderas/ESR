@@ -9,7 +9,7 @@ import java.net.DatagramSocket;
 public class MainNode {
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Nodo ativo");
+        System.out.println("Common.InfoNodo ativo");
         int portNumber = Integer.parseInt(args[0]);
         DatagramSocket socket = new DatagramSocket(portNumber);
         while (true) {
