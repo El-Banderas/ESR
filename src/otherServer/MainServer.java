@@ -17,7 +17,7 @@ public class MainServer {
 
     String msg = "Hello";
     DatagramSocket socket = new DatagramSocket(Constants.portServer);
-    System.out.println("Servidor ativo");
+    System.out.println("otherServer.Servidor ativo");
 
     while(true) {
       buf = msg.getBytes();
