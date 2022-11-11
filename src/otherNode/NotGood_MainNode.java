@@ -1,12 +1,13 @@
 package otherNode;
 
+import Common.Constants;
 import TransmitData.ReceiveData;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class MainNode {
+public class NotGood_MainNode {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Common.InfoNodo ativo");

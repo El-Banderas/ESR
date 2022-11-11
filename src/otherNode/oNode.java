@@ -1,3 +1,7 @@
+package otherNode;
+
+import Common.Constants;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,7 +24,7 @@ public class oNode {
     
 
     public static void main(String[] args) {
-
+        System.out.println("[oNode] Started ");
       Socket socket = null;
       InputStreamReader input = null;
       OutputStreamWriter output = null;
@@ -30,7 +34,7 @@ public class oNode {
 
     try{
 
-        socket = new Socket("localhost", 1234);
+        socket = new Socket("localhost", Constants.portBootSendNeighbours);
         
         input = new InputStreamReader(socket.getInputStream());
         output = new OutputStreamWriter(socket.getOutputStream());
@@ -40,12 +44,13 @@ public class oNode {
 
         Scanner scanner = new Scanner(System.in);
 
-         while( true){ 
-            
-          String msgtoSend = args[0] + "/" + scanner.nextLine();
+         while( true){
+             String msgToSend;
+             if (args.length > 0) msgToSend = args[0] + "/" + scanner.nextLine();
+             else msgToSend = "n1" + "/" + scanner.nextLine();
 
 
-          bw.write(msgtoSend);
+          bw.write(msgToSend);
           bw.newLine();
           bw.flush();
 

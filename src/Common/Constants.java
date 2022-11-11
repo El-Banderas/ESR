@@ -2,6 +2,9 @@ package Common;
 
 public class Constants {
 
+    // Info about the ports, that won't change when testing in core.
+    public static int portBootSendNeighbours = 1234;
+
     // Info about send data
     public static int arraySize = 2048;
 

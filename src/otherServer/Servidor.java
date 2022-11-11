@@ -6,10 +6,16 @@ package otherServer;
    colocar primeiro o cliente a correr, porque este dispara logo
    ---------------------- */
 
-import Common.InfoNodo;
+import otherServer.Bootstrapper.Bootstrapper;
+import otherServer.Bootstrapper.SendNeighbours;
 
+import java.io.IOException;
 import java.net.*;
 
+/**
+ * O Bootstrapper é que trata da comunicações da rede e assim.
+ * Por isso, meti um boot a correr no servidor.
+ */
 
 
 public class Servidor //extends JFrame implements ActionListener
@@ -18,10 +24,13 @@ public class Servidor //extends JFrame implements ActionListener
   //main
   //------------------------------------
   public static void main(String argv[]) throws Exception {
+      System.out.println("[Server] Started ");
       InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 
-    ServerData th_ServerData = new ServerData();
-    new Thread(th_ServerData).start();
+
+
+      Bootstrapper bootstrapper = new Bootstrapper();
+      new Thread(bootstrapper).start();
 
   }
 

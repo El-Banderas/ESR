@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-public class MainServer {
+public class NotGood_MainServer {
 
   private static byte[] buf = new byte[Constants.arraySize];
 

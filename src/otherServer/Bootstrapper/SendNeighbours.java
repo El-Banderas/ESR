@@ -1,4 +1,4 @@
-package otherServer;
+package otherServer.Bootstrapper;
 
 import Common.InfoNodo;
 
@@ -8,7 +8,15 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 
-public class ServerData implements Runnable {
+import static Common.Constants.portBootSendNeighbours;
+
+public class SendNeighbours implements Runnable {
+    Layout l;
+
+    public SendNeighbours(Layout l) {
+        this.l = l;
+    }
+
     public void run() {
 
         Socket socket = null;
@@ -17,16 +25,9 @@ public class ServerData implements Runnable {
         BufferedReader br = null;
         BufferedWriter bw = null;
         ServerSocket sv = null;
-        Layout l;
 
-        l = new Layout();
-        try {
-            //l.parse("otherServer/config.txt");
-            l.parse("C:\\Users\\Diogo\\Desktop\\Diogo\\Trabalhos da escola\\4ano1sem\\redes\\ESR\\src\\otherServer\\config.txt");
-        } catch (IOException e) {
-            System.out.println("[SERVERDATA] Error in parte of config file.");
-            e.printStackTrace();
-        }
+
+
 
         Map<String, List<String>> rede;
         List<Common.InfoNodo> nodos;
@@ -36,7 +37,7 @@ public class ServerData implements Runnable {
 
 
         try {
-            sv = new ServerSocket(1234);
+            sv = new ServerSocket(portBootSendNeighbours);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("[SERVERDATA] Error in creating server socket");

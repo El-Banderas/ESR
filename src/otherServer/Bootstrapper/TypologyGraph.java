@@ -1,4 +1,4 @@
-package otherServer;
+package otherServer.Bootstrapper;
 
 // Prim's Algorithm in Java
 

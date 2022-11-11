@@ -1,4 +1,4 @@
-package otherServer;
+package otherServer.Bootstrapper;
 
 import Common.InfoNodo;
 
