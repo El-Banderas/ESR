@@ -7,8 +7,8 @@ package Common;
 public class Constants {
 
     // Still alive messages
-    public static int sitllAliveID = 5;
-    public static int timeoutSockets = 5;
+    final public static  int sitllAliveID = 5;
+    public static int timeoutSockets = 1000;
 
 
     // Info about the ports, that won't change when testing in core.

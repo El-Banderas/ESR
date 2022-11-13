@@ -52,7 +52,7 @@ public class Layout {
                 // loop through all neighbours of a node
             String[] aux = parts[0].split(" *: *");
             InetAddress ip = InetAddress.getByName(aux[1]);
-            InfoNodo n = new InfoNodo(aux[0],ip);
+            InfoNodo n = new InfoNodo(aux[0],ip, 8000);
             nodos.add(n);
 
             String[] vizinhos = parts[1].split(" *, *");

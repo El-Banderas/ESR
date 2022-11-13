@@ -1,6 +1,7 @@
 package otherNode;
 
 import Common.Constants;
+import Common.MessageAndType;
 import TransmitData.ReceiveData;
 
 import java.io.IOException;
@@ -15,9 +16,9 @@ public class NotGood_MainNode {
         DatagramSocket socket = new DatagramSocket(portNumber);
         while (true) {
 
-            DatagramPacket received = ReceiveData.receiveData(socket);
+            MessageAndType received = ReceiveData.receiveData(socket);
             String message
-                    = new String(received.getData(), 0, received.getLength());
+                    = new String(received.packet.getData(), 0, received.packet.getLength());
             System.out.println(message);
         }
 

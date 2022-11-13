@@ -2,6 +2,8 @@ package otherNode;
 
 
 import Common.Constants;
+import Common.InfoNodo;
+import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
@@ -10,28 +12,28 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
  */
 public class NodeInformParent implements Runnable {
-    public int parentPort = 0;
     public int thisPort = 0;
-    public String parentIP = "localhost";
 
-    public NodeInformParent(int parentPort, int thisPort) {
-        this.parentPort = parentPort;
+    public InfoNodo parent;
+
+    public ArrayList<InfoNodo> sons;
+
+    public NodeInformParent(InfoNodo parent, int thisPort, ArrayList sons) {
+        this.parent = parent;
         this.thisPort = thisPort;
+        this.sons = new ArrayList<>(sons);
     }
-    public NodeInformParent(int parentPort) {
-        this.parentPort = parentPort;
-        this.thisPort = -1;
-    }
+
     @Override
     public void run() {
 
-        String msg = "Hello";
         DatagramSocket socket = null;
         try {
             if (this.thisPort > 0)
@@ -52,16 +54,33 @@ public class NodeInformParent implements Runnable {
         while(true) {
             try {
                 // Envia para o pai
-                SendData.sendStillAliveMSG(socket, InetAddress.getByName(this.parentIP), this.parentPort );
+                SendData.sendStillAliveMSG(socket, this.parent.ip, this.parent.port );
                 System.out.println("[Client] Send still alive msg");
-                DatagramPacket lixo = ReceiveData.receiveData(socket);
+                MessageAndType received = ReceiveData.receiveData(socket);
+                handleReceivedMessage(received);
             } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("[Client] Error sending message");
+                System.out.println("[Client] Timeout");
             }
 
         }
 
+
+    }
+
+    private void handleReceivedMessage(MessageAndType received) throws IOException {
+        switch (received.msgType){
+            case Constants.sitllAliveID:
+                receivedStillAliveMSG(received.packet);
+            default:
+                System.out.println("[NodeInfomParen] Received message type: " + received.msgType);
+        }
+    }
+
+    private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
+        float time = ReceiveData.receiveStillAliveMSG(packet);
+        System.out.println("Received still alive msg:");
+        System.out.println("From: " + packet.getAddress()+ " " + packet.getPort()+ " port.");
+        System.out.println("Message time = " + time);
 
     }
 }

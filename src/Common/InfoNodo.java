@@ -9,14 +9,16 @@ import java.net.UnknownHostException;
 public class InfoNodo {
     public String idNodo;
     public InetAddress ip;
+    public int port;
     public int bootsttrap; //1 se for
 
   
-    public InfoNodo(String id, InetAddress ip ) {
+    public InfoNodo(String id, InetAddress ip, int port ) {
         this.idNodo = id;
         this.ip = ip;
         this.bootsttrap=0;
- 
+        this.port=port;
+
     }
 
     public String getidNodo() { return idNodo; }
