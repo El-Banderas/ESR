@@ -1,4 +1,4 @@
-//class RTPpacket
+package Client;//class Client.RTPpacket
 
 public class RTPpacket{
 
@@ -27,7 +27,7 @@ public class RTPpacket{
 
 
   //--------------------------
-  //Constructor of an RTPpacket object from header fields and payload bitstream
+  //Constructor of an Client.RTPpacket object from header fields and payload bitstream
   //--------------------------
   public RTPpacket(int PType, int Framenb, int Time, byte[] data, int data_length){
     //fill by default header fields:
@@ -79,7 +79,7 @@ public class RTPpacket{
   }
     
   //--------------------------
-  //Constructor of an RTPpacket object from the packet bistream 
+  //Constructor of an Client.RTPpacket object from the packet bistream
   //--------------------------
   public RTPpacket(byte[] packet, int packet_size)
   {
@@ -113,7 +113,7 @@ public class RTPpacket{
  }
 
   //--------------------------
-  //getpayload: return the payload bistream of the RTPpacket and its size
+  //getpayload: return the payload bistream of the Client.RTPpacket and its size
   //--------------------------
   public int getpayload(byte[] data) {
 

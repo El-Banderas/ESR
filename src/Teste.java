@@ -7,6 +7,8 @@
    - outro temporizador recebe o pacote RTP e reproduz
    ---------------------- */
 
+import Client.RTPpacket;
+
 import java.io.*;
 import java.net.*;
 import java.awt.*;
@@ -175,7 +177,7 @@ public class Teste {
 	//receive the DP from the socket:
 	RTPsocket.receive(rcvdp);
 	  
-	//create an RTPpacket object from the DP
+	//create an Client.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
@@ -184,7 +186,7 @@ public class Teste {
 	//print header bitstream:
 	rtp_packet.printheader();
 
-	//get the payload bitstream from the RTPpacket object
+	//get the payload bitstream from the Client.RTPpacket object
 	int payload_length = rtp_packet.getpayload_length();
 	byte [] payload = new byte[payload_length];
 	rtp_packet.getpayload(payload);
@@ -222,7 +224,7 @@ public class Teste {
 	  //get next frame to send from the video, as well as its size
 	  int image_length = video.getnextframe(sBuf);
 
-	  //Builds an RTPpacket object containing the frame
+	  //Builds an Client.RTPpacket object containing the frame
 	  RTPpacket rtp_packet = new RTPpacket(MJPEG_TYPE, imagenb, imagenb*FRAME_PERIOD, sBuf, image_length);
 	  
 	  //get to total length of the full rtp packet to send

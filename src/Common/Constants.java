@@ -1,6 +1,15 @@
 package Common;
 
+/**
+ * Message id's are stored in message header, to identify the content of the message.
+ */
+
 public class Constants {
+
+    // Still alive messages
+    public static int sitllAliveID = 5;
+    public static int timeoutSockets = 5;
+
 
     // Info about the ports, that won't change when testing in core.
     public static int portBootSendNeighbours = 1234;
@@ -10,7 +19,6 @@ public class Constants {
 
 
     // Info about comunications address
-
     public static String serverIP = "localhost";
     public static int portServer = 4000;
     /**

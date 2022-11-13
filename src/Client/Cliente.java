@@ -1,6 +1,6 @@
-/* ------------------
-   Cliente
-   usage: java Cliente
+package Client;/* ------------------
+   Client.Cliente
+   usage: java Client.Cliente
    adaptado dos originais pela equipa docente de ESR (nenhumas garantias)
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
@@ -16,7 +16,7 @@ public class Cliente {
 
   //GUI
   //----
-  JFrame f = new JFrame("Cliente de Testes");
+  JFrame f = new JFrame("Client.Cliente de Testes");
   JButton setupButton = new JButton("Setup");
   JButton playButton = new JButton("Play");
   JButton pauseButton = new JButton("Pause");
@@ -88,7 +88,7 @@ public class Cliente {
 	RTPsocket = new DatagramSocket(RTP_RCV_PORT); //init RTP socket (o mesmo para o cliente e servidor)
     RTPsocket.setSoTimeout(5000); // setimeout to 5s
     } catch (SocketException e) {
-        System.out.println("Cliente: erro no socket: " + e.getMessage());
+        System.out.println("Client.Cliente: erro no socket: " + e.getMessage());
     }
   }
 
@@ -143,7 +143,7 @@ public class Cliente {
 	//receive the DP from the socket:
 	RTPsocket.receive(rcvdp);
 	  
-	//create an RTPpacket object from the DP
+	//create an Client.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
@@ -152,7 +152,7 @@ public class Cliente {
 	//print header bitstream:
 	rtp_packet.printheader();
 
-	//get the payload bitstream from the RTPpacket object
+	//get the payload bitstream from the Client.RTPpacket object
 	int payload_length = rtp_packet.getpayload_length();
 	byte [] payload = new byte[payload_length];
 	rtp_packet.getpayload(payload);
@@ -174,5 +174,5 @@ public class Cliente {
     }
   }
 
-}//end of Class Cliente
+}//end of Class Client.Cliente
 
