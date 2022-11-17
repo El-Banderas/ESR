@@ -1,6 +1,6 @@
 package Client;/* ------------------
-   Client.Cliente
-   usage: java Client.Cliente
+   Client.ClienteStream
+   usage: java Client.ClienteStream
    adaptado dos originais pela equipa docente de ESR (nenhumas garantias)
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
@@ -12,11 +12,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-public class Cliente {
+public class ClienteStream {
 
   //GUI
   //----
-  JFrame f = new JFrame("Client.Cliente de Testes");
+  JFrame f = new JFrame("Client.ClienteStream de Testes");
   JButton setupButton = new JButton("Setup");
   JButton playButton = new JButton("Play");
   JButton pauseButton = new JButton("Pause");
@@ -39,7 +39,7 @@ public class Cliente {
   //--------------------------
   //Constructor
   //--------------------------
-  public Cliente() {
+  public ClienteStream() {
 
     //build GUI
     //--------------------------
@@ -88,7 +88,7 @@ public class Cliente {
 	RTPsocket = new DatagramSocket(RTP_RCV_PORT); //init RTP socket (o mesmo para o cliente e servidor)
     RTPsocket.setSoTimeout(5000); // setimeout to 5s
     } catch (SocketException e) {
-        System.out.println("Client.Cliente: erro no socket: " + e.getMessage());
+        System.out.println("Client.ClienteStream: erro no socket: " + e.getMessage());
     }
   }
 
@@ -97,7 +97,7 @@ public class Cliente {
   //------------------------------------
   public static void main(String argv[]) throws Exception
   {
-        Cliente t = new Cliente();
+        ClienteStream t = new ClienteStream();
   }
 
 
@@ -174,5 +174,5 @@ public class Cliente {
     }
   }
 
-}//end of Class Client.Cliente
+}//end of Class Client.ClienteStream
 

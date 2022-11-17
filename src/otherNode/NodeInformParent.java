@@ -76,6 +76,7 @@ public class NodeInformParent implements Runnable {
         }
     }
 
+
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
         float time = ReceiveData.receiveStillAliveMSG(packet);
         System.out.println("Received still alive msg:");
