@@ -6,6 +6,7 @@ import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import otherServer.Bootstrapper.InfoConnection;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -13,6 +14,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -23,15 +27,21 @@ public class NodeInformParent implements Runnable {
 
     public InfoNodo parent;
 
-    public ArrayList<InfoNodo> sons;
+    // This array is constant, the sons are always the same.
+    public ArrayList<InfoNodo> neibourghs;
 
-    public NodeInformParent(InfoNodo parent, int thisPort, ArrayList sons) {
+    // This array is determined by the formulated tree from the bootstrapper.
+    // Based on the state of the connections.
+    public ArrayList<InfoConnection> sons;
+
+    public NodeInformParent(InfoNodo parent, int thisPort, ArrayList neibourghs) {
         this.parent = parent;
         this.thisPort = thisPort;
-        this.sons = new ArrayList<>(sons);
+        this.neibourghs = new ArrayList<>(neibourghs);
+        this.sons = new ArrayList<>();
     }
 
-    @Override
+        @Override
     public void run() {
 
         DatagramSocket socket = null;
@@ -53,13 +63,18 @@ public class NodeInformParent implements Runnable {
         // Falta controlar se recebeu mensagem para atualizar pai.
         while(true) {
             try {
+                checkSons();
+
+                System.out.println("\n[Node Inform Parent] While cycle:");
+                sons.forEach(InfoConnection::toString);
                 // Envia para o pai
-                SendData.sendStillAliveMSG(socket, this.parent.ip, this.parent.port );
-                System.out.println("[Client] Send still alive msg");
+                int messageType = calculateTypeOfStillAliveMessage();
+                SendData.sendStillAliveMSG(socket, this.parent.ip, this.parent.port, messageType);
+                System.out.println(" Send still alive msg, type: " + Constants.convertMessageType(messageType));
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
             } catch (IOException e) {
-                System.out.println("[Client] Timeout");
+                System.out.println("[Node] Timeout");
             }
 
         }
@@ -69,19 +84,51 @@ public class NodeInformParent implements Runnable {
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
         switch (received.msgType){
-            case Constants.sitllAliveID:
+            case Constants.sitllAliveNoInterest:
+            case Constants.sitllAliveWithInterest:
                 receivedStillAliveMSG(received.packet);
             default:
-                System.out.println("[NodeInfomParen] Received message type: " + received.msgType);
+                System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
         }
     }
 
 
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
-        float time = ReceiveData.receiveStillAliveMSG(packet);
-        System.out.println("Received still alive msg:");
-        System.out.println("From: " + packet.getAddress()+ " " + packet.getPort()+ " port.");
-        System.out.println("Message time = " + time);
+//        StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
+        InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
+        int portOther = info.otherNode.port;
+        InetAddress ipOther = info.otherNode.ip;
+        System.out.println("\nReceived still alive msg (interested?): " + info.interested);
+        System.out.println("From: " + ipOther + " " + portOther+ " port.");
+        List otherSons = sons.stream().filter(son -> (son.otherNode.ip != ipOther && son.otherNode.port != portOther)).collect(Collectors.toList());
+        System.out.println("Delay = " + info.delay+ "\n");
+        // Remove the current node from the sons list.
+        sons = new ArrayList<InfoConnection>(otherSons);
+        // And add the new information to sons list, with updated info.
+        sons.add(info);
+    }
+
+    /**
+     * Update sons array to see wich one's are alive.
+     * @return
+     */
+    public void checkSons(){
+        List sonsList = sons.stream().filter(InfoConnection::isAliveTimeout).collect(Collectors.toList());
+        sons = new ArrayList<>(sonsList);
+        System.out.println("Existem "+ sons.size() + " filhos");
+    }
+
+     /**
+     * Decides what type of message is going to be sent to parent node.
+     * If there are no interested sons, will send a still alive, no interest, message.
+     * @return
+     */
+    private int calculateTypeOfStillAliveMessage(){
+        boolean numberOfInterestedChildren = sons.stream().anyMatch(x -> x.interested);
+        if (numberOfInterestedChildren)
+            return Constants.sitllAliveWithInterest;
+        else return Constants.sitllAliveNoInterest;
 
     }
+
 }

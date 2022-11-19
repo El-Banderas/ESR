@@ -1,5 +1,7 @@
 package Common;
 
+import java.time.LocalDateTime;
+
 /**
  * Message id's are stored in message header, to identify the content of the message.
  */
@@ -7,8 +9,29 @@ package Common;
 public class Constants {
 
     // Still alive messages
-    final public static  int sitllAliveID = 5;
-    public static int timeoutSockets = 1000;
+    final public static  int sitllAliveNoInterest = 5;
+    final public static  int sitllAliveWithInterest = 6;
+    // Miliseconds
+    final public static int timeoutSockets = 1000;
+    // Seconds
+    final public static int timeToConsiderNodeLost = 6;
+
+    public static int getCurrentTime(){
+        LocalDateTime date = LocalDateTime.now();
+        return date.toLocalTime().toSecondOfDay();
+    }
+
+    public static String convertMessageType(int id){
+        switch (id){
+            case sitllAliveNoInterest:
+                return "Still alive but not interested.";
+
+            case sitllAliveWithInterest:
+                return "Still alive and interested.";
+            default:
+                return "Type not defined";
+        }
+    }
 
 
     // Info about the ports, that won't change when testing in core.

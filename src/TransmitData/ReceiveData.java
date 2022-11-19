@@ -1,7 +1,9 @@
 package TransmitData;
 
 import Common.Constants;
+import Common.InfoNodo;
 import Common.MessageAndType;
+import otherServer.Bootstrapper.InfoConnection;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,14 +12,24 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 public class ReceiveData {
-    public static float receiveStillAliveMSG(DatagramPacket packet) throws IOException {
+    public static InfoConnection receiveStillAliveMSG(DatagramPacket packet) {
+
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
+
+        boolean interested;
         int type = msg.getInt();
-        float msgTime = msg.getInt() * 1000;
-        //int dateInSec = (int) (System.currentTimeMillis() / 1000);
-        //byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.sitllAliveID).putInt(dateInSec).array();
-        //sendData(socket, bytes, destIP, destPort);
-        return msgTime;
+        if (type == Constants.sitllAliveNoInterest) {
+            interested = false;
+        }
+        else interested = true;
+
+        int msgTime = msg.getInt();
+        int now = Constants.getCurrentTime();
+        int delay = now-msgTime;
+
+        return new InfoConnection(other, delay, now, interested);
     }
 
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
@@ -27,7 +39,6 @@ public class ReceiveData {
             socket.receive(packet);
             int type = ByteBuffer.wrap(buf).getInt();
         MessageAndType received = new MessageAndType(type, packet);
-        System.out.println("Receubeu o número: "+ type);
         return received;
 
         }

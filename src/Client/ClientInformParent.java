@@ -7,8 +7,6 @@ import TransmitData.SendData;
 import java.io.*;
 import java.net.*;
 
-import static Common.Constants.portBootSendNeighbours;
-
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
@@ -51,9 +49,10 @@ public class ClientInformParent implements Runnable {
         while(true) {
             try {
                 // Envia para o pai
-                SendData.sendStillAliveMSG(socket, InetAddress.getByName(this.parentIP), this.parentPort );
+                // O cliente tem sempre interesse
+                SendData.sendStillAliveMSG(socket, InetAddress.getByName(this.parentIP), this.parentPort, Constants.sitllAliveWithInterest);
                 System.out.println("[Client] Send still alive msg");
-                Thread.sleep(Constants.timeoutSockets-1);
+                Thread.sleep(Constants.timeoutSockets);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("[Client] Error sending message");

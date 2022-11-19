@@ -10,9 +10,9 @@ import java.nio.ByteBuffer;
 
 public class SendData {
 
-    public static void sendStillAliveMSG(DatagramSocket socket, InetAddress destIP, int destPort) throws IOException {
-        int dateInSec = (int) (System.currentTimeMillis() / 1000);
-        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.sitllAliveID).putInt(dateInSec).array();
+    public static void sendStillAliveMSG(DatagramSocket socket, InetAddress destIP, int destPort, int messageType) throws IOException {
+        int dateInSec = Constants.getCurrentTime();
+        byte[] bytes = ByteBuffer.allocate(100).putInt(messageType).putInt(dateInSec).array();
         sendData(socket, bytes, destIP, destPort);
     }
 

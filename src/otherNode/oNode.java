@@ -39,10 +39,14 @@ public class oNode {
 
         boolean stillAliveParte = true;
         if (stillAliveParte) {
-            InfoNodo parent = new InfoNodo("Coisa", InetAddress.getByName("localhost"), Integer.parseInt(args[0]));
+            InetAddress parentIP = InetAddress.getByName("localhost");
+            int parentPort = Integer.parseInt(args[0]);
+            InfoNodo parent = new InfoNodo( parentIP, parentPort);
             // Neste momento a porta do filho está harcoded, depois vai ser dada dinâmicamente.
-            InfoNodo son = new InfoNodo("Coisa", InetAddress.getByName("localhost"), 8020);
+            InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), 8020);
             ArrayList sons = new ArrayList<>(Collections.singleton(son));
+            // Neste momento, não precisamos de saber os filhos
+            // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
             NodeInformParent comunication_TH = new NodeInformParent(parent, Integer.parseInt(args[1]), sons);
             new Thread(comunication_TH).start();
         }
