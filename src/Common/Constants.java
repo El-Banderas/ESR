@@ -28,10 +28,15 @@ public class Constants {
 
             case sitllAliveWithInterest:
                 return "Still alive and interested.";
+
             default:
                 return "Type not defined";
         }
     }
+
+    // Não consigo testar, porque no mesmo computador dá sempre 0, praticamente.
+    final public static int minDelayToTrigger = 3;
+    final public static  int tooMuchDelay = 7;
 
 
     // Info about the ports, that won't change when testing in core.
@@ -41,23 +46,17 @@ public class Constants {
     public static int arraySize = 2048;
 
 
-    // Info about comunications address
-    public static String serverIP = "localhost";
-    public static int portServer = 4000;
     /**
-     * Info of the network:
-     * Distribution:
-     
+     * Run commands of each element:
+     *
+     * Cliente1 : 8010 8020
+     * Node 1: 8009 8010
+     * Node 2: 8008 8009
+     * Server:
+     *
+     * Client arguments: parent port // this port
+     * Node arguments: parent port // this port
+     *
+     * Server -> N2 -> N1 -> Cl1
      */
-    public static String Node1IP = "localhost";
-    public static int portNode1 = 5001;
-
-    public static String Node2IP = "localhost";
-    public static int portNode2 = 5002;
-
-    public static String Node3IP = "localhost";
-    public static int portNode3 = 5003;
-
-    public static String Node4IP = "localhost";
-    public static int portNode4 = 5004;
 }

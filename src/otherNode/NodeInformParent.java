@@ -34,6 +34,9 @@ public class NodeInformParent implements Runnable {
     // Based on the state of the connections.
     public ArrayList<InfoConnection> sons;
 
+    private DatagramSocket socket;
+
+
     public NodeInformParent(InfoNodo parent, int thisPort, ArrayList neibourghs) {
         this.parent = parent;
         this.thisPort = thisPort;
@@ -44,7 +47,6 @@ public class NodeInformParent implements Runnable {
         @Override
     public void run() {
 
-        DatagramSocket socket = null;
         try {
             if (this.thisPort > 0)
                 socket = new DatagramSocket(this.thisPort);
@@ -96,16 +98,33 @@ public class NodeInformParent implements Runnable {
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
 //        StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
+
+        if (info.delay > Constants.minDelayToTrigger){
+            sendTooMuchDelay(info.otherNode);
+        }
+
         int portOther = info.otherNode.port;
         InetAddress ipOther = info.otherNode.ip;
+
         System.out.println("\nReceived still alive msg (interested?): " + info.interested);
         System.out.println("From: " + ipOther + " " + portOther+ " port.");
+
         List otherSons = sons.stream().filter(son -> (son.otherNode.ip != ipOther && son.otherNode.port != portOther)).collect(Collectors.toList());
         System.out.println("Delay = " + info.delay+ "\n");
         // Remove the current node from the sons list.
         sons = new ArrayList<InfoConnection>(otherSons);
         // And add the new information to sons list, with updated info.
         sons.add(info);
+    }
+
+    /**
+     * TODO: Manda para o bootstrapper?
+     * When there is too much delay.
+     * @param otherNode
+     */
+    private void sendTooMuchDelay(InfoNodo otherNode) {
+        // O destIP e port devem ser do bootstrapper
+        //SendData.sendTooMuchDelayMSG(this.socket, );
     }
 
     /**

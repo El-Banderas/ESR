@@ -16,6 +16,15 @@ public class SendData {
         sendData(socket, bytes, destIP, destPort);
     }
 
+    /**
+     * TODO: Falta decidir como fazemos isto
+     * @param socket
+     * @param destIP
+     * @param destPort
+     */
+    public static void sendTooMuchDelayMSG(DatagramSocket socket, InetAddress destIP, int destPort){
+    }
+
     public static void sendData(DatagramSocket socket, byte[] buf, InetAddress destIP, int destPort) throws IOException {
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, destIP, destPort);
