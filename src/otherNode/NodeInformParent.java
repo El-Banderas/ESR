@@ -58,7 +58,7 @@ public class NodeInformParent implements Runnable {
             System.out.println("[Client] Error creating socket");
         }
 
-        System.out.println("otherServer.otherServer.Servidor ativo");
+        System.out.println("Node on");
         byte[] buf = new byte[100];
         DatagramPacket receivePKT = new DatagramPacket(buf, buf.length);
         // De X em X tempo, envia para o parentport um hello com timestamp

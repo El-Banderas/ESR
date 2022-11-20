@@ -13,6 +13,7 @@ public class SendData {
     public static void sendStillAliveMSG(DatagramSocket socket, InetAddress destIP, int destPort, int messageType) throws IOException {
         int dateInSec = Constants.getCurrentTime();
         byte[] bytes = ByteBuffer.allocate(100).putInt(messageType).putInt(dateInSec).array();
+        System.out.println("Envia still alive para: " + destIP + " e porta: " + destPort);
         sendData(socket, bytes, destIP, destPort);
     }
 

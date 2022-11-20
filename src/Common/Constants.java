@@ -56,7 +56,9 @@ public class Constants {
      *
      * Client arguments: parent port // this port
      * Node arguments: parent port // this port
+     * Node arguments: son port // this port
      *
-     * Server -> N2 -> N1 -> Cl1
+     * Server  -> N2  ->  N1  ->  Cl1
+     *  8008    8009    8010    8020
      */
 }

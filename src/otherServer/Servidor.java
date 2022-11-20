@@ -6,10 +6,10 @@ package otherServer;
    colocar primeiro o cliente a correr, porque este dispara logo
    ---------------------- */
 
+import Common.InfoNodo;
 import otherServer.Bootstrapper.Bootstrapper;
-import otherServer.Bootstrapper.SendNeighbours;
+import otherServer.Stream.Stream;
 
-import java.io.IOException;
 import java.net.*;
 
 /**
@@ -28,9 +28,30 @@ public class Servidor //extends JFrame implements ActionListener
       InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 
 
+      if (argv.length < 2 ) {
+          Bootstrapper bootstrapper = new Bootstrapper();
+          new Thread(bootstrapper).start();
+      }
+      else {
+          CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
-      Bootstrapper bootstrapper = new Bootstrapper();
-      new Thread(bootstrapper).start();
+          InetAddress sonIP = InetAddress.getByName("localhost");
+          int sonPort = Integer.parseInt(argv[0]);
+          InfoNodo sonInfo = new InfoNodo(sonIP, sonPort);
+
+
+          InetAddress thisIP = InetAddress.getByName("localhost");
+          int thisPort = Integer.parseInt(argv[1]);
+          InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
+
+          Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
+          new Thread(bootstrapper).start();
+
+          Stream stream = new Stream(shared);
+          new Thread(stream).start();
+
+
+      }
 
   }
 

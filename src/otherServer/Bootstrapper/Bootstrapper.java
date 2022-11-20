@@ -1,6 +1,15 @@
 package otherServer.Bootstrapper;
 
+import Common.Constants;
+import Common.InfoNodo;
+import Common.MessageAndType;
+import TransmitData.ReceiveData;
+import otherServer.CommuncationBetweenThreads;
+
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
 /**
  * Main class of bootstrapper functions.
@@ -24,8 +33,37 @@ public class Bootstrapper implements Runnable{
     // Tree of connections
     private Tree best_paths_tree;
 
+    private InfoNodo serverInfo;
+    private InfoNodo sonInfo;
+    private CommuncationBetweenThreads shared;
+
+    private DatagramSocket socket;
+
+    boolean interested;
+
     public Bootstrapper() {
         this.topology = topology;
+    }
+
+    // Talvez não seja necessária a informação do próprio server
+    // Agora é necessário para podermos testar. Mas depois, não precisaoms de dizer qual é esta porta.
+    public Bootstrapper(InfoNodo serverInfo, InfoNodo sonInfo, CommuncationBetweenThreads shared) {
+        this.serverInfo = serverInfo;
+        this.sonInfo = sonInfo;
+        this.shared = shared;
+        this.interested = false;
+        // Creation of server
+        try {
+            if (this.serverInfo.port > 0)
+                socket = new DatagramSocket(this.serverInfo.port);
+            else {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(Constants.timeoutSockets);
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+            System.out.println("[Server] Error creating socket");
+        }
     }
 
     /**
@@ -38,7 +76,7 @@ public class Bootstrapper implements Runnable{
 
     @Override
     public void run() {
-
+        System.out.println("[Server] Bootstrapper on");
         // Topology
         Layout l = new Layout();
         try {
@@ -51,7 +89,45 @@ public class Bootstrapper implements Runnable{
         }
 
         // Fica à espera de enviar informações sobre vizinhos
-        SendNeighbours th_SendNeighbours = new SendNeighbours(l);
-        new Thread(th_SendNeighbours).start();
+        boolean sendNeighbours = false;
+        if (sendNeighbours) {
+            SendNeighbours th_SendNeighbours = new SendNeighbours(l);
+            new Thread(th_SendNeighbours).start();
+        }
+
+        byte[] buf = new byte[100];
+        DatagramPacket receivePKT = new DatagramPacket(buf, buf.length);
+
+        while (true) {
+            try {
+                MessageAndType received = ReceiveData.receiveData(socket);
+                handleReceivedMessage(received);
+
+            } catch (IOException e) {
+                System.out.println("[Node] Timeout, listening in: " + socket.getPort());
+
+            }
+
+        }
+    }
+
+    private void handleReceivedMessage(MessageAndType received) {
+            switch (received.msgType){
+                case Constants.sitllAliveNoInterest:
+                case Constants.sitllAliveWithInterest:
+                    receivedStillAliveMSG(received.packet);
+                default:
+                    System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
+            }
+        }
+
+    private void receivedStillAliveMSG(DatagramPacket packet) {
+        InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
+        // Necessary to warn stream thread that stream must start/stop.
+        if (info.interested != this.interested){
+            System.out.println("Change interess");
+            this.interested = info.interested;
+            shared.setSendStream(info.interested);
+        }
     }
 }
