@@ -50,14 +50,18 @@ public class Constants {
      * Run commands of each element:
      *
      * Cliente1 : 8010 8020
-     * Node 1: 8009 8010
-     * Node 2: 8008 8009
-     * Server:
+     * Cliente2 : 8009 8021
+     * Node 1: 8009 8010 -1
+     * Node 2: 8008 8009 -1
+     * Server: 8009 8008
      *
      * Client arguments: parent port // this port
-     * Node arguments: parent port // this port
+     * Node arguments: parent port // this port // Nodos filhos
      * Node arguments: son port // this port
      *
+     *           8021
+     *            C2
+     *            |
      * Server  -> N2  ->  N1  ->  Cl1
      *  8008    8009    8010    8020
      */
