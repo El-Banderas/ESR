@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * Main class of bootstrapper functions.
@@ -116,10 +117,15 @@ public class Bootstrapper implements Runnable{
                 case Constants.sitllAliveNoInterest:
                 case Constants.sitllAliveWithInterest:
                     receivedStillAliveMSG(received.packet);
+                case Constants.lostNode:
+                    receiveLostNodeMSG(received.packet);
+
                 default:
                     System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
             }
         }
+
+
 
     private void receivedStillAliveMSG(DatagramPacket packet) {
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
@@ -128,6 +134,20 @@ public class Bootstrapper implements Runnable{
             System.out.println("Change interess");
             this.interested = info.interested;
             shared.setSendStream(info.interested);
+        }
+    }
+
+    private void receiveLostNodeMSG(DatagramPacket packet) {
+        InfoNodo lostSon = null;
+        try {
+            lostSon = ReceiveData.receiveLostNodeMSG(packet);
+
+        System.out.println("Receive lost node msg");
+        System.out.println(lostSon);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.out.println("[Bootstrapper] ERROR MESSAGE RECEIVING LOST SON MSG ");
+
         }
     }
 }

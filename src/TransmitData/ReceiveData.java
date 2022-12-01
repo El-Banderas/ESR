@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class ReceiveData {
@@ -25,11 +26,35 @@ public class ReceiveData {
         }
         else interested = true;
 
-        int msgTime = msg.getInt();
-        int now = Constants.getCurrentTime();
-        int delay = now-msgTime;
+        double msgTime = msg.getDouble();
+        double now = Constants.getCurrentTime();
+        double delay = now-msgTime;
 
         return new InfoConnection(other, delay, now, interested);
+    }
+
+    public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {
+        // To calculate sizes, this could be put in constants, but I don't know the sizes.
+        // Change later.
+        int sizeInetAdressByteArray = 0;
+        try {
+            sizeInetAdressByteArray = InetAddress.getByName("127.0.0.1").getAddress().length;
+        } catch (UnknownHostException e) {
+            System.out.println("Ignore");
+        }
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int portLostSon = msg.getInt();
+
+        byte[] lostNodeIpPart = new byte[sizeInetAdressByteArray];
+        System.arraycopy(msg.array(), 0, lostNodeIpPart, 0, sizeInetAdressByteArray);
+        InetAddress ipLostNode = InetAddress.getByAddress(lostNodeIpPart);
+        return new InfoNodo(ipLostNode, portLostSon);
     }
 
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
@@ -38,8 +63,8 @@ public class ReceiveData {
                     = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
             int type = ByteBuffer.wrap(buf).getInt();
-        MessageAndType received = new MessageAndType(type, packet);
-        return received;
+            MessageAndType received = new MessageAndType(type, packet);
+            return received;
 
         }
 }

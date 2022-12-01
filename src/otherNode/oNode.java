@@ -46,7 +46,6 @@ public class oNode {
             System.out.println("[Nodo] Endereço nodo atual: " + args[1]);
 
             ArrayList sons = new ArrayList<>();
-            // Neste momento a porta do filho está harcoded, depois vai ser dada dinâmicamente.
             for (int i = 2; i < args.length; i++){
                 System.out.println("[Nodo] Endereço nodos filhos: " + args[i]);
                 InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), Integer.parseInt(args[i]));

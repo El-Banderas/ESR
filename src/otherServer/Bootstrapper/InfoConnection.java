@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 public class InfoConnection {
     public InfoNodo otherNode;
-    public int delay;
+    public double delay;
 
     // Conection info
-    public int timeLastMessage;
+    public double timeLastMessage;
     public boolean isAlive;
     public boolean interested ;
 
-    public InfoConnection(InfoNodo otherNode, int delay, int timeLastMessage, boolean interested) {
+    public InfoConnection(InfoNodo otherNode, double delay, double timeLastMessage, boolean interested) {
         this.otherNode = otherNode;
         this.delay = delay;
         this.timeLastMessage = timeLastMessage;
@@ -37,16 +37,16 @@ public class InfoConnection {
      */
     public boolean isAliveTimeout(){
 
-        int now = Constants.getCurrentTime();
+        double now = Constants.getCurrentTime();
         if (now-timeLastMessage > Constants.timeToConsiderNodeLost){
 //            System.out.println("A diferença de tempos é: "+ );
             isAlive = false;
         }
-        int differenceTime = now - timeLastMessage;
+        double differenceTime = now - timeLastMessage;
         if (!isAlive)
-        System.out.println("A mensagem é descartada, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
+        System.out.println("O nodo é descartado, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
         else
-            System.out.println("A mensagem é válida, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
+            System.out.println("o nodo é válido, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
 
         return isAlive;
     }
