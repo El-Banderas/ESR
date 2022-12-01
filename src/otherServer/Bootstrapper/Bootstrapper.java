@@ -139,6 +139,12 @@ public class Bootstrapper implements Runnable{
         }
     }
 
+    /**
+     * O ip recebido está mal, porque não está a fazer reverse ao array corretamente, acho.
+     * Mas a porta está correta. Tenho de corrigir
+     * Miguel
+     * @param packet
+     */
     private void receiveLostNodeMSG(DatagramPacket packet) {
         InfoNodo lostSon = null;
         try {
