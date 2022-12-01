@@ -87,8 +87,11 @@ public class NodeInformParent implements Runnable {
             case Constants.sitllAliveNoInterest:
             case Constants.sitllAliveWithInterest:
                 receivedStillAliveMSG(received.packet);
+                break;
+
             case Constants.lostNode:
                 receiveLostNodeMSG(received.packet);
+                break;
 
 
             default:
@@ -192,7 +195,7 @@ public class NodeInformParent implements Runnable {
         try {
             System.out.println("[NodeInformParent] Send lost son message");
             SendData.sendLostSonMSG(socket, parent, lostSon);
-        } catch (IOException e) {
+       } catch (IOException e) {
             e.printStackTrace();
             System.out.println("[NodeInformParent] ERROR MESSAGE SENDING LOST SON MSG ");
         }
@@ -208,7 +211,7 @@ public class NodeInformParent implements Runnable {
             InfoNodo lostSon = ReceiveData.receiveLostNodeMSG(packet);
             System.out.println("Receive lost node msg");
             System.out.println(lostSon);
-          //  sendLostSonMessage(lostSon);
+            sendLostSonMessage(lostSon);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             System.out.println("[NodeInformParent] ERROR MESSAGE RECEIVING LOST SON MSG ");

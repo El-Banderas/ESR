@@ -117,8 +117,10 @@ public class Bootstrapper implements Runnable{
                 case Constants.sitllAliveNoInterest:
                 case Constants.sitllAliveWithInterest:
                     receivedStillAliveMSG(received.packet);
+                    break;
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
+                    break;
 
                 default:
                     System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");

@@ -11,6 +11,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ReceiveData {
     public static InfoConnection receiveStillAliveMSG(DatagramPacket packet) {
@@ -33,6 +36,22 @@ public class ReceiveData {
         return new InfoConnection(other, delay, now, interested);
     }
 
+    public static void reverse(byte[] array) {
+        if (array == null) {
+            return;
+        }
+        int i = 0;
+        int j = array.length - 1;
+        byte tmp;
+        while (j > i) {
+            tmp = array[j];
+            array[j] = array[i];
+            array[i] = tmp;
+            j--;
+            i++;
+        }
+    }
+
     public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {
         // To calculate sizes, this could be put in constants, but I don't know the sizes.
         // Change later.
@@ -42,10 +61,7 @@ public class ReceiveData {
         } catch (UnknownHostException e) {
             System.out.println("Ignore");
         }
-
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
-
-
 
         // We already know the type, so we can ignore it
         int type = msg.getInt();
@@ -53,6 +69,10 @@ public class ReceiveData {
 
         byte[] lostNodeIpPart = new byte[sizeInetAdressByteArray];
         System.arraycopy(msg.array(), 0, lostNodeIpPart, 0, sizeInetAdressByteArray);
+        System.out.println( "Antes" + lostNodeIpPart);
+        reverse(lostNodeIpPart);
+        System.out.println( "Depois" + lostNodeIpPart);
+
         InetAddress ipLostNode = InetAddress.getByAddress(lostNodeIpPart);
         return new InfoNodo(ipLostNode, portLostSon);
     }

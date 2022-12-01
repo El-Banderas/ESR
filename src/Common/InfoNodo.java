@@ -39,7 +39,7 @@ public class InfoNodo {
 
     @Override
     public String toString() {
-        return "{" + idNodo  +" :" + " ip - " + ip.toString() + "  " + " boot -  " +  bootsttrap +  "}";
+        return "{" + idNodo  +" :" + " ip - " + ip.toString() + "  " + " port -  " + port +  "}";
     }
 
     public static String generateId(InetAddress ip, int port){
