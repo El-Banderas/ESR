@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
  */
 
 public class Constants {
-
+    /**
+     * BOOTSRAPPER MESSAGES and other constants
+     */
     // Still alive messages
     final public static  int sitllAliveNoInterest = 5;
     final public static  int sitllAliveWithInterest = 6;
@@ -48,6 +50,12 @@ public class Constants {
 
     // Info about send data
     public static int arraySize = 2048;
+
+
+    /**
+     * STREAM MESSAGES
+     */
+    final public static  int streamContent = 9;
 
 
     /**

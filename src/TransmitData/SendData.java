@@ -21,6 +21,7 @@ public class SendData {
     /**
      * This message sends:
      * MessageType | IP Lost Node | Port Lost Node
+     * TODO: Verificar se dá para juntar o getAdress com a linha de cima
      */
     public static void sendLostSonMSG(DatagramSocket socket, InfoNodo dest, InfoNodo lostNode) throws IOException {
          ByteBuffer bb = ByteBuffer.allocate(50).
@@ -30,6 +31,22 @@ public class SendData {
 
         byte[] bytes = bb.put(bytesIP).array();
         System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.port);
+        sendData(socket, bytes, dest.ip, dest.port);
+    }
+
+    /**
+     * This message sends:
+     * MessageType | Size content | Content
+     */
+
+    public static void sendStreamContentMSG(DatagramSocket socket, InfoNodo dest, byte[] content) throws IOException {
+        // Size int = 4
+        ByteBuffer bb = ByteBuffer.allocate(content.length+4*2).
+                putInt(Constants.streamContent).
+                putInt(content.length).put(content);
+
+        byte[] bytes = bb.array();
+        System.out.println("Envia Stream");
         sendData(socket, bytes, dest.ip, dest.port);
     }
 

@@ -12,6 +12,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+
 /**
  * Main class of bootstrapper functions.
  * It start by reading the config file. Then, starts receiveng request of nodes.
@@ -121,7 +122,6 @@ public class Bootstrapper implements Runnable{
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
                     break;
-
                 default:
                     System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
             }
@@ -140,8 +140,8 @@ public class Bootstrapper implements Runnable{
     }
 
     /**
-     * O ip recebido está mal, porque não está a fazer reverse ao array corretamente, acho.
-     * Mas a porta está correta. Tenho de corrigir
+     * When a node in the network is lost, the parent of that node sends a message notifying the other nodes.
+     * Será que quando um "pai" descobre que o filho morre deve mandar mensagem para o boot, em vez de seguir a àrvore?
      * Miguel
      * @param packet
      */
@@ -157,4 +157,6 @@ public class Bootstrapper implements Runnable{
 
         }
     }
+
+
 }

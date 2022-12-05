@@ -93,6 +93,10 @@ public class NodeInformParent implements Runnable {
                 receiveLostNodeMSG(received.packet);
                 break;
 
+            case Constants.streamContent:
+                receiveStreamContentMSG(received.packet);
+                break;
+
 
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
@@ -204,6 +208,7 @@ public class NodeInformParent implements Runnable {
 
     /**
      * Send to parent that a node is lost
+     * FIXME: Será que devia ir para o bootstrapper?
      * @param packet
      */
     private void receiveLostNodeMSG(DatagramPacket packet) {
@@ -219,5 +224,15 @@ public class NodeInformParent implements Runnable {
         }
 
     }
+
+    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
+            byte[] content = ReceiveData.receiveStreamContentMSG(packet);
+
+            System.out.println("Receive stream content, send to sons");
+            for (InfoConnection son : sons){
+                SendData.sendStreamContentMSG(socket, son.otherNode, content);
+            }
+    }
+
 
 }
