@@ -146,9 +146,8 @@ public class Bootstrapper implements Runnable{
      * @param packet
      */
     private void receiveLostNodeMSG(DatagramPacket packet) {
-        InfoNodo lostSon = null;
         try {
-            lostSon = ReceiveData.receiveLostNodeMSG(packet);
+           InfoNodo lostSon = ReceiveData.receiveLostNodeMSG(packet);
 
         System.out.println("Receive lost node msg");
         System.out.println(lostSon);

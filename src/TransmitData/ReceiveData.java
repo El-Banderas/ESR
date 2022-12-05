@@ -36,21 +36,6 @@ public class ReceiveData {
         return new InfoConnection(other, delay, now, interested);
     }
 
-    public static void reverse(byte[] array) {
-        if (array == null) {
-            return;
-        }
-        int i = 0;
-        int j = array.length - 1;
-        byte tmp;
-        while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
-            j--;
-            i++;
-        }
-    }
 
     public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {
         // To calculate sizes, this could be put in constants, but I don't know the sizes.
@@ -68,10 +53,8 @@ public class ReceiveData {
         int portLostSon = msg.getInt();
 
         byte[] lostNodeIpPart = new byte[sizeInetAdressByteArray];
-        System.arraycopy(msg.array(), 0, lostNodeIpPart, 0, sizeInetAdressByteArray);
-        System.out.println( "Antes" + lostNodeIpPart);
-        reverse(lostNodeIpPart);
-        System.out.println( "Depois" + lostNodeIpPart);
+        // Cuidado com este 8, é o tamanho de 2 ints
+        System.arraycopy(msg.array(), 8, lostNodeIpPart, 0, sizeInetAdressByteArray);
 
         InetAddress ipLostNode = InetAddress.getByAddress(lostNodeIpPart);
         return new InfoNodo(ipLostNode, portLostSon);

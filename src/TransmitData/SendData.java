@@ -23,10 +23,12 @@ public class SendData {
      * MessageType | IP Lost Node | Port Lost Node
      */
     public static void sendLostSonMSG(DatagramSocket socket, InfoNodo dest, InfoNodo lostNode) throws IOException {
-        byte[] bytes = ByteBuffer.allocate(30).
+         ByteBuffer bb = ByteBuffer.allocate(50).
                 putInt(Constants.lostNode).
-                putInt(lostNode.port).
-        put(lostNode.ip.getAddress()).array();
+                putInt(lostNode.port);
+        byte[] bytesIP = lostNode.ip.getAddress();
+
+        byte[] bytes = bb.put(bytesIP).array();
         System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.port);
         sendData(socket, bytes, dest.ip, dest.port);
     }
