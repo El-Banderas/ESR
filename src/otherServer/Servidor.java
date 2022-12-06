@@ -8,7 +8,7 @@ package otherServer;
 
 import Common.InfoNodo;
 import otherServer.Bootstrapper.Bootstrapper;
-import otherServer.Stream.Stream;
+import otherServer.SendStream.SendStream;
 
 import java.net.*;
 
@@ -49,7 +49,7 @@ public class Servidor //extends JFrame implements ActionListener
           Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
           new Thread(bootstrapper).start();
 
-          Stream stream = new Stream(shared);
+          SendStream stream = new SendStream(shared);
           new Thread(stream).start();
 
 

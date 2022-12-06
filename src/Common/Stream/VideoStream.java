@@ -1,4 +1,4 @@
-//VideoStream
+package Common.Stream;//Common.Stream.VideoStream
 
 import java.io.*;
 

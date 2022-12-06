@@ -7,7 +7,8 @@
    - outro temporizador recebe o pacote RTP e reproduz
    ---------------------- */
 
-import Client.RTPpacket;
+import Common.Stream.RTPpacket;
+import Common.Stream.VideoStream;
 
 import java.io.*;
 import java.net.*;
@@ -39,7 +40,8 @@ public class Teste {
   static int RTP_RCV_PORT = 25000; //port where the client will receive the RTP packets
   int RTP_dest_port = 25000; //destination port for RTP packets 
   InetAddress ClientIPAddr; //Client IP address
-  
+
+    // Client timer
   Timer cTimer; //timer used to receive data from the UDP socket
   byte[] cBuf; //buffer used to store data received from the server 
  
@@ -48,7 +50,7 @@ public class Teste {
   //Video constants:
   //------------------
   int imagenb = 0; //image nb of the image currently transmitted
-  VideoStream video; //VideoStream object used to access video frames
+  VideoStream video; //Common.Stream.VideoStream object used to access video frames
   static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
   static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
   static int VIDEO_LENGTH = 500; //length of the video in frames
@@ -113,7 +115,7 @@ public class Teste {
     //Get Client IP address 
     ClientIPAddr = InetAddress.getByName("127.0.0.1");
     System.out.println("Teste: vai enviar e receber video no mesmo socket " + ClientIPAddr);
-	video = new VideoStream(VideoFileName); //init the VideoStream object:
+	video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
     System.out.println("Teste: vai enviar e receber video da file " + VideoFileName);
 
     } catch (SocketException e) {
@@ -134,7 +136,7 @@ public class Teste {
         VideoFileName = argv[0];
         System.out.println("Teste: VideoFileName indicado como parametro: " + VideoFileName);
     } else  {
-        VideoFileName = "movie.Mjpeg";
+        VideoFileName = "C:\\Users\\Diogo\\Desktop\\Diogo\\Trabalhos da escola\\4ano1sem\\redes\\ESR\\src\\out\\production\\ProgEx\\movie.Mjpeg";
         System.out.println("Teste: parametro não foi indicado. VideoFileName = " + VideoFileName);
     }
 
@@ -177,7 +179,7 @@ public class Teste {
 	//receive the DP from the socket:
 	RTPsocket.receive(rcvdp);
 	  
-	//create an Client.RTPpacket object from the DP
+	//create an Common.Stream.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
@@ -186,7 +188,7 @@ public class Teste {
 	//print header bitstream:
 	rtp_packet.printheader();
 
-	//get the payload bitstream from the Client.RTPpacket object
+	//get the payload bitstream from the Common.Stream.RTPpacket object
 	int payload_length = rtp_packet.getpayload_length();
 	byte [] payload = new byte[payload_length];
 	rtp_packet.getpayload(payload);
@@ -224,7 +226,7 @@ public class Teste {
 	  //get next frame to send from the video, as well as its size
 	  int image_length = video.getnextframe(sBuf);
 
-	  //Builds an Client.RTPpacket object containing the frame
+	  //Builds an Common.Stream.RTPpacket object containing the frame
 	  RTPpacket rtp_packet = new RTPpacket(MJPEG_TYPE, imagenb, imagenb*FRAME_PERIOD, sBuf, image_length);
 	  
 	  //get to total length of the full rtp packet to send

@@ -5,6 +5,8 @@ package Client;/* ------------------
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
 
+import Common.Stream.RTPpacket;
+
 import java.io.*;
 import java.net.*;
 import java.awt.*;
@@ -143,7 +145,7 @@ public class ClienteStream {
 	//receive the DP from the socket:
 	RTPsocket.receive(rcvdp);
 	  
-	//create an Client.RTPpacket object from the DP
+	//create an Common.Stream.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
@@ -152,7 +154,7 @@ public class ClienteStream {
 	//print header bitstream:
 	rtp_packet.printheader();
 
-	//get the payload bitstream from the Client.RTPpacket object
+	//get the payload bitstream from the Common.Stream.RTPpacket object
 	int payload_length = rtp_packet.getpayload_length();
 	byte [] payload = new byte[payload_length];
 	rtp_packet.getpayload(payload);

@@ -1,4 +1,4 @@
-package otherServer.Stream;
+package otherServer.SendStream;
 
 import TransmitData.SendData;
 import otherServer.CommuncationBetweenThreads;
@@ -10,11 +10,11 @@ import java.nio.charset.StandardCharsets;
 
 import static java.lang.Thread.sleep;
 
-public class Stream implements Runnable {
+public class SendStream implements Runnable {
     private CommuncationBetweenThreads shared;
     private DatagramSocket socket;
 
-    public Stream(CommuncationBetweenThreads shared) {
+    public SendStream(CommuncationBetweenThreads shared) {
         this.shared = shared;
         // The port of the server could be random, because no one wants to send data to the server.
         try {
