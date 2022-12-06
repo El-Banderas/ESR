@@ -6,7 +6,7 @@ import Common.InfoNodo;
 import java.time.LocalDateTime;
 
 public class InfoConnection {
-    public InfoNodo otherNode;
+    public InfoNodo otherNode; // proximo node
     public int delay;
 
     // Conection info
@@ -30,6 +30,10 @@ public class InfoConnection {
         interested = update;
     }
 */
+
+
+
+
     /**
      * Se calhar dá para usar apenas o LocalDateTime, experimentar
      * Checks if the node is alive

@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 public class Constants {
 
+    // msg HELLO
+
+    final public static  int hellomesage = 10;
+
     // Still alive messages
     final public static  int sitllAliveNoInterest = 5;
     final public static  int sitllAliveWithInterest = 6;
@@ -28,6 +32,10 @@ public class Constants {
 
             case sitllAliveWithInterest:
                 return "Still alive and interested.";
+
+            case hellomesage:
+                return "Hello message from Node";
+
 
             default:
                 return "Type not defined";

@@ -3,12 +3,17 @@ package otherNode;
 import Client.ClientInformParent;
 import Common.Constants;
 import Common.InfoNodo;
+import TransmitData.ReceiveData;
+import TransmitData.SendData;
+import otherServer.Bootstrapper.InfoConnection;
+import otherServer.Bootstrapper.SendNeighbours;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -16,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Currently, there are two developing functions in nodes:
@@ -59,50 +65,22 @@ public class oNode {
             new Thread(comunication_TH).start();
         }
 
-        boolean sendNeighbours = false;
+        // mudar aqui
+
+        boolean sendNeighbours = true;
         if (sendNeighbours) {
-            Socket socket = null;
-            InputStreamReader input = null;
-            OutputStreamWriter output = null;
-            BufferedReader br = null;
-            BufferedWriter bw = null;
+            InetAddress IP = InetAddress.getByName("localhost");
+            int Port = Integer.parseInt(args[1]);
+            System.out.println("[Nodo] Endereço nodo atual: " + Port + "[Nodo] IP: " + IP);
 
-            try {
+             SendNeighbours communication_Node_Boot = new SendNeighbours(Port, IP);
+             new Thread(communication_Node_Boot).start();
 
-                socket = new Socket("localhost", Constants.portBootSendNeighbours);
-
-                input = new InputStreamReader(socket.getInputStream());
-                output = new OutputStreamWriter(socket.getOutputStream());
-
-                br = new BufferedReader(input);
-                bw = new BufferedWriter(output);
-
-                Scanner scanner = new Scanner(System.in);
-
-                while (true) {
-                    String msgToSend;
-                    if (args.length > 0) msgToSend = args[0] + "/" + scanner.nextLine();
-                    else msgToSend = "n1" + "/" + scanner.nextLine();
-
-
-                    bw.write(msgToSend);
-                    bw.newLine();
-                    bw.flush();
-
-                    System.out.println("Server: " + br.readLine());
-                    break;
-
-
-                }
-
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
         }
 
-
     }
+
+
 
 }
 

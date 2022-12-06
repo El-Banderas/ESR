@@ -8,10 +8,10 @@ import otherServer.Bootstrapper.InfoConnection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 public class ReceiveData {
+
     public static InfoConnection receiveStillAliveMSG(DatagramPacket packet) {
 
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
@@ -31,6 +31,24 @@ public class ReceiveData {
 
         return new InfoConnection(other, delay, now, interested);
     }
+
+    public static InfoNodo  receiveHelloMsg(DatagramPacket packet) {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
+
+        int type = msg.getInt();
+        if(type==Constants.hellomesage) return other;
+
+
+        return null;
+    }
+
+
+
+
+
 
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
             byte[] buf = new byte[Constants.arraySize];

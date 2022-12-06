@@ -4,6 +4,7 @@ import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
+import TransmitData.SendData;
 import otherServer.CommuncationBetweenThreads;
 
 import java.io.IOException;
@@ -89,17 +90,16 @@ public class Bootstrapper implements Runnable{
         }
 
         // Fica à espera de enviar informações sobre vizinhos
-        boolean sendNeighbours = false;
-        if (sendNeighbours) {
-            SendNeighbours th_SendNeighbours = new SendNeighbours(l);
-            new Thread(th_SendNeighbours).start();
-        }
+
+        // mudar aqui
+
 
         byte[] buf = new byte[100];
         DatagramPacket receivePKT = new DatagramPacket(buf, buf.length);
 
         while (true) {
             try {
+                // Isto ta a chegar vazio talvez
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 
@@ -113,6 +113,13 @@ public class Bootstrapper implements Runnable{
 
     private void handleReceivedMessage(MessageAndType received) {
             switch (received.msgType){
+                case Constants.hellomesage:
+                    System.out.println("Recebi uma hello msg \n");
+
+                    receivedInfoNode(received.packet);
+                    // acede à tipologia TypologyGraph
+                    // envia p respetivo nodo os seus vizinhosS
+
                 case Constants.sitllAliveNoInterest:
                 case Constants.sitllAliveWithInterest:
                     receivedStillAliveMSG(received.packet);
@@ -130,4 +137,12 @@ public class Bootstrapper implements Runnable{
             shared.setSendStream(info.interested);
         }
     }
+
+
+    private void receivedInfoNode(DatagramPacket packet) {
+         InfoNodo info = ReceiveData.receiveHelloMsg(packet);
+         System.out.println("Recebi hello msg do nodo " + info.getidNodo());
+
+    }
 }
+

@@ -32,6 +32,9 @@ public class Servidor //extends JFrame implements ActionListener
           Bootstrapper bootstrapper = new Bootstrapper();
           new Thread(bootstrapper).start();
       }
+
+
+
       else {
           CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
