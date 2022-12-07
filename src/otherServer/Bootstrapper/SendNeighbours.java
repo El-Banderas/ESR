@@ -32,6 +32,7 @@ public class SendNeighbours implements Runnable {
         Map<String, List<String>> rede;
         List<Common.InfoNodo> nodos;
 
+
         rede = l.getRede();
         nodos = l.getNodos();
 
@@ -93,4 +94,7 @@ public class SendNeighbours implements Runnable {
                 System.out.println(a.toString());
             }
         }
-    }}
+    }
+
+    }
+

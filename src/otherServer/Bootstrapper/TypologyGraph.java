@@ -2,15 +2,31 @@ package otherServer.Bootstrapper;
 
 // Prim's Algorithm in Java
 
+import java.io.IOException;
 import java.util.*;
 
 public class TypologyGraph {
     // the total graph is represented by a HashTable
     // read integers as nInt and the list has a value representing some sort of distance
     // key is the node/server(0) ; value is list with distances to each index
-    Hashtable <Integer, Integer[]> graphConnections;
+
+    // 3 trees:
+
+    // the entire typology
+    Layout typology;
+
+    // the active typology;
+    Layout active;  //not Layout   // Um map
+
+    // the bests paths typology
+    Layout bestPaths; //not Layout  // Um map
+
+    Hashtable <Integer, Integer[]> graphConnections;  // depois apagar
+
+
+
     // key is origin; value : [destination, distance]
-    List<Hashtable<Integer,Integer[]>> prunedConnections;
+    List<Hashtable<Integer,Integer[]>> prunedConnections;   // depois apagar
 
     public Hashtable<Integer, Integer[]> getGraphConnections() {
         return graphConnections;
@@ -34,6 +50,29 @@ public class TypologyGraph {
     }
 
     public TypologyGraph() {
+    }
+
+
+    public void getTypology(String typologyFileName) throws IOException {
+        this.typology = new Layout();
+        this.typology.parse(typologyFileName);
+    }
+
+    public void getActiveNodes(){
+        /*
+
+        for (Map.Entry<String, List<String>> entry : this.typology.getRede().entrySet()) {
+            String node = entry.getKey();
+            List<String> neighbours = entry.getValue();
+            // iterate through neighbours
+
+
+
+        }*/
+
+
+
+
     }
 
     @Override

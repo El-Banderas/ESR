@@ -6,34 +6,36 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Layout {
-    
-    private Map<String, List<String>> rede;
-    private List<InfoNodo> nodos;
+
+    //Stores the complete tipology
+    public Map<String, List<String>> networkString;
+
+    //Stores the list of all the nodes present in the tipology (could be used in some specific case)
+    public Map<String,InfoNodo> nodes;
 
 
 
 
     public Layout(){
-        this.rede = new HashMap<>();
-        this.nodos= new ArrayList<>();
+        this.networkString = new HashMap<>();
+        this.nodes= new HashMap<>();
     }
 
-    public Map<String,List<String>> getRede(){
-        return this.rede;
+    public Layout(Map<String, List<String>> networkString, Map<String,InfoNodo> nodes) {
+        this.networkString = networkString;
+        this.nodes = nodes;
     }
 
-
-    public List<InfoNodo> getNodos(){
-        return this.nodos;
+    public Map<String, List<String>> getNetwork() {
+        return networkString;
     }
 
-
+    public Map<String,InfoNodo> getNodes() {
+        return nodes;
+    }
 
 
     public void parse(String filename) throws IOException {
@@ -53,7 +55,7 @@ public class Layout {
             String[] aux = parts[0].split(" *: *");
             InetAddress ip = InetAddress.getByName(aux[1]);
             InfoNodo n = new InfoNodo(aux[0],ip, 8000);
-            nodos.add(n);
+            this.nodes.put(aux[0],n);
 
             String[] vizinhos = parts[1].split(" *, *");
 
@@ -63,7 +65,7 @@ public class Layout {
             }
 
 
-             this.rede.put(aux[0],nodosaux);
+             this.networkString.put(aux[0],nodosaux);
 
                 // read next line
                 line = reader.readLine();
@@ -73,6 +75,50 @@ public class Layout {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public Map<InfoNodo, List<InfoNodo>> getCompleteNetwork(){
+        Map<InfoNodo,List<InfoNodo>> completeNetwork =  new HashMap<>();
+
+        Iterator it = this.networkString.entrySet().iterator();
+
+        for (Map.Entry<String, List<String>> entry : networkString.entrySet()) {
+            String key = entry.getKey();
+            List<String> value = entry.getValue();
+
+            List<InfoNodo> neighbours = new ArrayList<>();
+            for (String node : value){
+                neighbours.add(this.nodes.get(node));
+            }
+
+            completeNetwork.put(this.nodes.get(key),neighbours);
+
+        }
+        return completeNetwork;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Layout layoutTest = new Layout();
+
+        layoutTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/topCenario2.txt");
+
+        Map<InfoNodo,List<InfoNodo>> completeLayoutTest = layoutTest.getCompleteNetwork();
+
+        for (Map.Entry<InfoNodo, List<InfoNodo>> entry : completeLayoutTest.entrySet()) {
+            InfoNodo key = entry.getKey();
+            List<InfoNodo> value = entry.getValue();
+
+            System.out.println(">>>" + key.toString());
+
+            for(InfoNodo node : value){
+                System.out.println(node.toString());
+            }
+        }
+
+
+
+
     }
 
 }

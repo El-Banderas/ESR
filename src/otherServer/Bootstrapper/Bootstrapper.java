@@ -91,7 +91,7 @@ public class Bootstrapper implements Runnable{
         // Fica à espera de enviar informações sobre vizinhos
         boolean sendNeighbours = false;
         if (sendNeighbours) {
-            SendNeighbours th_SendNeighbours = new SendNeighbours(l);
+            SendNeighbours th_SendNeighbours = new SendNeighbours();
             new Thread(th_SendNeighbours).start();
         }
 
