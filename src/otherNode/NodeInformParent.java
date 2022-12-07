@@ -239,6 +239,8 @@ public class NodeInformParent implements Runnable {
     private void receiveMaybeRTPStream(DatagramPacket packet) {
         for (InfoConnection son : sons){
             try {
+                System.out.println("Envia para o filho");
+                System.out.println(son.otherNode);
                 SendData.sendStreamContentMSG(socket, son.otherNode, packet.getData());
             } catch (IOException e) {
                 System.out.println("What son not receive: ");

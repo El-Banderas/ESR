@@ -39,14 +39,7 @@ public class SendData {
      */
 
     public static void sendStreamContentMSG(DatagramSocket socket, InfoNodo dest, byte[] content) throws IOException {
-        // Size int = 4
-        ByteBuffer bb = ByteBuffer.allocate(content.length+4*2).
-                putInt(Constants.streamContent).
-                putInt(content.length).put(content);
-
-        byte[] bytes = bb.array();
-        System.out.println("Envia Stream");
-        sendData(socket, bytes, dest.ip, dest.port);
+        sendData(socket, content, dest.ip, dest.port);
     }
 
     /**

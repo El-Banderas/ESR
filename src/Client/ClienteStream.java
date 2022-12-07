@@ -17,9 +17,6 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class ClienteStream {
-  // First packet received in other class
-  // Se calhar basta chamar esta classe na outra. Enquanto não recebe nada, mada still alives
-  private DatagramPacket firstPacket;
   //GUI
   //----
   JFrame f = new JFrame("Client.ClienteStream de Testes");
@@ -37,7 +34,7 @@ public class ClienteStream {
   //----------------
   DatagramPacket rcvdp; //UDP packet received from the server (to receive)
   DatagramSocket RTPsocket; //socket to be used to send and receive UDP packet
-  static int RTP_RCV_PORT = 25000; //port where the client will receive the RTP packets
+  //static int RTP_RCV_PORT = 25000; //port where the client will receive the RTP packets
   
   Timer cTimer; //timer used to receive data from the UDP socket
   byte[] cBuf; //buffer used to store data received from the server 
@@ -89,16 +86,18 @@ public class ClienteStream {
     cTimer.setCoalesce(true);
     cBuf = new byte[15000]; //allocate enough memory for the buffer used to receive data from the server
 
-    try {
-    // socket e video
-	RTPsocket = new DatagramSocket(RTP_RCV_PORT); //init RTP socket (o mesmo para o cliente e servidor)
-    RTPsocket.setSoTimeout(5000); // setimeout to 5s
-    } catch (SocketException e) {
-        System.out.println("Client.ClienteStream: erro no socket: " + e.getMessage());
-    }
+
   }
 
-    /**
+  public ClienteStream(DatagramSocket socket, InetAddress parentIP, int parentPort) {
+    this.RTPsocket = socket;
+    this.parentIP = parentIP;
+    this.parentPort = parentPort;
+
+  }
+
+
+  /**
      * Send still alive part
      */
     private InetAddress parentIP;
@@ -117,15 +116,6 @@ public class ClienteStream {
       }
 
   }
-    public ClienteStream(DatagramSocket socket, InetAddress parentIP, int parentPort, DatagramPacket packet) {
-      this.RTPsocket = socket;
-      System.out.println("Recebe ip do pai");
-      System.out.println(parentIP);
-      this.parentIP = parentIP;
-      this.parentPort = parentPort;
-      this.firstPacket = packet;
-
-    }
 
     //------------------------------------
   //main
@@ -170,21 +160,20 @@ public class ClienteStream {
   
   class clientTimerListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      boolean firstPacketReceived = true;
-      
+      System.out.println("AQui");
+
       //Construct a DatagramPacket to receive data from the UDP socket
       rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
       try{
+        System.out.println("Recebe na porta: ");
+        System.out.println(RTPsocket.getLocalAddress());
+        System.out.println(RTPsocket.getLocalPort());
 	//receive the DP from the socket:
-	if (!firstPacketReceived) {
       RTPsocket.receive(rcvdp);
+
       sendStillAliveMSG();
-      System.out.println("Recebeu pacote");
-      System.out.println(rcvdp.getData());
-      System.out.println(rcvdp.getAddress());
       //create an Common.Stream.RTPpacket object from the DP
-    }
 
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
@@ -210,7 +199,6 @@ public class ClienteStream {
       catch (InterruptedIOException iioe){
 	System.out.println("Nothing to read");
         sendStillAliveMSG();
-        ;
       }
       catch (IOException ioe) {
 	System.out.println("Exception caught: "+ioe);

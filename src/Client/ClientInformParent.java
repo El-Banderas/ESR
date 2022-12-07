@@ -2,15 +2,15 @@ package Client;
 
 
 import Common.Constants;
-import Common.MessageAndType;
-import TransmitData.ReceiveData;
+import Common.Stream.RTPpacket;
 import TransmitData.SendData;
-import otherServer.Bootstrapper.InfoConnection;
+
+import java.awt.*;
+import java.util.Queue;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -22,16 +22,23 @@ public class ClientInformParent implements Runnable {
     public InetAddress parentIP ;
     public DatagramSocket socket;
 
+    private Toolkit toolkit;
+
+    // De momento, armazenamos numa queue, porque é FIFO
+    Queue<Image> receivedContent = new LinkedList<>();
+
     public ClientInformParent(int parentPort, int thisPort) throws UnknownHostException {
         this.parentPort = parentPort;
         this.thisPort = thisPort;
         this.parentIP = InetAddress.getByName("localhost");
+        this.toolkit = Toolkit.getDefaultToolkit();
         try {
-            if (this.thisPort > 0)
+            if (this.thisPort > 0) {
                 socket = new DatagramSocket(this.thisPort);
+            }
             else
                 socket = new DatagramSocket();
-            socket.setSoTimeout(Constants.timeoutSockets);
+                socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
@@ -44,19 +51,27 @@ public class ClientInformParent implements Runnable {
 
 
         System.out.println("otherServer.otherServer.Client ativo");
-        byte[] buf = new byte[100];
-        DatagramPacket receive = new DatagramPacket(buf, buf.length);
         boolean somethingReceived = false;
         // While the Node doesn't receive anything, send still alives
-        while (!somethingReceived) {
+        byte[] cBuf= new byte[15000]; //buffer used to store data received from the server
+        DatagramPacket rcvdp; //UDP packet received from the server (to receive)
+
+        while (true) {
+        //while (!somethingReceived) {
             try {
                 // De X em X tempo, envia para o parentport um hello com timestamp
                 // Falta controlar se recebeu mensagem para atualizar pai.
                 SendData.sendStillAliveMSG(socket, this.parentIP, this.parentPort, Constants.sitllAliveWithInterest);
-                System.out.println("[ClientInformParent]Send still alive");
-                MessageAndType received = ReceiveData.receiveData(socket);
-                receiveStreamContentMSG(received.packet);
-                somethingReceived = true;
+                System.out.println("Envia hello msg");
+                rcvdp = new DatagramPacket(cBuf, cBuf.length);
+
+                socket.receive(rcvdp);
+                RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
+                rtp_packet.printheader();
+                store_packet(rtp_packet);
+
+                //MessageAndType received = ReceiveData.receiveData(socket);
+                //receiveStreamContentMSG();
                 //handleReceivedMessage(received);
 
             } catch (IOException e) {
@@ -66,26 +81,12 @@ public class ClientInformParent implements Runnable {
         }
         }
 
-    private void handleReceivedMessage(MessageAndType received) throws IOException {
-        switch (received.msgType){
-            case Constants.streamContent:
+    private void store_packet(RTPpacket rtpPacket) {
+        int payload_length = rtpPacket.getpayload_length();
+        byte [] payload = new byte[payload_length];
+        Image image = toolkit.createImage(payload, 0, payload_length);
 
-                System.out.println("Recebi coisas");
-break;
-            default:
-                System.out.println("\n[Client] What I received? " +Constants.convertMessageType(received.msgType) + "\n");
-        }
-    }
-
-    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
-        //byte[] content = ReceiveData.receiveStreamContentMSG(packet);
-        ClienteStream receiveStream = new ClienteStream(socket, this.parentIP, this.parentPort, packet);
-        try {
-            receiveStream.start();
-        } catch (Exception e) {
-            System.out.println("[Client] Problem receiving stream");
-            throw new RuntimeException(e);
-        }
+        receivedContent.add(image);
     }
 
 
