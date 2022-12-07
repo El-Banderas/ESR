@@ -9,14 +9,11 @@ import TransmitData.SendData;
 import otherServer.Bootstrapper.InfoConnection;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -34,6 +31,7 @@ public class NodeInformParent implements Runnable {
     // Based on the state of the connections.
     public ArrayList<InfoConnection> sons;
 
+    // Used to send messages, always the same.
     private DatagramSocket socket;
 
 
@@ -52,7 +50,7 @@ public class NodeInformParent implements Runnable {
                 socket = new DatagramSocket(this.thisPort);
             else
                 socket = new DatagramSocket();
-            socket.setSoTimeout(Constants.timeoutSockets);
+                socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
@@ -89,17 +87,48 @@ public class NodeInformParent implements Runnable {
             case Constants.sitllAliveNoInterest:
             case Constants.sitllAliveWithInterest:
                 receivedStillAliveMSG(received.packet);
+                break;
+
+            case Constants.lostNode:
+                receiveLostNodeMSG(received.packet);
+                break;
+
+            case Constants.streamContent:
+                receiveStreamContentMSG(received.packet);
+                break;
+
+
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
         }
     }
 
 
+
+    /**
+     * This function calculates if the new message has too much delay.
+     * @param node To find the old delay.
+     * @param currentDelay To compare the new
+     * @return If the delay has increased too much, so a message is necessary to be sent.
+     */
+    private boolean tooMuchDelay(InfoNodo node, double currentDelay){
+        Optional<InfoConnection> old = sons.stream().filter(son -> (son.otherNode.ip == node.ip && son.otherNode.port == node.port)).findAny();
+        if (old.isPresent()){
+            double maxDelay = Math.max(old.get().delay, currentDelay);
+            double minDelay = Math.min(old.get().delay, currentDelay);
+            double percentageDelay = ((maxDelay - minDelay) / maxDelay) * 100;
+            if (percentageDelay > Constants.minDelayToTrigger)
+                return true;
+            else return false;
+        }
+        return false;
+    }
+
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
 //        StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
 
-        if (info.delay > Constants.minDelayToTrigger){
+        if (tooMuchDelay(info.otherNode, info.delay)){
             sendTooMuchDelay(info.otherNode);
         }
 
@@ -125,6 +154,7 @@ public class NodeInformParent implements Runnable {
     private void sendTooMuchDelay(InfoNodo otherNode) {
         // O destIP e port devem ser do bootstrapper
         //SendData.sendTooMuchDelayMSG(this.socket, );
+        System.out.println("[NodeInformParent] Too much  delay");
     }
 
     /**
@@ -133,6 +163,17 @@ public class NodeInformParent implements Runnable {
      */
     public void checkSons(){
         List sonsList = sons.stream().filter(InfoConnection::isAliveTimeout).collect(Collectors.toList());
+        // In case there are lost sons.
+        if (sonsList.size() < sons.size()){
+            List<InfoConnection> sonsCopy = new ArrayList<>(sons);
+            sonsCopy.removeAll(sonsList);
+            for (InfoConnection lostSon : sonsCopy){
+                System.out.println("Filho perdido:");
+                System.out.println(lostSon.toString());
+                sendLostSonMessage(lostSon.otherNode);
+            }
+
+        }
         sons = new ArrayList<>(sonsList);
         System.out.println("Existem "+ sons.size() + " filhos");
     }
@@ -147,7 +188,51 @@ public class NodeInformParent implements Runnable {
         if (numberOfInterestedChildren)
             return Constants.sitllAliveWithInterest;
         else return Constants.sitllAliveNoInterest;
+    }
+
+    /**
+     * Agora manda a mensagem para o nodo pai, mas se for para mandar para o bootstrapper,
+     * deve-se mudar o segundo argumento da função do SendData
+     * @param lostSon
+     */
+    private void sendLostSonMessage(InfoNodo lostSon){
+        try {
+            System.out.println("[NodeInformParent] Send lost son message");
+            SendData.sendLostSonMSG(socket, parent, lostSon);
+       } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("[NodeInformParent] ERROR MESSAGE SENDING LOST SON MSG ");
+        }
 
     }
+
+    /**
+     * Send to parent that a node is lost
+     * FIXME: Será que devia ir para o bootstrapper?
+     * @param packet
+     */
+    private void receiveLostNodeMSG(DatagramPacket packet) {
+        try {
+            InfoNodo lostSon = ReceiveData.receiveLostNodeMSG(packet);
+            System.out.println("Receive lost node msg");
+            System.out.println(lostSon);
+            sendLostSonMessage(lostSon);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.out.println("[NodeInformParent] ERROR MESSAGE RECEIVING LOST SON MSG ");
+
+        }
+
+    }
+
+    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
+            byte[] content = ReceiveData.receiveStreamContentMSG(packet);
+
+            System.out.println("Receive stream content, send to sons");
+            for (InfoConnection son : sons){
+                SendData.sendStreamContentMSG(socket, son.otherNode, content);
+            }
+    }
+
 
 }

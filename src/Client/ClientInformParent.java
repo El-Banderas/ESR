@@ -2,10 +2,15 @@ package Client;
 
 
 import Common.Constants;
+import Common.MessageAndType;
+import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import otherServer.Bootstrapper.InfoConnection;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -41,7 +46,7 @@ public class ClientInformParent implements Runnable {
             System.out.println("[Client] Error creating socket");
         }
 
-        System.out.println("otherServer.otherServer.Servidor ativo");
+        System.out.println("otherServer.otherServer.Client ativo");
         byte[] buf = new byte[100];
         DatagramPacket receive = new DatagramPacket(buf, buf.length);
         // De X em X tempo, envia para o parentport um hello com timestamp
@@ -52,18 +57,33 @@ public class ClientInformParent implements Runnable {
                 // O cliente tem sempre interesse
                 SendData.sendStillAliveMSG(socket, InetAddress.getByName(this.parentIP), this.parentPort, Constants.sitllAliveWithInterest);
                 System.out.println("[Client] Send still alive msg");
-                Thread.sleep(Constants.timeoutSockets);
+                MessageAndType received = ReceiveData.receiveData(socket);
+                handleReceivedMessage(received);
+
             } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("[Client] Error sending message");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("[Client] Error no sleep");
-
+                //e.printStackTrace();
+                System.out.println("[Client] Message not received, timeout socket");
             }
-
         }
-
-
     }
+
+    private void handleReceivedMessage(MessageAndType received) throws IOException {
+        switch (received.msgType){
+            case Constants.streamContent:
+                receiveStreamContentMSG(received.packet);
+break;
+            default:
+                System.out.println("\n[Client] What I received? " +Constants.convertMessageType(received.msgType) + "\n");
+        }
+    }
+
+    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
+        byte[] content = ReceiveData.receiveStreamContentMSG(packet);
+
+        System.out.println("\nReceive stream content:");
+        System.out.println(new String(content, StandardCharsets.UTF_8));
+        System.out.println("");
+    }
+
+
 }

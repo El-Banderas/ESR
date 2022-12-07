@@ -33,7 +33,6 @@ public class Servidor //extends JFrame implements ActionListener
           new Thread(bootstrapper).start();
       }
       else {
-          CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
           InetAddress sonIP = InetAddress.getByName("localhost");
           int sonPort = Integer.parseInt(argv[0]);
@@ -43,6 +42,9 @@ public class Servidor //extends JFrame implements ActionListener
           InetAddress thisIP = InetAddress.getByName("localhost");
           int thisPort = Integer.parseInt(argv[1]);
           InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
+
+          CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
+
 
           Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
           new Thread(bootstrapper).start();

@@ -7,18 +7,21 @@ import java.time.LocalDateTime;
  */
 
 public class Constants {
-
+    /**
+     * BOOTSRAPPER MESSAGES and other constants
+     */
     // Still alive messages
     final public static  int sitllAliveNoInterest = 5;
     final public static  int sitllAliveWithInterest = 6;
     // Miliseconds
     final public static int timeoutSockets = 1000;
-    // Seconds
-    final public static int timeToConsiderNodeLost = 6;
+    // Miliseconds
+    final public static int timeToConsiderNodeLost = 6000;
 
-    public static int getCurrentTime(){
-        LocalDateTime date = LocalDateTime.now();
-        return date.toLocalTime().toSecondOfDay();
+    public static double getCurrentTime(){
+//        LocalDateTime date = LocalDateTime.now();
+        //date.toLocalTime().toSecondOfDay();
+        return System.currentTimeMillis();
     }
 
     public static String convertMessageType(int id){
@@ -35,8 +38,11 @@ public class Constants {
     }
 
     // Não consigo testar, porque no mesmo computador dá sempre 0, praticamente.
-    final public static int minDelayToTrigger = 3;
+    // Percentage to trigger a "Too much delay message".
+    final public static int minDelayToTrigger = 40;
     final public static  int tooMuchDelay = 7;
+
+    final public static  int lostNode = 8;
 
 
     // Info about the ports, that won't change when testing in core.
@@ -44,6 +50,12 @@ public class Constants {
 
     // Info about send data
     public static int arraySize = 2048;
+
+
+    /**
+     * STREAM MESSAGES
+     */
+    final public static  int streamContent = 9;
 
 
     /**
@@ -64,5 +76,9 @@ public class Constants {
      *            |
      * Server  -> N2  ->  N1  ->  Cl1
      *  8008    8009    8010    8020
+     *
+     *
+     *
+     *
      */
 }

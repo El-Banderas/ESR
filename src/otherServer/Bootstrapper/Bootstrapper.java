@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+
 
 /**
  * Main class of bootstrapper functions.
@@ -116,10 +118,16 @@ public class Bootstrapper implements Runnable{
                 case Constants.sitllAliveNoInterest:
                 case Constants.sitllAliveWithInterest:
                     receivedStillAliveMSG(received.packet);
+                    break;
+                case Constants.lostNode:
+                    receiveLostNodeMSG(received.packet);
+                    break;
                 default:
                     System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
             }
         }
+
+
 
     private void receivedStillAliveMSG(DatagramPacket packet) {
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
@@ -130,4 +138,25 @@ public class Bootstrapper implements Runnable{
             shared.setSendStream(info.interested);
         }
     }
+
+    /**
+     * When a node in the network is lost, the parent of that node sends a message notifying the other nodes.
+     * Será que quando um "pai" descobre que o filho morre deve mandar mensagem para o boot, em vez de seguir a àrvore?
+     * Miguel
+     * @param packet
+     */
+    private void receiveLostNodeMSG(DatagramPacket packet) {
+        try {
+           InfoNodo lostSon = ReceiveData.receiveLostNodeMSG(packet);
+
+        System.out.println("Receive lost node msg");
+        System.out.println(lostSon);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.out.println("[Bootstrapper] ERROR MESSAGE RECEIVING LOST SON MSG ");
+
+        }
+    }
+
+
 }
