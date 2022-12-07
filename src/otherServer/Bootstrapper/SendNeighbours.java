@@ -11,9 +11,9 @@ import java.util.Map;
 import static Common.Constants.portBootSendNeighbours;
 
 public class SendNeighbours implements Runnable {
-    Tipology l;
+    Typology l;
 
-    public SendNeighbours(Tipology l) {
+    public SendNeighbours(Typology l) {
         this.l = l;
     }
 
@@ -34,7 +34,7 @@ public class SendNeighbours implements Runnable {
         Map<String,InfoNodo> nodos;
 
 
-        rede = l.getNetwork();
+        rede = l.getNetworkString();
         nodos = l.getNodes();
 
 

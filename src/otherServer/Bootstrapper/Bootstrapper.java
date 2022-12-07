@@ -29,8 +29,8 @@ import java.net.UnknownHostException;
 
 public class Bootstrapper implements Runnable{
     // All the topology
-    private TypologyGraph topology;
-    private Tipology topologyTipology;
+    //private TypologyGraph topology;
+    private Typology topologyTypology;
 
     // Tree of connections
     private Tree best_paths_tree;
@@ -44,7 +44,7 @@ public class Bootstrapper implements Runnable{
     boolean interested;
 
     public Bootstrapper() {
-        this.topology = topology;
+        //this.typology = typology;
     }
 
     // Talvez não seja necessária a informação do próprio server
@@ -80,7 +80,7 @@ public class Bootstrapper implements Runnable{
     public void run() {
         System.out.println("[Server] Bootstrapper on");
         // Topology
-        Tipology l = new Tipology();
+        Typology l = new Typology();
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)

@@ -3,9 +3,7 @@ package otherServer.Bootstrapper;
 import Common.Constants;
 import Common.InfoNodo;
 
-import java.time.LocalDateTime;
-
-public class InfoConnection {
+public class InfoConnection implements Comparable<InfoConnection> {
     public InfoNodo otherNode;
     public double delay;
 
@@ -61,4 +59,13 @@ public class InfoConnection {
                 ", interested=" + interested +
                 '}';
     }
+
+
+    public int compareTo(InfoConnection that){
+        return (int) (this.delay - that.delay);
+    }
+
+
+
 }
+
