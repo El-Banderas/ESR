@@ -11,9 +11,9 @@ import java.util.Map;
 import static Common.Constants.portBootSendNeighbours;
 
 public class SendNeighbours implements Runnable {
-    Layout l;
+    Tipology l;
 
-    public SendNeighbours(Layout l) {
+    public SendNeighbours(Tipology l) {
         this.l = l;
     }
 
@@ -30,11 +30,12 @@ public class SendNeighbours implements Runnable {
 
 
         Map<String, List<String>> rede;
-        List<Common.InfoNodo> nodos;
+        //List<Common.InfoNodo> nodos;
+        Map<String,InfoNodo> nodos;
 
 
-        rede = l.getRede();
-        nodos = l.getNodos();
+        rede = l.getNetwork();
+        nodos = l.getNodes();
 
 
         try {
@@ -66,10 +67,22 @@ public class SendNeighbours implements Runnable {
                     String idNodo = msg[0];
                     List<String> vizinhos = rede.get(idNodo);
 
+
+                    /*
                     for (InfoNodo i : nodos) {
                         if (i.getidNodo().equals(idNodo)) {
                             i.setBootStrap();
                         }
+                    }*/
+
+                    for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
+                        String key = entry.getKey();
+                        InfoNodo value = entry.getValue();
+
+                        if(value.getidNodo().equals(idNodo)){
+                            value.setBootStrap();
+                        }
+
                     }
 
                     bw.write("Os teus vizinhos são: " + vizinhos);
@@ -88,10 +101,18 @@ public class SendNeighbours implements Runnable {
                 e.printStackTrace();
             }
 
+            /*
             for (InfoNodo a : nodos) {
 
 
                 System.out.println(a.toString());
+            }
+             */
+
+            for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
+
+                System.out.println(entry.toString());
+
             }
         }
     }

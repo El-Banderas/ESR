@@ -13,13 +13,13 @@ public class TypologyGraph {
     // 3 trees:
 
     // the entire typology
-    Layout typology;
+    Tipology typology;
 
     // the active typology;
-    Layout active;  //not Layout   // Um map
+    Tipology active;  //not Layout   // Um map
 
     // the bests paths typology
-    Layout bestPaths; //not Layout  // Um map
+    Tipology bestPaths; //not Layout  // Um map
 
     Hashtable <Integer, Integer[]> graphConnections;  // depois apagar
 
@@ -54,7 +54,7 @@ public class TypologyGraph {
 
 
     public void getTypology(String typologyFileName) throws IOException {
-        this.typology = new Layout();
+        this.typology = new Tipology();
         this.typology.parse(typologyFileName);
     }
 

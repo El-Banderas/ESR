@@ -30,7 +30,7 @@ import java.net.UnknownHostException;
 public class Bootstrapper implements Runnable{
     // All the topology
     private TypologyGraph topology;
-    private Layout topologyLayout;
+    private Tipology topologyTipology;
 
     // Tree of connections
     private Tree best_paths_tree;
@@ -80,7 +80,7 @@ public class Bootstrapper implements Runnable{
     public void run() {
         System.out.println("[Server] Bootstrapper on");
         // Topology
-        Layout l = new Layout();
+        Tipology l = new Tipology();
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
@@ -93,7 +93,7 @@ public class Bootstrapper implements Runnable{
         // Fica à espera de enviar informações sobre vizinhos
         boolean sendNeighbours = false;
         if (sendNeighbours) {
-            SendNeighbours th_SendNeighbours = new SendNeighbours();
+            SendNeighbours th_SendNeighbours = new SendNeighbours(l);
             new Thread(th_SendNeighbours).start();
         }
 

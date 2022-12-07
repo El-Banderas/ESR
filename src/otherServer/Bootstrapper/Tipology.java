@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
 
-public class Layout {
+public class Tipology {
 
     //Stores the complete tipology
     public Map<String, List<String>> networkString;
@@ -19,12 +19,12 @@ public class Layout {
 
 
 
-    public Layout(){
+    public Tipology(){
         this.networkString = new HashMap<>();
         this.nodes= new HashMap<>();
     }
 
-    public Layout(Map<String, List<String>> networkString, Map<String,InfoNodo> nodes) {
+    public Tipology(Map<String, List<String>> networkString, Map<String,InfoNodo> nodes) {
         this.networkString = networkString;
         this.nodes = nodes;
     }
@@ -99,11 +99,11 @@ public class Layout {
     }
 
     public static void main(String[] args) throws IOException {
-        Layout layoutTest = new Layout();
+        Tipology tipologyTest = new Tipology();
 
-        layoutTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/topCenario2.txt");
+        tipologyTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/topCenario2.txt");
 
-        Map<InfoNodo,List<InfoNodo>> completeLayoutTest = layoutTest.getCompleteNetwork();
+        Map<InfoNodo,List<InfoNodo>> completeLayoutTest = tipologyTest.getCompleteNetwork();
 
         for (Map.Entry<InfoNodo, List<InfoNodo>> entry : completeLayoutTest.entrySet()) {
             InfoNodo key = entry.getKey();
