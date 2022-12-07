@@ -19,22 +19,13 @@ import java.util.Arrays;
 public class ClientInformParent implements Runnable {
     public int parentPort = 0;
     public int thisPort = 0;
-    public String parentIP = "localhost";
+    public InetAddress parentIP ;
+    public DatagramSocket socket;
 
-    public ClientInformParent(int parentPort, int thisPort) {
+    public ClientInformParent(int parentPort, int thisPort) throws UnknownHostException {
         this.parentPort = parentPort;
         this.thisPort = thisPort;
-    }
-    public ClientInformParent(int parentPort) {
-        this.parentPort = parentPort;
-        this.thisPort = -1;
-
-    }
-    @Override
-    public void run() {
-
-        String msg = "Hello";
-        DatagramSocket socket = null;
+        this.parentIP = InetAddress.getByName("localhost");
         try {
             if (this.thisPort > 0)
                 socket = new DatagramSocket(this.thisPort);
@@ -45,32 +36,41 @@ public class ClientInformParent implements Runnable {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
         }
+    }
+
+    @Override
+    public void run() {
+
+
 
         System.out.println("otherServer.otherServer.Client ativo");
         byte[] buf = new byte[100];
         DatagramPacket receive = new DatagramPacket(buf, buf.length);
-        // De X em X tempo, envia para o parentport um hello com timestamp
-        // Falta controlar se recebeu mensagem para atualizar pai.
-        while(true) {
+        boolean somethingReceived = false;
+        // While the Node doesn't receive anything, send still alives
+        while (!somethingReceived) {
             try {
-                // Envia para o pai
-                // O cliente tem sempre interesse
-                SendData.sendStillAliveMSG(socket, InetAddress.getByName(this.parentIP), this.parentPort, Constants.sitllAliveWithInterest);
-                System.out.println("[Client] Send still alive msg");
+                // De X em X tempo, envia para o parentport um hello com timestamp
+                // Falta controlar se recebeu mensagem para atualizar pai.
+                SendData.sendStillAliveMSG(socket, this.parentIP, this.parentPort, Constants.sitllAliveWithInterest);
+                System.out.println("[ClientInformParent]Send still alive");
                 MessageAndType received = ReceiveData.receiveData(socket);
-                handleReceivedMessage(received);
+                receiveStreamContentMSG(received.packet);
+                somethingReceived = true;
+                //handleReceivedMessage(received);
 
             } catch (IOException e) {
                 //e.printStackTrace();
-                System.out.println("[Client] Message not received, timeout socket");
+                System.out.println("[Client] Timeout socket");
             }
         }
-    }
+        }
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
         switch (received.msgType){
             case Constants.streamContent:
-                receiveStreamContentMSG(received.packet);
+
+                System.out.println("Recebi coisas");
 break;
             default:
                 System.out.println("\n[Client] What I received? " +Constants.convertMessageType(received.msgType) + "\n");
@@ -78,11 +78,14 @@ break;
     }
 
     private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
-        byte[] content = ReceiveData.receiveStreamContentMSG(packet);
-
-        System.out.println("\nReceive stream content:");
-        System.out.println(new String(content, StandardCharsets.UTF_8));
-        System.out.println("");
+        //byte[] content = ReceiveData.receiveStreamContentMSG(packet);
+        ClienteStream receiveStream = new ClienteStream(socket, this.parentIP, this.parentPort, packet);
+        try {
+            receiveStream.start();
+        } catch (Exception e) {
+            System.out.println("[Client] Problem receiving stream");
+            throw new RuntimeException(e);
+        }
     }
 
 

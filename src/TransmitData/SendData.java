@@ -14,7 +14,6 @@ public class SendData {
     public static void sendStillAliveMSG(DatagramSocket socket, InetAddress destIP, int destPort, int messageType) throws IOException {
         double dateInSec = Constants.getCurrentTime();
         byte[] bytes = ByteBuffer.allocate(100).putInt(messageType).putDouble(dateInSec).array();
-        System.out.println("Envia still alive para: " + destIP + " e porta: " + destPort);
         sendData(socket, bytes, destIP, destPort);
     }
 

@@ -5,21 +5,22 @@ package Client;/* ------------------
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
 
-import Common.Constants;
 import Common.Stream.RTPpacket;
-import TransmitData.SendData;
 
-import java.io.*;
-import java.net.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.Timer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
-public class ClienteStream {
-  // First packet received in other class
-  // Se calhar basta chamar esta classe na outra. Enquanto não recebe nada, mada still alives
-  private DatagramPacket firstPacket;
+class ClienteStream2 {
+
   //GUI
   //----
   JFrame f = new JFrame("Client.ClienteStream de Testes");
@@ -38,14 +39,14 @@ public class ClienteStream {
   DatagramPacket rcvdp; //UDP packet received from the server (to receive)
   DatagramSocket RTPsocket; //socket to be used to send and receive UDP packet
   static int RTP_RCV_PORT = 25000; //port where the client will receive the RTP packets
-  
+
   Timer cTimer; //timer used to receive data from the UDP socket
-  byte[] cBuf; //buffer used to store data received from the server 
- 
+  byte[] cBuf; //buffer used to store data received from the server
+
   //--------------------------
   //Constructor
   //--------------------------
-  public ClienteStream() {
+  public ClienteStream2() {
 
     //build GUI
     //--------------------------
@@ -98,41 +99,12 @@ public class ClienteStream {
     }
   }
 
-    /**
-     * Send still alive part
-     */
-    private InetAddress parentIP;
-    private int parentPort;
-  public void sendStillAliveMSG(){
-      try {
-        System.out.println(RTPsocket);
-        System.out.println(this.parentIP );
-        System.out.println(this.parentPort );
-          SendData.sendStillAliveMSG(RTPsocket, this.parentIP, this.parentPort, Constants.sitllAliveWithInterest);
-          System.out.println("[Client] Send still alive msg");
-
-      } catch (IOException e) {
-          System.out.println("Problem sending still alive MSG");
-          throw new RuntimeException(e);
-      }
-
-  }
-    public ClienteStream(DatagramSocket socket, InetAddress parentIP, int parentPort, DatagramPacket packet) {
-      this.RTPsocket = socket;
-      System.out.println("Recebe ip do pai");
-      System.out.println(parentIP);
-      this.parentIP = parentIP;
-      this.parentPort = parentPort;
-      this.firstPacket = packet;
-
-    }
-
-    //------------------------------------
+  //------------------------------------
   //main
   //------------------------------------
-  public void start() throws Exception
+  public static void main(String argv[]) throws Exception
   {
-        ClienteStream t = new ClienteStream();
+        ClienteStream2 t = new ClienteStream2();
   }
 
 
@@ -170,22 +142,15 @@ public class ClienteStream {
   
   class clientTimerListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      boolean firstPacketReceived = true;
       
       //Construct a DatagramPacket to receive data from the UDP socket
       rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
       try{
 	//receive the DP from the socket:
-	if (!firstPacketReceived) {
-      RTPsocket.receive(rcvdp);
-      sendStillAliveMSG();
-      System.out.println("Recebeu pacote");
-      System.out.println(rcvdp.getData());
-      System.out.println(rcvdp.getAddress());
-      //create an Common.Stream.RTPpacket object from the DP
-    }
-
+	RTPsocket.receive(rcvdp);
+	  
+	//create an Common.Stream.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
@@ -209,8 +174,6 @@ public class ClienteStream {
       }
       catch (InterruptedIOException iioe){
 	System.out.println("Nothing to read");
-        sendStillAliveMSG();
-        ;
       }
       catch (IOException ioe) {
 	System.out.println("Exception caught: "+ioe);

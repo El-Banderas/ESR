@@ -100,8 +100,10 @@ public class NodeInformParent implements Runnable {
 
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
+                receiveMaybeRTPStream(received.packet);
         }
     }
+
 
 
 
@@ -234,5 +236,15 @@ public class NodeInformParent implements Runnable {
             }
     }
 
-
+    private void receiveMaybeRTPStream(DatagramPacket packet) {
+        for (InfoConnection son : sons){
+            try {
+                SendData.sendStreamContentMSG(socket, son.otherNode, packet.getData());
+            } catch (IOException e) {
+                System.out.println("What son not receive: ");
+                System.out.println(son.otherNode);
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
