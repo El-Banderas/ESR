@@ -13,6 +13,8 @@ import java.net.*;
 import java.util.LinkedList;
 
 /**
+ *  Producer
+ *
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
  */

@@ -155,7 +155,7 @@ public class Teste {
 
   //Handler for Play button
   //-----------------------
-  class playButtonListener implements ActionListener {
+  public class playButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e){
 
     System.out.println("Play Button pressed !"); 
