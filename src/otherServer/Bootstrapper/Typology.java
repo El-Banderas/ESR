@@ -104,10 +104,10 @@ public class Typology {
             InfoNodo n = new InfoNodo(aux[0],ip, 8000);
             this.nodes.put(aux[0],n);
 
-            String[] vizinhos = parts[1].split(" *, *");
+            String[] neighbours = parts[1].split(" *, *");
 
             List<String> nodosaux = new ArrayList<>();
-            for(String v : vizinhos){
+            for(String v : neighbours){
                 nodosaux.add(v);
             }
 
@@ -283,6 +283,60 @@ public class Typology {
 
     }
 
+
+    public InfoNodo getFather(InfoNodo son){
+
+        InfoNodo father = null;
+
+        for (Map.Entry<InfoNodo, List<Connection>> entry : bestPaths.entrySet()) {
+            InfoNodo key = entry.getKey();
+            List<Connection> value = entry.getValue();
+
+            for(Connection con : value){
+                if(con.to.equals(son)){
+                    father = con.from;
+                }
+            }
+        }
+
+        return father;
+    }
+
+
+    public List<InfoNodo> getNeighbours(InfoNodo node){
+        List<InfoNodo> neighbours = new ArrayList<>();
+
+        for (Map.Entry<InfoNodo, List<Connection>> entry : activeNetwork.entrySet()) {
+            InfoNodo key = entry.getKey();
+            List<Connection> value = entry.getValue();
+
+            // First checks whenever the node is key
+            if(key.equals(node)){
+                for(Connection con : value){
+                    if(!neighbours.contains(con.to)){
+                        neighbours.add(con.to);
+                    }
+                }
+            }else{
+                for(Connection con : value){
+                    if(con.to.equals(node)){
+                        if(!neighbours.contains(key)){
+                            neighbours.add(key);
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        return neighbours;
+
+    }
+
+
+
+
     public static void main(String[] args) throws IOException, InterruptedException {
         Typology typologyTest = new Typology();
         typologyTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/biggerConfiguration.txt");
@@ -295,10 +349,10 @@ public class Typology {
             InfoNodo key = entry.getKey();
             List<InfoNodo> value = entry.getValue();
 
-            System.out.println(">>>" + key.toString());
+            System.out.println(">>>" + key.toStringCon());
 
             for(InfoNodo node : value){
-                System.out.println(node.toString());
+                System.out.println(node.toStringCon());
             }
         }
         System.out.println("\n\n");
@@ -332,6 +386,26 @@ public class Typology {
         System.out.println("Best Paths Tree");
         Map<InfoNodo,List <Connection>> bestPaths = typologyTest.getBestPaths();
         printInfoFromMap(bestPaths);
+
+        // Test getFather
+        // When invoking the function, checking for null elements needs to be done
+        System.out.println("\n\n");
+        System.out.println("Test getFather");
+        if(typologyTest.getFather(typologyTest.getNodes().get("n2")) != null) {
+            System.out.println(typologyTest.getFather(typologyTest.getNodes().get("n2")).toString());
+        }
+        if(typologyTest.getFather(typologyTest.getNodes().get("n7")) != null) {
+            System.out.println(typologyTest.getFather(typologyTest.getNodes().get("n7")).toString());
+        }
+
+        // Test getNeighbours
+        // When invoking the function, checking for empty list
+        System.out.println("\n\n");
+        System.out.println("Test getNeighbours");
+        List<InfoNodo> neighboursN2 = typologyTest.getNeighbours(typologyTest.getNodes().get("n2"));
+        for (InfoNodo neighbour : neighboursN2){
+            System.out.println(neighbour.toStringCon());
+        }
 
 
     }

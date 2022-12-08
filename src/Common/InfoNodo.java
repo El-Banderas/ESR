@@ -38,6 +38,8 @@ public class InfoNodo {
         return "{ ip - " + ip.toString() +" " + " porta - " + port + "}";
     }
 
+    public String toStringCon() {return "{  id - " + idNodo + " || ip -"  + ip.toString() + " || " + " porta - " + port + "}"; }
+
     public static String generateId(InetAddress ip, int port){
         return ip.toString()+"-"+Integer.toString(port);
     }

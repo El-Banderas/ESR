@@ -159,7 +159,7 @@ public class Bootstrapper implements Runnable{
         }
     }
 
-    private void handleReceivedMessage(MessageAndType received) {
+    private void handleReceivedMessage(MessageAndType received) throws IOException {
             switch (received.msgType){
                 // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
                 //case Constants.sitllAliveNoInterest:

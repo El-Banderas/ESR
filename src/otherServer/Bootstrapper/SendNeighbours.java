@@ -22,6 +22,7 @@ public class SendNeighbours implements Runnable {
 
     public void run() {
 
+        /*
         Socket socket = null;
         InputStreamReader input = null;
         OutputStreamWriter output = null;
@@ -78,6 +79,7 @@ public class SendNeighbours implements Runnable {
                         }
                     }*/
 
+        /*
                     for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
                         String key = entry.getKey();
                         InfoNodo value = entry.getValue();
@@ -112,13 +114,14 @@ public class SendNeighbours implements Runnable {
                 System.out.println(a.toString());
             }
              */
+        /*
 
             for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
 
                 System.out.println(entry.toString());
 
             }
-        }
+        }*/
     }
 
     }

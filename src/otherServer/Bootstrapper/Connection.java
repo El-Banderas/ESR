@@ -65,8 +65,8 @@ public class Connection implements Comparable<Connection>{
     @Override
     public String toString() {
         return "Connection{" +
-                from.toString() +
-                " ----> " + to.toString() +
+                from.toStringCon() +
+                " ----> " + to.toStringCon() +
                 "|| delay=" + delay +
                 " || numHops=" + numHops +
                 '}';
