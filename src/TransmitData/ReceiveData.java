@@ -17,26 +17,19 @@ import java.util.Collections;
 
 public class ReceiveData {
     public static InfoConnection receiveStillAliveMSG(DatagramPacket packet) {
-
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
 
         InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
 
-        boolean interested;
-        int type = msg.getInt();
-        if (type == Constants.sitllAliveNoInterest) {
-            interested = false;
-        }
-        else interested = true;
 
         double msgTime = msg.getDouble();
         double now = Constants.getCurrentTime();
         double delay = now-msgTime;
-
-        return new InfoConnection(other, delay, now, interested);
+// Estou a meter o interested como falso, o que não é necessariamente verdade.
+        // O still alive agora é sobre o pai, e ele não tem "interesse"
+        return new InfoConnection(other, delay, now, false);
     }
 
-// TODO: MELHORAR ISTO; NÂO ESTAR SEMPRE A CALCULAR O COMPRIMENTO
     public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {
         // To calculate sizes, this could be put in constants, but I don't know the sizes.
         // Change later.

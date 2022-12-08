@@ -45,4 +45,9 @@ public class InfoNodo {
     public static String generateId(InetAddress ip, int port){
         return ip.toString()+"-"+Integer.toString(port);
     }
+
+    public static boolean compareInfoNodes (InfoNodo in1, InfoNodo in2){
+        if (in1.ip == in2.ip && in1.port == in2.port) return true;
+        else return false;
+    }
 }

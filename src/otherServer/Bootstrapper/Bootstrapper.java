@@ -4,6 +4,7 @@ import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
+import TransmitData.SendData;
 import otherServer.CommuncationBetweenThreads;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class Bootstrapper implements Runnable{
     private DatagramSocket socket;
 
     boolean interested;
+    double lastTimeSomeoneInterested;
 
     public Bootstrapper() {
         //this.typology = typology;
@@ -49,19 +51,30 @@ public class Bootstrapper implements Runnable{
 
     // Talvez não seja necessária a informação do próprio server
     // Agora é necessário para podermos testar. Mas depois, não precisaoms de dizer qual é esta porta.
+
+    /**
+     * Boot needs this info because:
+     * @param serverInfo - Só precisa da porta agora para criar o socket.
+     * @param sonInfo - TO send StillAlives, será calculado pela parte do Miguel qual é o filho
+     * @param shared - Common classe with stream thread.
+     */
     public Bootstrapper(InfoNodo serverInfo, InfoNodo sonInfo, CommuncationBetweenThreads shared) {
         this.serverInfo = serverInfo;
         this.sonInfo = sonInfo;
         this.shared = shared;
         this.interested = false;
+        this.lastTimeSomeoneInterested = 0;
         // Creation of server
         try {
-            if (this.serverInfo.port > 0)
+            if (this.serverInfo.port > 0){
+                System.out.println("Criado na porta " + this.serverInfo.port);
                 socket = new DatagramSocket(this.serverInfo.port);
+        }
             else {
                 socket = new DatagramSocket();
-                socket.setSoTimeout(Constants.timeoutSockets);
             }
+            socket.setSoTimeout(Constants.timeoutSockets);
+
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Server] Error creating socket");
@@ -71,6 +84,10 @@ public class Bootstrapper implements Runnable{
     /**
      * Banderas: In this method, we sent the tree to the network, in one message.
      * It takes the tree, converts to an array of bytes, and sent to the first Node.
+     *
+     * Nota: Meter um TIMESTAMP no início da mensagem, para que os filhos possam calcular o delay da transmissão nessa mensagem
+     * E criar um infoConnection.
+     * Igual nos nodos que reencaminham o xml, também tem meter o TIMESTAMP
      */
     public void sendTree(){
 
@@ -102,22 +119,39 @@ public class Bootstrapper implements Runnable{
 
         while (true) {
             try {
+                checkStreamInterested();
+                sendStillAlive();
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 
             } catch (IOException e) {
-                System.out.println("[Node] Timeout, listening in: " + socket.getPort());
+                System.out.println("[Boot] Timeout, listening in: " + socket.getLocalPort());
 
             }
 
         }
     }
 
+    /**
+     * Check if someone is interested recently.
+     */
+    private void checkStreamInterested() {
+        if (interested) {
+            // Se passou muito tempo, deve considerar que ninguém quer.
+            double differenceLastTimeStreamInterested = Constants.getCurrentTime() - lastTimeSomeoneInterested;
+            if (differenceLastTimeStreamInterested > Constants.timeToConsiderNodeLost){
+                interested = false;
+                shared.setSendStream(false);
+            }
+        }
+    }
+
     private void handleReceivedMessage(MessageAndType received) {
             switch (received.msgType){
-                case Constants.sitllAliveNoInterest:
-                case Constants.sitllAliveWithInterest:
-                    receivedStillAliveMSG(received.packet);
+                // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
+                //case Constants.sitllAliveNoInterest:
+                case Constants.streamWanted:
+                    receivedStreamWanted(received.packet);
                     break;
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
@@ -129,13 +163,13 @@ public class Bootstrapper implements Runnable{
 
 
 
-    private void receivedStillAliveMSG(DatagramPacket packet) {
+    private void receivedStreamWanted(DatagramPacket packet) {
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
         // Necessary to warn stream thread that stream must start/stop.
-        if (info.interested != this.interested){
+        if (!this.interested){
             System.out.println("Change interess");
-            this.interested = info.interested;
-            shared.setSendStream(info.interested);
+            this.interested = true;
+            shared.setSendStream(true);
         }
     }
 
@@ -155,6 +189,19 @@ public class Bootstrapper implements Runnable{
             e.printStackTrace();
             System.out.println("[Bootstrapper] ERROR MESSAGE RECEIVING LOST SON MSG ");
 
+        }
+    }
+
+    /**
+     * This method sends still alives messages to son.
+     */
+    private void sendStillAlive() {
+        try {
+            SendData.sendStillAliveMSG(socket, sonInfo.ip, sonInfo.port);
+        }
+        catch (Exception e){
+            System.out.println("[Boot] Error sending still alive msg");
+            e.printStackTrace();
         }
     }
 

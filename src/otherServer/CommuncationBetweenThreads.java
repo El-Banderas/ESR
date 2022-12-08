@@ -26,6 +26,7 @@ public class CommuncationBetweenThreads {
     }
 
     public void setSendStream(boolean sendStream) {
+        System.out.println("Change interess: " + sendStream);
         this.sendStream = sendStream;
     }
 

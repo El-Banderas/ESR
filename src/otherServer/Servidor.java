@@ -21,7 +21,7 @@ import java.net.*;
 public class Servidor //extends JFrame implements ActionListener
  {
   //------------------------------------
-  //main
+  //main  Porta filho | porta atual
   //------------------------------------
   public static void main(String argv[]) throws Exception {
       System.out.println("[Server] Started ");
@@ -45,7 +45,7 @@ public class Servidor //extends JFrame implements ActionListener
 
           CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
 
-
+            // Precisa: serverInfo; filho; coisa partilhada
           Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
           new Thread(bootstrapper).start();
 
