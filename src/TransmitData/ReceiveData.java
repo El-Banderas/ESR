@@ -32,20 +32,6 @@ public class ReceiveData {
         return new InfoConnection(other, delay, now, interested);
     }
 
-    public static InfoNodo  receiveHelloMsg(DatagramPacket packet) {
-
-        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
-
-        InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
-
-        int type = msg.getInt();
-        if(type==Constants.hellomesage) return other;
-
-
-        return null;
-    }
-
-
 
 
 

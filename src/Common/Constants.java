@@ -34,8 +34,7 @@ public class Constants {
                 return "Still alive and interested.";
 
             case hellomesage:
-                return "Hello message from Node";
-
+                return "Node Connected";
 
             default:
                 return "Type not defined";
@@ -65,7 +64,8 @@ public class Constants {
      *
      * Client arguments: parent port // this port
      * Node arguments: parent port // this port // Nodos filhos
-     * Node arguments: son port // this port
+     * Server arguments: son port // this port
+     *
      *
      *           8021
      *            C2

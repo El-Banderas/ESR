@@ -41,33 +41,12 @@ public class SendNeighbours implements Runnable {
             byte[] buf = new byte[100];
             DatagramPacket receivePKT = new DatagramPacket(buf, buf.length);
 
-            while(true) {
-                try {
-
-                    int messageType = Constants.hellomesage;
-          //      DatagramSocket socket,InetAddress srcIp, int srcPort, InetAddress destIP, int destPort, int messageType
-                    InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
-                    SendData.sendHelloMsg(socket,this.ip,this.thisPort,IP_Bootstrapper,portBootSendNeighbours,messageType);
-                    System.out.println(" Send hello msg, type: " + Constants.convertMessageType(messageType));
-                    // receber resposta servidor
-                    MessageAndType received = ReceiveData.receiveData(socket);
-                    receivedSNeigbours(received.packet);
-                } catch (IOException e) {
-                    System.out.println("[Node] Timeout");
-                }
-
-            }
 
 
         }
 
 
 
-
-    private void receivedSNeigbours(DatagramPacket packet) throws IOException {
-
-        System.out.println("OS TEUS VIZINHOS VAO ESTAR AQUI \n ");
-// funcao para ler um packet com os vizinhos e imprimi -los
 
 
 
@@ -96,7 +75,7 @@ public class SendNeighbours implements Runnable {
         // And add the new information to sons list, with updated info.
         sons.add(info);
         */
-    }
+
 
 
 }

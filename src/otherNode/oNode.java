@@ -8,15 +8,13 @@ import TransmitData.SendData;
 import otherServer.Bootstrapper.InfoConnection;
 import otherServer.Bootstrapper.SendNeighbours;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,9 +38,36 @@ import java.util.stream.Collectors;
 
 public class oNode {
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException, SocketException {
         System.out.println("[oNode] Started ");
 
+
+        // send hello msg
+        DatagramSocket s ;
+        int portNode = Integer.parseInt(args[0]);
+        int portBoot = Integer.parseInt(args[1]);
+        try {
+            if (portNode > 0) {
+                s = new DatagramSocket(portNode);
+                InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+                InitializeNode i = new InitializeNode(s,boot);
+                i.start();
+
+
+            }
+            else
+                s = new DatagramSocket();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            System.out.println("[Client] Error creating socket");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        /*
         boolean stillAliveParte = true;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
@@ -65,16 +90,8 @@ public class oNode {
             new Thread(comunication_TH).start();
         }
 
-        // mudar aqui
 
-        boolean sendNeighbours = true;
-        if (sendNeighbours) {
-            InetAddress IP = InetAddress.getByName("localhost");
-            int Port = Integer.parseInt(args[1]);
-            System.out.println("[Nodo] Endereço nodo atual: " + Port + "[Nodo] IP: " + IP);
-
-             SendNeighbours communication_Node_Boot = new SendNeighbours(Port, IP);
-             new Thread(communication_Node_Boot).start();
+         */
 
         }
 
@@ -82,7 +99,7 @@ public class oNode {
 
 
 
-}
+
 
 
 

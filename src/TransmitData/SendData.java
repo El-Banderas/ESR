@@ -17,11 +17,9 @@ public class SendData {
         sendData(socket, bytes, destIP, destPort);
     }
 
-    public static void sendHelloMsg(DatagramSocket socket,InetAddress srcIp, int srcPort, InetAddress destIP, int destPort, int messageType) throws IOException {
-        String ip = srcIp.toString();
-        byte[] ipbytes = ip.getBytes();
-        byte[] bytes = ByteBuffer.allocate(100).putInt(messageType).putInt(srcPort).put(ipbytes).array();
-        System.out.println("Envia hello msg para: " + destIP + " e porta: " + destPort);
+    public static void sendHelloMsg(DatagramSocket socket, InetAddress destIP, int destPort) throws IOException {
+        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.hellomesage).array();
+        System.out.println("Connecting to Server ... \n");
         sendData(socket, bytes, destIP, destPort);
     }
 
