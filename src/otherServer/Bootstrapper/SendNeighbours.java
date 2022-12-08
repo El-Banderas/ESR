@@ -14,70 +14,112 @@ import java.util.Map;
 import static Common.Constants.portBootSendNeighbours;
 
 public class SendNeighbours implements Runnable {
-    public int thisPort = 0; // porta do nodo inicializa
-    public InetAddress ip ;
-    private DatagramSocket socket;
+    Typology l;
 
-
-    public SendNeighbours(int thisPort , InetAddress ip )  {
-        this.thisPort=thisPort;
-        this.ip = ip;
+    public SendNeighbours(Typology l) {
+        this.l = l;
     }
 
-        public void run() {
+    public void run() {
+
+        Socket socket = null;
+        InputStreamReader input = null;
+        OutputStreamWriter output = null;
+        BufferedReader br = null;
+        BufferedWriter bw = null;
+        ServerSocket sv = null;
+
+
+
+
+        Map<String, List<String>> rede;
+        //List<Common.InfoNodo> nodos;
+        Map<String,InfoNodo> nodos;
+
+
+        rede = l.getNetworkString();
+        nodos = l.getNodes();
+
+
+        try {
+            sv = new ServerSocket(portBootSendNeighbours);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("[SERVERDATA] Error in creating server socket");
+        }
+
+
+        while (true) {
 
             try {
-                if (this.thisPort > 0)
-                    socket = new DatagramSocket(this.thisPort);
-                else
-                    socket = new DatagramSocket();
-                socket.setSoTimeout(Constants.timeoutSockets);
-            } catch (SocketException e) {
+
+                socket = sv.accept();
+
+                input = new InputStreamReader(socket.getInputStream());
+                output = new OutputStreamWriter(socket.getOutputStream());
+
+                br = new BufferedReader(input);
+                bw = new BufferedWriter(output);
+
+                while (true) {
+                    String msgfromBoot = br.readLine();
+                    String[] msg = msgfromBoot.split("/");
+
+                    System.out.println("Bootsttrap: " + msg[1]);
+
+                    String idNodo = msg[0];
+                    List<String> vizinhos = rede.get(idNodo);
+
+
+                    /*
+                    for (InfoNodo i : nodos) {
+                        if (i.getidNodo().equals(idNodo)) {
+                            i.setBootStrap();
+                        }
+                    }*/
+
+                    for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
+                        String key = entry.getKey();
+                        InfoNodo value = entry.getValue();
+
+                        if(value.getidNodo().equals(idNodo)){
+                            value.setBootStrap();
+                        }
+
+                    }
+
+                    bw.write("Os teus vizinhos são: " + vizinhos);
+                    bw.newLine();
+                    bw.flush();
+
+                    break;
+                }
+
+                socket.close();
+                input.close();
+                output.close();
+                bw.close();
+                br.close();
+            } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("[Client] Error creating socket");
             }
 
-            System.out.println("Node on");
-            byte[] buf = new byte[100];
-            DatagramPacket receivePKT = new DatagramPacket(buf, buf.length);
+            /*
+            for (InfoNodo a : nodos) {
 
 
+                System.out.println(a.toString());
+            }
+             */
 
+            for (Map.Entry<String, InfoNodo> entry : nodos.entrySet()) {
+
+                System.out.println(entry.toString());
+
+            }
         }
+    }
 
-
-
-
-
-
-
-
-
-
-      /*
-       StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
-        InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
-
-        if (info.delay > Constants.minDelayToTrigger){
-            sendTooMuchDelay(info.otherNode);
-        }
-
-        int portOther = info.otherNode.port;
-        InetAddress ipOther = info.otherNode.ip;
-
-        System.out.println("\nReceived still alive msg (interested?): " + info.interested);
-        System.out.println("From: " + ipOther + " " + portOther+ " port.");
-
-        List otherSons = sons.stream().filter(son -> (son.otherNode.ip != ipOther && son.otherNode.port != portOther)).collect(Collectors.toList());
-        System.out.println("Delay = " + info.delay+ "\n");
-        // Remove the current node from the sons list.
-        sons = new ArrayList<InfoConnection>(otherSons);
-        // And add the new information to sons list, with updated info.
-        sons.add(info);
-        */
-
-
-
-}
-
+    }
 

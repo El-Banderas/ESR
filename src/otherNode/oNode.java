@@ -71,14 +71,18 @@ public class oNode {
         boolean stillAliveParte = true;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
+            InetAddress bootIP = InetAddress.getByName("localhost");
             int parentPort = Integer.parseInt(args[0]);
             InfoNodo parent = new InfoNodo( parentIP, parentPort);
             System.out.println("[Nodo] Endereço nodo pai: " + args[0]);
-            System.out.println("[Nodo] Endereço nodo atual: " + args[1]);
+            System.out.println("[Nodo] Endereço boot: " + args[1]);
+            int bootPort = Integer.parseInt(args[1]);
+            InfoNodo boot = new InfoNodo( bootIP, bootPort);
+
+            System.out.println("[Nodo] Endereço nodo atual: " + args[2]);
 
             ArrayList sons = new ArrayList<>();
-            // Neste momento a porta do filho está harcoded, depois vai ser dada dinâmicamente.
-            for (int i = 2; i < args.length; i++){
+            for (int i = 3; i < args.length; i++){
                 System.out.println("[Nodo] Endereço nodos filhos: " + args[i]);
                 InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), Integer.parseInt(args[i]));
                 sons.add(son);
@@ -86,7 +90,8 @@ public class oNode {
 
             // Neste momento, não precisamos de saber os filhos
             // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
-            NodeInformParent comunication_TH = new NodeInformParent(parent, Integer.parseInt(args[1]), sons);
+            //                                                 pai | boot | porta atual | filhos
+            NodeInformParent comunication_TH = new NodeInformParent(parent, boot , Integer.parseInt(args[2]), sons);
             new Thread(comunication_TH).start();
         }
 

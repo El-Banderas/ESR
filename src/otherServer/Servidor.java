@@ -21,7 +21,7 @@ import java.net.*;
 public class Servidor //extends JFrame implements ActionListener
  {
   //------------------------------------
-  //main
+  //main  Porta filho | porta atual
   //------------------------------------
   public static void main(String argv[]) throws Exception {
       System.out.println("[Server] Started ");
@@ -36,7 +36,6 @@ public class Servidor //extends JFrame implements ActionListener
 
 
       else {
-          CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
           InetAddress sonIP = InetAddress.getByName("localhost");
           int sonPort = Integer.parseInt(argv[0]);
@@ -47,6 +46,9 @@ public class Servidor //extends JFrame implements ActionListener
           int thisPort = Integer.parseInt(argv[1]);
           InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
 
+          CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
+
+            // Precisa: serverInfo; filho; coisa partilhada
           Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
           new Thread(bootstrapper).start();
 
