@@ -114,9 +114,9 @@ public class Teste {
     RTPsocket.setSoTimeout(5000); // setimeout to 5s
     //Get Client IP address 
     ClientIPAddr = InetAddress.getByName("127.0.0.1");
-    System.out.println("Teste: vai enviar e receber video no mesmo socket " + ClientIPAddr);
+    //System.out.println("Teste: vai enviar e receber video no mesmo socket " + ClientIPAddr);
 	video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
-    System.out.println("Teste: vai enviar e receber video da file " + VideoFileName);
+    //System.out.println("Teste: vai enviar e receber video da file " + VideoFileName);
 
     } catch (SocketException e) {
         System.out.println("Teste: erro no socket: " + e.getMessage());
@@ -183,10 +183,10 @@ public class Teste {
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
 
 	//print important header fields of the RTP packet received: 
-	System.out.println("Got RTP packet with SeqNum # "+rtp_packet.getsequencenumber()+" TimeStamp "+rtp_packet.gettimestamp()+" ms, of type "+rtp_packet.getpayloadtype());
+	//System.out.println("Got RTP packet with SeqNum # "+rtp_packet.getsequencenumber()+" TimeStamp "+rtp_packet.gettimestamp()+" ms, of type "+rtp_packet.getpayloadtype());
 	
 	//print header bitstream:
-	rtp_packet.printheader();
+	//rtp_packet.printheader();
 
 	//get the payload bitstream from the Common.Stream.RTPpacket object
 	int payload_length = rtp_packet.getpayload_length();
@@ -240,9 +240,9 @@ public class Teste {
 	  senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
 	  RTPsocket.send(senddp);
 
-	  System.out.println("Send frame #"+imagenb);
+	  //System.out.println("Send frame #"+imagenb);
 	  //print the header bitstream
-	  rtp_packet.printheader();
+	  //rtp_packet.printheader();
 
 	  //update GUI
 	  // label.setText("Send frame #" + imagenb);

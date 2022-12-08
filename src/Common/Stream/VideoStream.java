@@ -32,8 +32,8 @@ public class VideoStream {
 	
     //transform frame_length to integer
     length_string = new String(frame_length);
-    System.out.printf("O que é?");
-    System.out.println(length_string);
+    //System.out.printf("O que é?");
+    //System.out.println(length_string);
     length = Integer.parseInt(length_string);
 	
     return(fis.read(frame,0,length));

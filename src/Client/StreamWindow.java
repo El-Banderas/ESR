@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * O delay é 0, começa logo quando é chamada
  * Tempo entre pacotes é o mesmo do teste, dobro do FRAME_RATE
  */
-public class StreamWindow extends TimerTask {
+public class StreamWindow extends Thread {
 
     //GUI
     //----
@@ -37,6 +37,12 @@ public class StreamWindow extends TimerTask {
     static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
     public static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
     static int VIDEO_LENGTH = 500; //length of the video in frames
+    public StreamWindow(Queue<Image> receivedContent) {
+        this.receivedContent = receivedContent;
+        cTimer = new Timer(20, new clientTimerListener());
+        cTimer.setInitialDelay(0);
+        cTimer.setCoalesce(true);
+    }
 
     @Override
     public void run() {
@@ -73,14 +79,18 @@ public class StreamWindow extends TimerTask {
 
             System.out.println("Play Button pressed !");
             //start the timers ...
-            //cTimer.start();
+            cTimer.start();
         }
     }
 
     class clientTimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
-
+            if (receivedContent.peek() != null) {
+                Image now = receivedContent.remove();
+                System.out.println("Change image");
+                ImageIcon icon = new ImageIcon(now);
+                iconLabel.setIcon(icon);
+            }
                 /*
                 //receive the DP from the socket:
                 RTPsocket.receive(rcvdp);
@@ -108,6 +118,12 @@ public class StreamWindow extends TimerTask {
         }
     }
 
+    /*public void changeImage(Image now){
+        //display the image as an ImageIcon object
+        System.out.println("Change image");
+        ImageIcon icon = new ImageIcon(now);
+        iconLabel.setIcon(icon);
+    }*/
 
 
 }
