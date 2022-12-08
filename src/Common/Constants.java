@@ -68,9 +68,9 @@ public class Constants {
      * Node 2: 8008 8008 8009 8021
      * Server: 8009 8008
      *
-     * Client arguments: parent port // this port
-     * Node arguments: parent port // this port // Nodos filhos
-     * Node arguments: son port // this port
+     * Client arguments: parent port // boot // this port
+     * Node arguments: parent port //boot // this port // Nodos filhos
+     * Server arguments: son port // this port
      *
      *           8021
      *            C2
