@@ -10,10 +10,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import static Common.Stream.ConstantesStream.VIDEO_LENGTH;
+import static Common.Stream.ConstantesStream.VideoFileName;
 import static java.lang.Thread.sleep;
 
 public class SendStream implements Runnable {
-    private CommuncationBetweenThreads shared;
+    private final CommuncationBetweenThreads shared;
 
     DatagramPacket senddp; //UDP packet containing the video frames (to send)A
     DatagramSocket RTPsocket; //socket to be used to send and receive UDP packet
@@ -23,14 +25,13 @@ public class SendStream implements Runnable {
 
 
     //video file to request to the server
-    static String VideoFileName = "C:\\Users\\Diogo\\Desktop\\Diogo\\Trabalhos da escola\\4ano1sem\\redes\\ESR\\src\\out\\production\\ProgEx\\movie.Mjpeg";
 
     int imagenb = 0; //image nb of the image currently transmitted
     VideoStream video; //Common.Stream.VideoStream object used to access video frames
-    static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
-    static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
+   // static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
+//    static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
 
-    static int VIDEO_LENGTH = 500; //length of the video in frames
+   // static int VIDEO_LENGTH = 500; //length of the video in frames
     // O de cima não devia ser constante?
 
     byte[] sBuf; //buffer used to store the images to send to the client
@@ -45,11 +46,10 @@ public class SendStream implements Runnable {
             sBuf = new byte[15000]; //allocate memory for the sending buffer
 
             RTPsocket = new DatagramSocket(); //init RTP socket (o mesmo para o cliente e servidor)
-            RTPsocket.setSoTimeout(5000); // setimeout to 5s
+            RTPsocket.setSoTimeout(Constants.timeoutSockets); // setimeout to 5s
             video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
 
         } catch(SocketException e)
-
         {
             System.out.println("Teste: erro no socket: " + e.getMessage());
         } catch (Exception e) {
@@ -81,7 +81,6 @@ public class SendStream implements Runnable {
         // While someone is interested.
         while (shared.sendStream) {
 
-
             if (imagenb < VIDEO_LENGTH) {
                 //update current imagenb
                 imagenb++;
@@ -104,13 +103,6 @@ public class SendStream implements Runnable {
                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.port);
                     RTPsocket.send(senddp);
 
-                    //System.out.println("Send frame #" + imagenb);
-                    //print the header bitstream
-                    //rtp_packet.printheader();
-                    //Thread.sleep(FRAME_PERIOD);
-
-                    //update GUI
-                    // label.setText("Send frame #" + imagenb);
                 } catch (Exception ex) {
                     System.out.println("Exception caught: " + ex);
                     ex.printStackTrace();
@@ -128,6 +120,4 @@ public class SendStream implements Runnable {
             }
         }
     }
-
-
 }

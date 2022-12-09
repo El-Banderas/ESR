@@ -23,7 +23,7 @@ public class Servidor //extends JFrame implements ActionListener
   //------------------------------------
   //main
   //------------------------------------
-  public static void main(String argv[]) throws Exception {
+  public static void main(String[] argv) throws Exception {
       System.out.println("[Server] Started ");
       InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 

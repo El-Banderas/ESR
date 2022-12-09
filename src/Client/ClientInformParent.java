@@ -9,12 +9,15 @@ import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
 import java.awt.*;
-import java.util.Queue;
-
-import java.io.*;
-import java.net.*;
-import java.util.LinkedList;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Timer;
+import java.util.TimerTask;
+
 
 /**
  * Producer
@@ -24,24 +27,24 @@ import java.util.Timer;
  * <p>
  * TODO:
  * Não ignorar os números de sequência, dar-lhes importância;
- * Para além da queue, arranjar maneira de, quando o cliente meter pausa, ele começar a "ignorar" pacotes.
- *      Ter mais coisas partilhadas
  */
 public class ClientInformParent implements Runnable {
-    public int parentPort = 0;
-    public int thisPort = 0;
+    public int parentPort;
+    public int thisPort;
     public InetAddress parentIP;
     public DatagramSocket socket;
 
-    private Toolkit toolkit;
+    private final Toolkit toolkit;
 
-    // De momento, armazenamos numa queue, porque é FIFO
-    // Queue<Image> receivedContent = new LinkedList<>();
-    private ShareVariablesClient shared;
+    private final ShareVariablesClient shared;
+
+    // If the client already started
     private boolean startConsumer;
-    private int sizeBufferBeforeConsumer = 20;
     private StreamWindow window;
     private int numPacketsReceived;
+
+
+
 
     public ClientInformParent(int parentPort, int thisPort) throws UnknownHostException {
         this.parentPort = parentPort;
@@ -51,6 +54,10 @@ public class ClientInformParent implements Runnable {
         this.startConsumer = false;
         this.numPacketsReceived = 0;
         this.shared = new ShareVariablesClient();
+        //this.sendStillAlives = new Timer(20, new sendStillAlive());
+
+        //new Timer().scheduleAtFixedRate(new sendStillAlive(), 0, Constants.timeToConsiderNodeLost/2);
+        //this.sendStillAlives.setInitialDelay(0);
         try {
             if (this.thisPort > 0) {
                 socket = new DatagramSocket(this.thisPort);
@@ -65,29 +72,16 @@ public class ClientInformParent implements Runnable {
 
     @Override
     public void run() {
-
-
         System.out.println("otherServer.otherServer.Client ativo");
-        boolean somethingReceived = false;
-        // While the Node doesn't receive anything, send still alives
-        byte[] cBuf = new byte[15000]; //buffer used to store data received from the server
-        DatagramPacket rcvdp; //UDP packet received from the server (to receive)
-
+        //sendStillAlives.start();
+        Timer timer = new Timer();
+        TimerTask sendStillAlives = new sendStillAlive();
+        timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeToConsiderNodeLost);
         while (true) {
-            //while (!somethingReceived) {
             try {
-                // De X em X tempo, envia para o parentport um hello com timestamp
-                // Falta controlar se recebeu mensagem para atualizar pai.
-                SendData.sendStillAliveMSG(socket, this.parentIP, this.parentPort, Constants.sitllAliveWithInterest);
-                // System.out.println("Envia hello msg");
-
 
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
-
-                //MessageAndType received = ReceiveData.receiveData(socket);
-                //receiveStreamContentMSG();
-                //handleReceivedMessage(received);
 
             } catch (IOException e) {
                 //e.printStackTrace();
@@ -100,39 +94,50 @@ public class ClientInformParent implements Runnable {
         switch (received.msgType) {
             case Constants.sitllAliveNoInterest:
             case Constants.sitllAliveWithInterest:
-                System.out.println("");
+                System.out.println();
                 break;
             default:
                 RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
-
-                //rtp_packet.printheader();
-                //System.out.println("Armazena pacote " + rtp_packet.getsequencenumber());
                 store_packet(rtp_packet);
                 numPacketsReceived++;
-                // Quando o número de pacotes ultrapassa, e o consumidor é falso, começa cliente
-                // Isto só acontece uma vez
+                // When the buffer reaches the minimum size, we start the stream
                 if (numPacketsReceived > ConstantesStream.maxSizeBuffer && !startConsumer) {
                     window = new StreamWindow(shared);
                     startConsumer = true;
                     System.out.println("Start consumer");
                     window.start();
-                    //new Timer().schedule(new StreamConsumer(receivedContent, window), 0, StreamWindow.FRAME_PERIOD);
                 }
         }
 
     }
 
     private void store_packet(RTPpacket rtpPacket) {
+
         int payload_length = rtpPacket.getpayload_length();
-        //System.out.println("Insere pacote");
+
         byte[] payload = new byte[payload_length];
         rtpPacket.getpayload(payload);
 
         Image image = toolkit.createImage(payload, 0, payload_length);
+
+        // Here we choose if we want to store all packets or replace the packets.
         if (shared.isPlay() || (!shared.isPlay() && !ConstantesStream.dropPacketsWhenPause))
             shared.insertImage(image);
+
         else shared.replaceImage(image);
     }
 
+    class sendStillAlive extends TimerTask {
+
+        @Override
+        public void run() {
+            try {
+                SendData.sendStillAliveMSG(socket, parentIP, parentPort, Constants.sitllAliveWithInterest);
+                System.out.println("Send still alive");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
 }

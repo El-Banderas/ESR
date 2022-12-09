@@ -129,7 +129,7 @@ public class Teste {
   //------------------------------------
   //main
   //------------------------------------
-  public static void main(String argv[]) throws Exception
+  public static void main(String[] argv) throws Exception
   {
     //get video filename to request:
     if (argv.length >= 1 ) {

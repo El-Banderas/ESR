@@ -24,10 +24,7 @@ public class ReceiveData {
 
         boolean interested;
         int type = msg.getInt();
-        if (type == Constants.sitllAliveNoInterest) {
-            interested = false;
-        }
-        else interested = true;
+        interested = type != Constants.sitllAliveNoInterest;
 
         double msgTime = msg.getDouble();
         double now = Constants.getCurrentTime();

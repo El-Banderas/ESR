@@ -83,7 +83,7 @@ public class TypologyGraph {
             int y = 0; // col number
 
             for (int i = 0; i < this.graphConnections.size(); i++) {
-                if (selected[i] == true) {
+                if (selected[i]) {
                     for (int j = 0; j < this.graphConnections.size(); j++) {
                         // not in selected and there is an edge
                         if (!selected[j] && this.graphConnections.get(i)[j] != 0) {
@@ -137,7 +137,7 @@ public class TypologyGraph {
 
         graph.setGraphConnections(graphConnections);
 
-        System.out.println(graph.toString());
+        System.out.println(graph);
 
         /*
         // number of vertices in grapj

@@ -9,14 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Queue;
-import java.util.TimerTask;
 
-/**
- * Evocada quando queue tem X pacotes
- * O delay é 0, começa logo quando é chamada
- * Tempo entre pacotes é o mesmo do teste, dobro do FRAME_RATE
- */
 public class StreamWindow extends Thread {
 
     //GUI
@@ -32,27 +25,18 @@ public class StreamWindow extends Thread {
     ImageIcon icon;
 
 
-    //RTP variables:
-    //----------------
-
     // Client timer
     Timer cTimer; //timer used to receive data from the UDP socket
 
 
-    //Video constants:
-    //------------------
-    int imagenb = 0; //image nb of the image currently transmitted
-    static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
-    static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
-    static int VIDEO_LENGTH = 500; //length of the video in frames
-    //private Queue<Image> receivedContent;
-    private ShareVariablesClient shared;
+    private final ShareVariablesClient shared;
 
     //--------------------------
     //Constructor
     //--------------------------
     public StreamWindow(ShareVariablesClient shared) {
         this.shared = shared;
+
         //build GUI
         //--------------------------
 
@@ -99,30 +83,32 @@ public class StreamWindow extends Thread {
     //------------------------------------
     public void run()
     {
-        System.out.println("Janela começa");
+        System.out.println("Open window");
+        cTimer.start();
     }
 
 
     //------------------------------------
     //Handler for buttons
     //------------------------------------
+
+    //Handler for Pause button
+    //-----------------------
+
     public class pauseButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
 
             System.out.println("Play Pause pressed !");
             shared.setPlay(false);
-            //start the timers ...
-
         }
     }
+
     //Handler for Play button
     //-----------------------
     public class playButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
 
             System.out.println("Play Button pressed !");
-            //start the timers ...
-            cTimer.start();
             shared.setPlay(true);
 
         }
@@ -137,8 +123,8 @@ public class StreamWindow extends Thread {
      */
     class clientTimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+
             if (shared.isPlay() && shared.haveImages()){
-                //System.out.println("Retira pacote");
                 Image now = shared.removeImage();
                 icon = new ImageIcon(now);
                 iconLabel.setIcon(icon);
@@ -151,11 +137,5 @@ public class StreamWindow extends Thread {
 
         }
     }
-
-    //------------------------
-    //Handler for timer
-    //------------------------
-
-
 
 }

@@ -43,6 +43,6 @@ public class InfoNodo {
     }
 
     public static String generateId(InetAddress ip, int port){
-        return ip.toString()+"-"+Integer.toString(port);
+        return ip.toString()+"-"+ port;
     }
 }

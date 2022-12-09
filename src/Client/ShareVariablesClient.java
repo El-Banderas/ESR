@@ -7,8 +7,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ShareVariablesClient {
-    private Queue<Image> receivedContent;
+
+    // We store in a queue, because it is FIFO
+    private final Queue<Image> receivedContent;
     private int sizeQueue;
+
+    // If the stream is showing or is in pause.
     private boolean play;
 
     public ShareVariablesClient() {
@@ -32,7 +36,6 @@ public class ShareVariablesClient {
         else {
             receivedContent.add(img);
             receivedContent.remove();
-
         }
     }
     public void insertImage(Image img){

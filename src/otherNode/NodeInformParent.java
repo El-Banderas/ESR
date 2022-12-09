@@ -119,9 +119,7 @@ public class NodeInformParent implements Runnable {
             double maxDelay = Math.max(old.get().delay, currentDelay);
             double minDelay = Math.min(old.get().delay, currentDelay);
             double percentageDelay = ((maxDelay - minDelay) / maxDelay) * 100;
-            if (percentageDelay > Constants.minDelayToTrigger)
-                return true;
-            else return false;
+            return percentageDelay > Constants.minDelayToTrigger;
         }
         return false;
     }

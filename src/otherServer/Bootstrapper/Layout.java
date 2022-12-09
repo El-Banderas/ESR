@@ -6,15 +6,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Layout {
     
-    private Map<String, List<String>> rede;
-    private List<InfoNodo> nodos;
+    private final Map<String, List<String>> rede;
+    private final List<InfoNodo> nodos;
 
 
 
@@ -58,9 +55,7 @@ public class Layout {
             String[] vizinhos = parts[1].split(" *, *");
 
             List<String> nodosaux = new ArrayList<>();
-            for(String v : vizinhos){
-                nodosaux.add(v);
-            }
+                Collections.addAll(nodosaux, vizinhos);
 
 
              this.rede.put(aux[0],nodosaux);
