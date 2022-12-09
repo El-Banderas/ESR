@@ -231,6 +231,11 @@ public class Typology {
 
     }
 
+    public List<InfoNodo> getVizinhos(InfoNodo i){
+
+        return null;
+    }
+
 
 
     public static void main(String[] args) throws IOException, InterruptedException {

@@ -19,6 +19,8 @@ public class InfoConnection implements Comparable<InfoConnection> {
         this.interested = interested;
         this.isAlive = true;
     }
+
+
 /*
     public void updateTimeLastConnection(int time){
         timeLastMessage = time;

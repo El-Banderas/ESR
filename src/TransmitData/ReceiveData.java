@@ -33,6 +33,27 @@ public class ReceiveData {
 
 
 
+    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s) throws IOException {
+        // get Vizinhos na TypologyGraph
+        // vizinhos imaginarios para teste
+        InfoNodo[] vizinhos = new InfoNodo[5];
+        InfoNodo v1 = new InfoNodo(InetAddress.getByName("localhost"),2000);
+        InfoNodo v2 = new InfoNodo(InetAddress.getByName("localhost"),2001);
+        InfoNodo v3 = new InfoNodo(InetAddress.getByName("localhost"),2002);
+        InfoNodo v4 = new InfoNodo(InetAddress.getByName("localhost"),2003);
+        InfoNodo v5 = new InfoNodo(InetAddress.getByName("localhost"),2004);
+        vizinhos[0]=v1;
+        vizinhos[1]=v2;
+        vizinhos[2]=v3;
+        vizinhos[3]=v4;
+        vizinhos[4]=v5;
+        // converter a lista de vizinhos num pacote
+        String v = String.valueOf(v1) + v2 + v3 + v4 + v5 + "END";
+
+        byte[] bytes = ByteBuffer.allocate(18+(2*v.length())).put(v.getBytes()).array();
+
+        SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
+    }
 
 
     public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {

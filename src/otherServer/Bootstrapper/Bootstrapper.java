@@ -51,8 +51,12 @@ public class Bootstrapper implements Runnable{
     boolean interested;
     double lastTimeSomeoneInterested;
 
+    public Bootstrapper(Typology t) {
+        this.topologyTypology = t;
+    }
+
     public Bootstrapper() {
-        //this.typology = typology;
+
     }
 
     // Talvez não seja necessária a informação do próprio server
@@ -159,7 +163,7 @@ public class Bootstrapper implements Runnable{
         }
     }
 
-    private void handleReceivedMessage(MessageAndType received) {
+    private void handleReceivedMessage(MessageAndType received) throws IOException {
             switch (received.msgType){
                 // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
                 //case Constants.sitllAliveNoInterest:
@@ -168,7 +172,7 @@ public class Bootstrapper implements Runnable{
                     break;
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
-                    receivedHelloMsg(received.packet);
+                    ReceiveData.receivedHelloMsg(received.packet, this.socket);
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
                     break;
@@ -190,27 +194,6 @@ public class Bootstrapper implements Runnable{
     }
 
 
-    private void receivedHelloMsg(DatagramPacket packet) throws IOException {
-        // get Vizinhos na TypologyGraph
-        // vizinhos imaginarios para teste
-        InfoNodo[] vizinhos = new InfoNodo[5];
-        InfoNodo v1 = new InfoNodo(InetAddress.getByName("localhost"),2000);
-        InfoNodo v2 = new InfoNodo(InetAddress.getByName("localhost"),2001);
-        InfoNodo v3 = new InfoNodo(InetAddress.getByName("localhost"),2002);
-        InfoNodo v4 = new InfoNodo(InetAddress.getByName("localhost"),2003);
-        InfoNodo v5 = new InfoNodo(InetAddress.getByName("localhost"),2004);
-        vizinhos[0]=v1;
-        vizinhos[1]=v2;
-        vizinhos[2]=v3;
-        vizinhos[3]=v4;
-        vizinhos[4]=v5;
-        // converter a lista de vizinhos num pacote
-        String v = String.valueOf(v1) + v2 + v3 + v4 + v5 + "END";
-
-        byte[] bytes = ByteBuffer.allocate(18+(2*v.length())).put(v.getBytes()).array();
-
-        SendData.sendData(this.socket,bytes,packet.getAddress(), packet.getPort());
-    }
     /**
      * When a node in the network is lost, the parent of that node sends a message notifying the other nodes.
      * Será que quando um "pai" descobre que o filho morre deve mandar mensagem para o boot, em vez de seguir a àrvore?
