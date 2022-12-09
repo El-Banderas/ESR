@@ -1,20 +1,43 @@
 package Client;
 
+import Common.Stream.ConstantesStream;
+
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class ShareVariablesClient {
     private Queue<Image> receivedContent;
+    private int sizeQueue;
     private boolean play;
 
     public ShareVariablesClient() {
         this.receivedContent = new LinkedList<>();
         this.play=true;
+        this.sizeQueue = 0;
     }
 
+    /**
+     * This function is used when we pause the video, and we drop packets.
+     * So, we drop the oldest image, and insert the new one.
+     * This way, we keep the buffer updated.
+     *
+     * And, if the buffer isn't full, only adds the image.
+     * @param img
+     */
+    public void replaceImage(Image img){
+        if (sizeQueue < ConstantesStream.maxSizeBuffer){
+            receivedContent.add(img);
+        }
+        else {
+            receivedContent.add(img);
+            receivedContent.remove();
+
+        }
+    }
     public void insertImage(Image img){
         receivedContent.add(img);
+        sizeQueue++;
     }
 
     public boolean haveImages(){
@@ -22,6 +45,7 @@ public class ShareVariablesClient {
     }
 
     public Image removeImage(){
+        sizeQueue--;
         return receivedContent.remove();
     }
 
