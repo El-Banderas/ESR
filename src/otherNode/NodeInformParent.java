@@ -159,6 +159,7 @@ private InfoNodo bootstrapper;
 
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
+                receiveMaybeRTPStream(received.packet);
         }
     }
 
@@ -191,6 +192,7 @@ private InfoNodo bootstrapper;
     }
 
 
+
     /**
      * This function calculates if the new message has too much delay.
      * @param oldDelay Delay of last message from parent.
@@ -201,9 +203,7 @@ private InfoNodo bootstrapper;
             double maxDelay = Math.max(oldDelay, currentDelay);
             double minDelay = Math.min(oldDelay, currentDelay);
             double percentageDelay = ((maxDelay - minDelay) / maxDelay) * 100;
-            if (percentageDelay > Constants.minDelayToTrigger)
-                return true;
-            else return false;
+            return percentageDelay > Constants.minDelayToTrigger;
         }
 
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
@@ -326,4 +326,17 @@ private InfoNodo bootstrapper;
     }
 
 
+    private void receiveMaybeRTPStream(DatagramPacket packet) {
+        for (InfoNodo son : interestedSons){
+            try {
+                System.out.println("Envia para o filho");
+                System.out.println(son);
+                SendData.sendStreamContentMSG(socket, son, packet.getData());
+            } catch (IOException e) {
+                System.out.println("What son not receive: ");
+                System.out.println(son);
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

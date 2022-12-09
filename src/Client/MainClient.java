@@ -6,13 +6,12 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * Atualmente recebe parent port / porta atual. (8010 / 8020)
  * Depois, estas informações vão ser calculadas e passadas no construtor.
  *
  * O que recebe inicialmente devem ser outras coisas
  */
 public class MainClient {
-    // Recebe parent port / porta atual
+    // Recebe parent port / boot /  porta atual
     public static void main(String[] args) throws UnknownHostException {
         //InetAddress connectedNode = InetAddress.getByName(args[1]);
         InetAddress parentIP = InetAddress.getByName("localhost");

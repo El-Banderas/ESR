@@ -8,7 +8,7 @@ package otherServer;
 
 import Common.InfoNodo;
 import otherServer.Bootstrapper.Bootstrapper;
-import otherServer.Stream.Stream;
+import otherServer.SendStream.SendStream;
 
 import java.net.*;
 
@@ -23,7 +23,7 @@ public class Servidor //extends JFrame implements ActionListener
   //------------------------------------
   //main  Porta filho | porta atual
   //------------------------------------
-  public static void main(String argv[]) throws Exception {
+  public static void main(String[] argv) throws Exception {
       System.out.println("[Server] Started ");
       InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 
@@ -52,7 +52,7 @@ public class Servidor //extends JFrame implements ActionListener
           Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
           new Thread(bootstrapper).start();
 
-          Stream stream = new Stream(shared);
+          SendStream stream = new SendStream(shared);
           new Thread(stream).start();
 
 

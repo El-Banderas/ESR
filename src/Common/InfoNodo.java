@@ -41,7 +41,7 @@ public class InfoNodo {
     public String toStringCon() {return "{  id - " + idNodo + " || ip -"  + ip.toString() + " || " + " porta - " + port + "}"; }
 
     public static String generateId(InetAddress ip, int port){
-        return ip.toString()+"-"+Integer.toString(port);
+        return ip.toString()+"-"+ port;
     }
 
     public static boolean compareInfoNodes (InfoNodo in1, InfoNodo in2){

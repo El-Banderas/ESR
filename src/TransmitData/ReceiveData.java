@@ -22,6 +22,9 @@ public class ReceiveData {
 
         InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
 
+        boolean interested;
+        int type = msg.getInt();
+        interested = type != Constants.sitllAliveNoInterest;
 
         double msgTime = msg.getDouble();
         double now = Constants.getCurrentTime();
@@ -101,7 +104,7 @@ public class ReceiveData {
         return content;
     }
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
-            byte[] buf = new byte[Constants.arraySize];
+            byte[] buf = new byte[15000];
             DatagramPacket packet
                     = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
