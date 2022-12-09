@@ -17,7 +17,7 @@ public class CommuncationBetweenThreads {
     public boolean sendStream;
 
     public CommuncationBetweenThreads(InfoNodo son) {
-        this.sendStream = false;
+        this.sendStream = true;
         this.son = son;
     }
 

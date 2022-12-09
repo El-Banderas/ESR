@@ -82,7 +82,7 @@ public class ReceiveData {
         return content;
     }
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
-            byte[] buf = new byte[Constants.arraySize];
+            byte[] buf = new byte[15000];
             DatagramPacket packet
                     = new DatagramPacket(buf, buf.length);
             socket.receive(packet);

@@ -181,6 +181,8 @@ public class Teste {
 	  
 	//create an Common.Stream.RTPpacket object from the DP
 	RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
+          System.out.println("TAmanho recebido : " + rcvdp.getLength());
+          System.out.println("Seq n: " + rtp_packet.getsequencenumber());
 
 	//print important header fields of the RTP packet received: 
 	//System.out.println("Got RTP packet with SeqNum # "+rtp_packet.getsequencenumber()+" TimeStamp "+rtp_packet.gettimestamp()+" ms, of type "+rtp_packet.getpayloadtype());
@@ -239,7 +241,6 @@ public class Teste {
 	  //send the packet as a DatagramPacket over the UDP socket 
 	  senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
 	  RTPsocket.send(senddp);
-
 	  //System.out.println("Send frame #"+imagenb);
 	  //print the header bitstream
 	  //rtp_packet.printheader();

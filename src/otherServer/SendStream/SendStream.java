@@ -28,6 +28,7 @@ public class SendStream implements Runnable {
     VideoStream video; //Common.Stream.VideoStream object used to access video frames
     static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
     static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
+
     static int VIDEO_LENGTH = 500; //length of the video in frames
     // O de cima não devia ser constante?
 
@@ -75,8 +76,11 @@ public class SendStream implements Runnable {
     }
 
     private void sendStream() {
+
         // While someone is interested.
         while (shared.sendStream) {
+
+
             if (imagenb < VIDEO_LENGTH) {
                 //update current imagenb
                 imagenb++;
@@ -97,11 +101,14 @@ public class SendStream implements Runnable {
 
                     //send the packet as a DatagramPacket over the UDP socket
                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.port);
+                    System.out.println("TAmanho enviado : " + packet_length);
+                    System.out.println("Seq n: " + rtp_packet.getsequencenumber());
                     RTPsocket.send(senddp);
 
-                    System.out.println("Send frame #" + imagenb);
+                    //System.out.println("Send frame #" + imagenb);
                     //print the header bitstream
-                    rtp_packet.printheader();
+                    //rtp_packet.printheader();
+                    //Thread.sleep(FRAME_PERIOD);
 
                     //update GUI
                     // label.setText("Send frame #" + imagenb);

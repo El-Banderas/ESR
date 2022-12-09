@@ -2,7 +2,9 @@ package Client;
 
 
 import Common.Constants;
+import Common.MessageAndType;
 import Common.Stream.RTPpacket;
+import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
 import java.awt.*;
@@ -36,15 +38,16 @@ public class ClientInformParent implements Runnable {
     // De momento, armazenamos numa queue, porque é FIFO
     Queue<Image> receivedContent = new LinkedList<>();
     private boolean startConsumer;
-    private int sizeBufferBeforeConsumer = 10;
+    private int sizeBufferBeforeConsumer = 20;
     private StreamWindow window;
-
+    private int numPacketsReceived;
     public ClientInformParent(int parentPort, int thisPort) throws UnknownHostException {
         this.parentPort = parentPort;
         this.thisPort = thisPort;
         this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
         this.startConsumer = false;
+        this.numPacketsReceived = 0;
         try {
             if (this.thisPort > 0) {
                 socket = new DatagramSocket(this.thisPort);
@@ -68,7 +71,6 @@ public class ClientInformParent implements Runnable {
         // While the Node doesn't receive anything, send still alives
         byte[] cBuf= new byte[15000]; //buffer used to store data received from the server
         DatagramPacket rcvdp; //UDP packet received from the server (to receive)
-        int numPacketsReceived = 0;
 
         while (true) {
         //while (!somethingReceived) {
@@ -79,8 +81,32 @@ public class ClientInformParent implements Runnable {
                // System.out.println("Envia hello msg");
                 rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
-                socket.receive(rcvdp);
-                RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
+
+                MessageAndType received = ReceiveData.receiveData(socket);
+                handleReceivedMessage(received);
+
+                //MessageAndType received = ReceiveData.receiveData(socket);
+                //receiveStreamContentMSG();
+                //handleReceivedMessage(received);
+
+            } catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("[Client] Timeout socket");
+            }
+        }
+        }
+
+    private void handleReceivedMessage(MessageAndType received) throws IOException {
+        switch (received.msgType) {
+            case Constants.sitllAliveNoInterest:
+            case Constants.sitllAliveWithInterest:
+                System.out.println("");
+                break;
+            default:
+                RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
+                System.out.println("TAmanho recebido : " + received.packet.getLength());
+                System.out.println("Seq n: " + rtp_packet.getsequencenumber());
+
                 //rtp_packet.printheader();
                 //System.out.println("Armazena pacote " + rtp_packet.getsequencenumber());
                 store_packet(rtp_packet);
@@ -95,21 +121,15 @@ public class ClientInformParent implements Runnable {
                     //new Timer().schedule(new StreamConsumer(receivedContent, window), 0, StreamWindow.FRAME_PERIOD);
                 }
 
-                //MessageAndType received = ReceiveData.receiveData(socket);
-                //receiveStreamContentMSG();
-                //handleReceivedMessage(received);
-
-            } catch (IOException e) {
-                //e.printStackTrace();
-                System.out.println("[Client] Timeout socket");
-            }
         }
-        }
-
-    private void store_packet(RTPpacket rtpPacket) {
+    }
+        private void store_packet(RTPpacket rtpPacket) {
         int payload_length = rtpPacket.getpayload_length();
+        System.out.println("Insere pacote");
         byte [] payload = new byte[payload_length];
-        Image image = toolkit.createImage(payload, 0, payload_length);
+            rtpPacket.getpayload(payload);
+
+            Image image = toolkit.createImage(payload, 0, payload_length);
 
         receivedContent.add(image);
     }

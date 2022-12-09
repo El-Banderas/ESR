@@ -69,7 +69,7 @@ public class Constants {
      *
      * Client arguments: parent port // this port
      * Node arguments: parent port // this port // Nodos filhos
-     * Node arguments: son port // this port
+     * Server arguments: son port // this port
      *
      *           8021
      *            C2

@@ -20,32 +20,41 @@ public class StreamWindow extends Thread {
 
     //GUI
     //----
-    JFrame f = new JFrame("Teste");
+    JFrame f = new JFrame("Client");
     JButton setupButton = new JButton("Setup");
     JButton playButton = new JButton("Play");
     JButton pauseButton = new JButton("Pause");
     JButton tearButton = new JButton("Teardown");
     JPanel mainPanel = new JPanel();
     JPanel buttonPanel = new JPanel();
-   public JLabel iconLabel = new JLabel();
+    JLabel iconLabel = new JLabel();
     ImageIcon icon;
 
-    Queue<Image> receivedContent;
+
+    //RTP variables:
+    //----------------
+
+    // Client timer
     Timer cTimer; //timer used to receive data from the UDP socket
 
-    VideoStream video; //Common.Stream.VideoStream object used to access video frames
+
+    //Video constants:
+    //------------------
+    int imagenb = 0; //image nb of the image currently transmitted
     static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
-    public static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
+    static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
     static int VIDEO_LENGTH = 500; //length of the video in frames
+    private Queue<Image> receivedContent;
+
+    //--------------------------
+    //Constructor
+    //--------------------------
     public StreamWindow(Queue<Image> receivedContent) {
         this.receivedContent = receivedContent;
-        cTimer = new Timer(20, new clientTimerListener());
-        cTimer.setInitialDelay(0);
-        cTimer.setCoalesce(true);
-    }
+        //build GUI
+        //--------------------------
 
-    @Override
-    public void run() {
+        //Frame
         f.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -58,7 +67,7 @@ public class StreamWindow extends Thread {
         buttonPanel.add(playButton);
         buttonPanel.add(pauseButton);
         buttonPanel.add(tearButton);
-        playButton.addActionListener(new playButtonListener());
+        playButton.addActionListener(new StreamWindow.playButtonListener());
 
         //Image display label
         iconLabel.setIcon(null);
@@ -69,12 +78,35 @@ public class StreamWindow extends Thread {
         mainPanel.add(buttonPanel);
         iconLabel.setBounds(0,0,380,280);
         buttonPanel.setBounds(0,280,380,50);
+
         f.getContentPane().add(mainPanel, BorderLayout.CENTER);
         f.setSize(new Dimension(390,370));
         f.setVisible(true);
 
+        //init para a parte do cliente
+        //--------------------------
+        cTimer = new Timer(20, new clientTimerListener());
+        cTimer.setInitialDelay(0);
+        cTimer.setCoalesce(true);
+
     }
-    class playButtonListener implements ActionListener {
+
+    //------------------------------------
+    //main
+    //------------------------------------
+    public void run()
+    {
+        System.out.println("Janela começa :)");
+    }
+
+
+    //------------------------------------
+    //Handler for buttons
+    //------------------------------------
+
+    //Handler for Play button
+    //-----------------------
+    public class playButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
 
             System.out.println("Play Button pressed !");
@@ -83,47 +115,26 @@ public class StreamWindow extends Thread {
         }
     }
 
+    //------------------------------------
+    //Handler for timer (para cliente)
+    //------------------------------------
+
     class clientTimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (receivedContent.peek() != null) {
+            if (receivedContent.peek() != null){
+                System.out.println("Retira pacote");
                 Image now = receivedContent.remove();
-                System.out.println("Change image");
-                ImageIcon icon = new ImageIcon(now);
+                icon = new ImageIcon(now);
                 iconLabel.setIcon(icon);
             }
-                /*
-                //receive the DP from the socket:
-                RTPsocket.receive(rcvdp);
-
-                //create an Common.Stream.RTPpacket object from the DP
-                RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());
-
-                //print important header fields of the RTP packet received:
-                System.out.println("Got RTP packet with SeqNum # "+rtp_packet.getsequencenumber()+" TimeStamp "+rtp_packet.gettimestamp()+" ms, of type "+rtp_packet.getpayloadtype());
-
-                //print header bitstream:
-                rtp_packet.printheader();
-
-                //get the payload bitstream from the Common.Stream.RTPpacket object
-                int payload_length = rtp_packet.getpayload_length();
-                byte [] payload = new byte[payload_length];
-                rtp_packet.getpayload(payload);
-
-                //get an Image object from the payload bitstream
-                Toolkit toolkit = Toolkit.getDefaultToolkit();
-                Image image = toolkit.createImage(payload, 0, payload_length);
-*/
-
 
         }
     }
 
-    /*public void changeImage(Image now){
-        //display the image as an ImageIcon object
-        System.out.println("Change image");
-        ImageIcon icon = new ImageIcon(now);
-        iconLabel.setIcon(icon);
-    }*/
+    //------------------------
+    //Handler for timer
+    //------------------------
+
 
 
 }
