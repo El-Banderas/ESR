@@ -325,15 +325,16 @@ private InfoNodo bootstrapper;
             }
     }
 
+
     private void receiveMaybeRTPStream(DatagramPacket packet) {
-        for (InfoConnection son : sons){
+        for (InfoNodo son : interestedSons){
             try {
                 System.out.println("Envia para o filho");
-                System.out.println(son.otherNode);
-                SendData.sendStreamContentMSG(socket, son.otherNode, packet.getData());
+                System.out.println(son);
+                SendData.sendStreamContentMSG(socket, son, packet.getData());
             } catch (IOException e) {
                 System.out.println("What son not receive: ");
-                System.out.println(son.otherNode);
+                System.out.println(son);
                 throw new RuntimeException(e);
             }
         }

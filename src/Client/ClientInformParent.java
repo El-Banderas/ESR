@@ -33,7 +33,8 @@ import java.nio.charset.StandardCharsets;
  * Não ignorar os números de sequência, dar-lhes importância;
  */
 public class ClientInformParent implements Runnable {
-    public int parentPort;
+    public InfoNodo parent;
+    public InfoNodo boot;
     public int thisPort;
     public InetAddress parentIP;
     public DatagramSocket socket;
@@ -50,8 +51,9 @@ public class ClientInformParent implements Runnable {
 
 
 
-    public ClientInformParent(int parentPort, int thisPort) throws UnknownHostException {
-        this.parentPort = parentPort;
+    public ClientInformParent(InfoNodo parent, InfoNodo boot, int thisPort) throws UnknownHostException {
+        this.parent = parent;
+        this.boot = boot;
         this.thisPort = thisPort;
         this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
@@ -95,8 +97,7 @@ public class ClientInformParent implements Runnable {
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
         switch (received.msgType) {
-            case Constants.sitllAliveNoInterest:
-            case Constants.sitllAliveWithInterest:
+            case Constants.sitllAlive:
                 System.out.println();
                 break;
             default:
@@ -135,7 +136,7 @@ public class ClientInformParent implements Runnable {
         @Override
         public void run() {
             try {
-                SendData.sendStillAliveMSG(socket, parentIP, parentPort, Constants.sitllAliveWithInterest);
+                SendData.wantsStream(socket, parent);
                 System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
