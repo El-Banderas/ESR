@@ -1,5 +1,6 @@
 package Client;
 
+import Common.Stream.ConstantesStream;
 import Common.Stream.VideoStream;
 
 import javax.swing.*;
@@ -44,13 +45,14 @@ public class StreamWindow extends Thread {
     static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
     static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
     static int VIDEO_LENGTH = 500; //length of the video in frames
-    private Queue<Image> receivedContent;
+    //private Queue<Image> receivedContent;
+    private ShareVariablesClient shared;
 
     //--------------------------
     //Constructor
     //--------------------------
-    public StreamWindow(Queue<Image> receivedContent) {
-        this.receivedContent = receivedContent;
+    public StreamWindow(ShareVariablesClient shared) {
+        this.shared = shared;
         //build GUI
         //--------------------------
 
@@ -68,6 +70,7 @@ public class StreamWindow extends Thread {
         buttonPanel.add(pauseButton);
         buttonPanel.add(tearButton);
         playButton.addActionListener(new StreamWindow.playButtonListener());
+        pauseButton.addActionListener(new StreamWindow.pauseButtonListener());
 
         //Image display label
         iconLabel.setIcon(null);
@@ -96,14 +99,22 @@ public class StreamWindow extends Thread {
     //------------------------------------
     public void run()
     {
-        System.out.println("Janela começa :)");
+        System.out.println("Janela começa");
     }
 
 
     //------------------------------------
     //Handler for buttons
     //------------------------------------
+    public class pauseButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e){
 
+            System.out.println("Play Pause pressed !");
+            shared.setPlay(false);
+            //start the timers ...
+
+        }
+    }
     //Handler for Play button
     //-----------------------
     public class playButtonListener implements ActionListener {
@@ -112,6 +123,8 @@ public class StreamWindow extends Thread {
             System.out.println("Play Button pressed !");
             //start the timers ...
             cTimer.start();
+            shared.setPlay(true);
+
         }
     }
 
@@ -119,13 +132,21 @@ public class StreamWindow extends Thread {
     //Handler for timer (para cliente)
     //------------------------------------
 
+    /**
+     * The sleep is necessary to keep the frame rate.
+     */
     class clientTimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (receivedContent.peek() != null){
-                System.out.println("Retira pacote");
-                Image now = receivedContent.remove();
+            if (shared.isPlay() && shared.haveImages()){
+                //System.out.println("Retira pacote");
+                Image now = shared.removeImage();
                 icon = new ImageIcon(now);
                 iconLabel.setIcon(icon);
+                try {
+                    Thread.sleep(ConstantesStream.FRAME_PERIOD);
+                } catch (InterruptedException error) {
+                    throw new RuntimeException(error);
+                }
             }
 
         }

@@ -3,6 +3,7 @@ package Client;
 
 import Common.Constants;
 import Common.MessageAndType;
+import Common.Stream.ConstantesStream;
 import Common.Stream.RTPpacket;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
@@ -36,7 +37,8 @@ public class ClientInformParent implements Runnable {
     private Toolkit toolkit;
 
     // De momento, armazenamos numa queue, porque é FIFO
-    Queue<Image> receivedContent = new LinkedList<>();
+   // Queue<Image> receivedContent = new LinkedList<>();
+    private ShareVariablesClient shared;
     private boolean startConsumer;
     private int sizeBufferBeforeConsumer = 20;
     private StreamWindow window;
@@ -48,6 +50,7 @@ public class ClientInformParent implements Runnable {
         this.toolkit = Toolkit.getDefaultToolkit();
         this.startConsumer = false;
         this.numPacketsReceived = 0;
+        this.shared = new ShareVariablesClient();
         try {
             if (this.thisPort > 0) {
                 socket = new DatagramSocket(this.thisPort);
@@ -79,7 +82,6 @@ public class ClientInformParent implements Runnable {
                 // Falta controlar se recebeu mensagem para atualizar pai.
                 SendData.sendStillAliveMSG(socket, this.parentIP, this.parentPort, Constants.sitllAliveWithInterest);
                // System.out.println("Envia hello msg");
-                rcvdp = new DatagramPacket(cBuf, cBuf.length);
 
 
                 MessageAndType received = ReceiveData.receiveData(socket);
@@ -103,35 +105,36 @@ public class ClientInformParent implements Runnable {
                 System.out.println("");
                 break;
             default:
-                RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
-                System.out.println("TAmanho recebido : " + received.packet.getLength());
-                System.out.println("Seq n: " + rtp_packet.getsequencenumber());
+                if (shared.isPlay() || (!shared.isPlay() && !ConstantesStream.dropPacketsWhenPause)) {
+                    RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
 
-                //rtp_packet.printheader();
-                //System.out.println("Armazena pacote " + rtp_packet.getsequencenumber());
-                store_packet(rtp_packet);
-                numPacketsReceived++;
-                // Quando o número de pacotes ultrapassa, e o consumidor é falso, começa cliente
-                // Isto só acontece uma vez
-                if (numPacketsReceived > sizeBufferBeforeConsumer && !startConsumer) {
-                    window = new StreamWindow(receivedContent);
-                    startConsumer = true;
-                    System.out.println("Start consumer");
-                    window.start();
-                    //new Timer().schedule(new StreamConsumer(receivedContent, window), 0, StreamWindow.FRAME_PERIOD);
+                    //rtp_packet.printheader();
+                    //System.out.println("Armazena pacote " + rtp_packet.getsequencenumber());
+                    store_packet(rtp_packet);
+                    numPacketsReceived++;
+                    // Quando o número de pacotes ultrapassa, e o consumidor é falso, começa cliente
+                    // Isto só acontece uma vez
+                    if (numPacketsReceived > sizeBufferBeforeConsumer && !startConsumer) {
+                        window = new StreamWindow(shared);
+                        startConsumer = true;
+                        System.out.println("Start consumer");
+                        window.start();
+                        //new Timer().schedule(new StreamConsumer(receivedContent, window), 0, StreamWindow.FRAME_PERIOD);
+                    }
                 }
+                
 
         }
     }
-        private void store_packet(RTPpacket rtpPacket) {
+    private void store_packet(RTPpacket rtpPacket) {
         int payload_length = rtpPacket.getpayload_length();
-        System.out.println("Insere pacote");
+        //System.out.println("Insere pacote");
         byte [] payload = new byte[payload_length];
             rtpPacket.getpayload(payload);
 
             Image image = toolkit.createImage(payload, 0, payload_length);
 
-        receivedContent.add(image);
+        shared.insertImage(image);
     }
 
 

@@ -1,6 +1,7 @@
 package otherServer.SendStream;
 
 import Common.Constants;
+import Common.Stream.ConstantesStream;
 import Common.Stream.RTPpacket;
 import Common.Stream.VideoStream;
 import otherServer.CommuncationBetweenThreads;
@@ -90,7 +91,7 @@ public class SendStream implements Runnable {
                     int image_length = video.getnextframe(sBuf);
 
                     //Builds an Common.Stream.RTPpacket object containing the frame
-                    RTPpacket rtp_packet = new RTPpacket(MJPEG_TYPE, imagenb, imagenb * FRAME_PERIOD, sBuf, image_length);
+                    RTPpacket rtp_packet = new RTPpacket(ConstantesStream.MJPEG_TYPE, imagenb, imagenb * ConstantesStream.FRAME_PERIOD, sBuf, image_length);
 
                     //get to total length of the full rtp packet to send
                     int packet_length = rtp_packet.getlength();
@@ -101,8 +102,6 @@ public class SendStream implements Runnable {
 
                     //send the packet as a DatagramPacket over the UDP socket
                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.port);
-                    System.out.println("TAmanho enviado : " + packet_length);
-                    System.out.println("Seq n: " + rtp_packet.getsequencenumber());
                     RTPsocket.send(senddp);
 
                     //System.out.println("Send frame #" + imagenb);
@@ -121,6 +120,11 @@ public class SendStream implements Runnable {
                 //if we have reached the end of the video file, stop the timer
                 imagenb = 0;
                 video.resetFileReader();
+            }
+            try {
+                Thread.sleep(ConstantesStream.FRAME_PERIOD);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
