@@ -1,21 +1,9 @@
 package otherNode;
 
-import Client.ClientInformParent;
-import Common.Constants;
 import Common.InfoNodo;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.net.*;
 
 /**
  * Currently, there are two developing functions in nodes:
@@ -34,19 +22,51 @@ import java.util.Scanner;
 
 public class oNode {
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException, SocketException {
         System.out.println("[oNode] Started ");
 
+
+        // send hello msg
+        DatagramSocket s ;
+        int portNode = Integer.parseInt(args[0]);
+        int portBoot = Integer.parseInt(args[1]);
+        try {
+            if (portNode > 0) {
+                s = new DatagramSocket(portNode);
+                InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+                InitializeNode i = new InitializeNode(s,boot);
+                i.start();
+
+
+            }
+            else
+                s = new DatagramSocket();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            System.out.println("[Client] Error creating socket");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        /*
         boolean stillAliveParte = true;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
+            InetAddress bootIP = InetAddress.getByName("localhost");
             int parentPort = Integer.parseInt(args[0]);
             InfoNodo parent = new InfoNodo( parentIP, parentPort);
             System.out.println("[Nodo] Endereço nodo pai: " + args[0]);
-            System.out.println("[Nodo] Endereço nodo atual: " + args[1]);
+            System.out.println("[Nodo] Endereço boot: " + args[1]);
+            int bootPort = Integer.parseInt(args[1]);
+            InfoNodo boot = new InfoNodo( bootIP, bootPort);
+
+            System.out.println("[Nodo] Endereço nodo atual: " + args[2]);
 
             ArrayList sons = new ArrayList<>();
-            for (int i = 2; i < args.length; i++){
+            for (int i = 3; i < args.length; i++){
                 System.out.println("[Nodo] Endereço nodos filhos: " + args[i]);
                 InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), Integer.parseInt(args[i]));
                 sons.add(son);
@@ -54,56 +74,21 @@ public class oNode {
 
             // Neste momento, não precisamos de saber os filhos
             // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
-            NodeInformParent comunication_TH = new NodeInformParent(parent, Integer.parseInt(args[1]), sons);
+            //                                                 pai | boot | porta atual | filhos
+            NodeInformParent comunication_TH = new NodeInformParent(parent, boot , Integer.parseInt(args[2]), sons);
             new Thread(comunication_TH).start();
         }
 
-        boolean sendNeighbours = false;
-        if (sendNeighbours) {
-            Socket socket = null;
-            InputStreamReader input = null;
-            OutputStreamWriter output = null;
-            BufferedReader br = null;
-            BufferedWriter bw = null;
 
-            try {
+         */
 
-                socket = new Socket("localhost", Constants.portBootSendNeighbours);
-
-                input = new InputStreamReader(socket.getInputStream());
-                output = new OutputStreamWriter(socket.getOutputStream());
-
-                br = new BufferedReader(input);
-                bw = new BufferedWriter(output);
-
-                Scanner scanner = new Scanner(System.in);
-
-                while (true) {
-                    String msgToSend;
-                    if (args.length > 0) msgToSend = args[0] + "/" + scanner.nextLine();
-                    else msgToSend = "n1" + "/" + scanner.nextLine();
-
-
-                    bw.write(msgToSend);
-                    bw.newLine();
-                    bw.flush();
-
-                    System.out.println("Server: " + br.readLine());
-                    break;
-
-
-                }
-
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
         }
-
 
     }
 
-}
+
+
+
 
 
 

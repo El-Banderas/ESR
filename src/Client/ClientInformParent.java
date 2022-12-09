@@ -2,6 +2,7 @@ package Client;
 
 
 import Common.Constants;
+import Common.InfoNodo;
 import Common.MessageAndType;
 import Common.Stream.ConstantesStream;
 import Common.Stream.RTPpacket;
@@ -18,6 +19,9 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.io.*;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Producer
@@ -79,7 +83,6 @@ public class ClientInformParent implements Runnable {
         timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeToConsiderNodeLost);
         while (true) {
             try {
-
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 

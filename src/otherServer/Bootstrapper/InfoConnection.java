@@ -3,9 +3,7 @@ package otherServer.Bootstrapper;
 import Common.Constants;
 import Common.InfoNodo;
 
-import java.time.LocalDateTime;
-
-public class InfoConnection {
+public class InfoConnection implements Comparable<InfoConnection> {
     public InfoNodo otherNode;
     public double delay;
 
@@ -21,6 +19,8 @@ public class InfoConnection {
         this.interested = interested;
         this.isAlive = true;
     }
+
+
 /*
     public void updateTimeLastConnection(int time){
         timeLastMessage = time;
@@ -30,6 +30,10 @@ public class InfoConnection {
         interested = update;
     }
 */
+
+
+
+
     /**
      * Se calhar dá para usar apenas o LocalDateTime, experimentar
      * Checks if the node is alive
@@ -61,4 +65,13 @@ public class InfoConnection {
                 ", interested=" + interested +
                 '}';
     }
+
+
+    public int compareTo(InfoConnection that){
+        return (int) (this.delay - that.delay);
+    }
+
+
+
 }
+
