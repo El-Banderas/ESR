@@ -11,7 +11,7 @@ public class ConstantesStream {
      * If we don't want to, when we resume the video, it will continue the reproduction.
      *
      */
-    public static boolean dropPacketsWhenPause = false;
+    public static boolean dropPacketsWhenPause = true;
 
     public static int maxSizeBuffer = 10;
 
