@@ -72,7 +72,7 @@ public class StreamWindow extends Thread {
 
         //init para a parte do cliente
         //--------------------------
-        cTimer = new Timer(20, new clientTimerListener());
+        cTimer = new Timer(0, new clientTimerListener());
         cTimer.setInitialDelay(0);
         cTimer.setCoalesce(true);
 

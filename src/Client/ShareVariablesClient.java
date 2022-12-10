@@ -39,6 +39,7 @@ public class ShareVariablesClient {
         }
     }
     public void insertImage(Image img){
+        System.out.println("Insere imagem");
         receivedContent.add(img);
         sizeQueue++;
     }
@@ -49,6 +50,7 @@ public class ShareVariablesClient {
 
     public Image removeImage(){
         sizeQueue--;
+        System.out.println("Remove imagem");
         return receivedContent.remove();
     }
 

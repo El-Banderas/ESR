@@ -102,6 +102,7 @@ public class SendStream implements Runnable {
                     //send the packet as a DatagramPacket over the UDP socket
                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.port);
                     RTPsocket.send(senddp);
+                    System.out.println("Send stream packet");
 
                 } catch (Exception ex) {
                     System.out.println("Exception caught: " + ex);
