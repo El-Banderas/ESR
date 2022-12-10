@@ -56,6 +56,7 @@ public class oNode {
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
             InetAddress bootIP = InetAddress.getByName("localhost");
+            InetAddress nodoIP = InetAddress.getByName("localhost");
             int parentPort = Integer.parseInt(args[0]);
             InfoNodo parent = new InfoNodo(parentIP, parentPort);
             System.out.println("[Nodo] Endereço nodo pai: " + args[0]);
@@ -64,19 +65,29 @@ public class oNode {
             InfoNodo boot = new InfoNodo(bootIP, bootPort);
 
             System.out.println("[Nodo] Endereço nodo atual: " + args[2]);
-
+            int thisPortNet = Integer.parseInt(args[2]);
+            int thisPortStream = Integer.parseInt(args[3]);
+            InfoNodo thisNode = new InfoNodo(nodoIP, thisPortNet, thisPortStream);
             ArrayList<InfoNodo> sons = new ArrayList<>();
-            for (int i = 3; i < args.length; i++) {
-                System.out.println("[Nodo] Endereço nodos filhos: " + args[i]);
-                InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), Integer.parseInt(args[i]));
+            for (int i = 4; i < args.length; i+=2) {
+                System.out.println("[Nodo] Endereço nodos filhos: " + args[i] + " " + args[i+1]);
+                int sonNetPort = Integer.parseInt(args[i]);
+                int sonStreamPort = Integer.parseInt(args[i+1]);
+                InetAddress sonStreamIP = InetAddress.getByName("localhost");
+                InfoNodo son = new InfoNodo(sonStreamIP, sonNetPort, sonStreamPort);
                 sons.add(son);
             }
+
+            ShareNodes shared = new ShareNodes();
 
             // Neste momento, não precisamos de saber os filhos
             // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
             //                                                 pai | boot | porta atual | filhos
-            NodeInformParent comunication_TH = new NodeInformParent(parent, boot, Integer.parseInt(args[2]), sons);
+            NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
             new Thread(comunication_TH).start();
+
+            StreamNode stream_TH = new StreamNode(thisNode, shared);
+            new Thread(stream_TH).start();
 
         }
 

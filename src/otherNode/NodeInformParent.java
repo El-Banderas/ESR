@@ -17,10 +17,10 @@ import java.util.ArrayList;
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
  */
 public class NodeInformParent implements Runnable {
-    public int thisPort = 0;
+    public InfoNodo thisNode;
 
     // Necessary to reconect after lost parent.
-private InfoNodo bootstrapper;
+    private InfoNodo bootstrapper;
     public InfoConnection parent;
 
     // This array is constant, the neibourghs are always the same.
@@ -29,7 +29,7 @@ private InfoNodo bootstrapper;
     // This array is determined by the formulated tree from the bootstrapper.
     // Based on the state of the connections.
     // We don't need to know the delays
-    public ArrayList<InfoNodo> interestedSons;
+   // public ArrayList<InfoNodo> interestedSons;
     // The sons come from XML file, we believe that they are alive, but we can't confirm that.
     // The only ones we know are alive are the interested sons, because we receive message from them.
     public ArrayList<InfoNodo> sons;
@@ -37,30 +37,35 @@ private InfoNodo bootstrapper;
     // Used to send messages, always the same.
     private DatagramSocket socket;
 
+    private ShareNodes shared;
+
+
     /**
      * Depois tem de poder receber a mensagem do XML
      * Node needs this info because:
      * @param parent - To send wantsStream, but will get this node with stillAlives. Ao receber o XML, pode fazer getAdress do pai
      * @param boot - When the current node lost connection with parent node.
-     * @param thisPort - To create socket (temporária).
+     * @param thisNode - To create socket (temporária).
      * @param sons - This info comes from XML file.
      */
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons) {
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, ArrayList<InfoNodo> sons, ShareNodes shared) {
         // O delay tem de vir do xml, alterar depois
+        // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
-        this.thisPort = thisPort;
+        this.thisNode = thisNode;
         this.sons = sons;
         this.neibourghs = new ArrayList<>();
-        this.interestedSons = new ArrayList<>();
+        //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
+        this.shared = shared;
     }
 
         @Override
     public void run() {
 
         try {
-            if (this.thisPort > 0)
-                socket = new DatagramSocket(this.thisPort);
+            if (this.thisNode.portNet > 0)
+                socket = new DatagramSocket(this.thisNode.portNet);
             else
                 socket = new DatagramSocket();
                 socket.setSoTimeout(Constants.timeoutSockets);
@@ -70,7 +75,6 @@ private InfoNodo bootstrapper;
         }
 
         System.out.println("Node on");
-        byte[] buf = new byte[100];
         // De X em X tempo, envia para o parentport um hello com timestamp
         // Falta controlar se recebeu mensagem para atualizar pai.
         while(true) {
@@ -124,7 +128,7 @@ private InfoNodo bootstrapper;
         try {
 
             for (InfoNodo son : sons) {
-                SendData.sendStillAliveMSG(socket, son.ip, son.port);
+                SendData.sendStillAliveMSG(socket, son.ip, son.portNet);
             }
         } catch (IOException e) {
             System.out.println("[Node] ERROR MESSAGE SENDING LOST SON MSG ");
@@ -152,14 +156,15 @@ private InfoNodo bootstrapper;
                 receiveLostNodeMSG(received.packet);
                 break;
 
-            case Constants.streamContent:
-                receiveStreamContentMSG(received.packet);
-                break;
+            //case Constants.streamContent:
+            //receiveStreamContentMSG(received.packet);
+            //break;
 
 
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
-                receiveMaybeRTPStream(received.packet);
+                System.out.println("Undefined message, rtp packets are handled in other thread/port.");
+                //receiveMaybeRTPStream(received.packet);
         }
     }
 
@@ -172,18 +177,16 @@ private InfoNodo bootstrapper;
      * We should join them, with a ?timer? that wakes up, see if there are interested, and send message.
      * In this way, we accumulate messages, but that's harder to implement.
      *
-     * Também há uma cena:
-     * Nós mandamos stillAlives quando recebemos uma mensagem, e por exemplo, quando recebe stream, está sempre a receber coisas.
-     * Logo, manda **imensas** mensagens. Nós sabemos como resolver, é meter uma thread separada, que de X em X tempo acorda e manda mensagem,
-     * Mas começa a complicar, e para o trabalho o pc pode não aguentear, porque cada nodo teria 2 thread, apesar de uma não fazer muita coisa.
      * @param packet
      */
     private void receivedWantStreamMSG(DatagramPacket packet) {
-        InfoNodo interestedSon = new InfoNodo(packet.getAddress(), packet.getPort());
-        boolean alreadyInterested = interestedSons.stream().anyMatch(oneSon -> InfoNodo.compareInfoNodes(oneSon, interestedSon));
-        if (!alreadyInterested) interestedSons.add(interestedSon);
+//        InfoNodo interestedSon = new InfoNodo(packet.getAddress(), packet.getPort());
+        InfoNodo wantStream = ReceiveData.receivedWantStream(packet);
+        // Check if the sender of message is already registed.
+
+        shared.maybeAddInterestedSon(wantStream);
         try {
-            SendData.wantsStream(socket, parent.otherNode);
+            SendData.wantsStream(socket, parent.otherNode, thisNode.portStream);
         } catch (IOException e) {
             System.out.println("[Node] Error sending want Stream Message");
             throw new RuntimeException(e);
@@ -290,7 +293,7 @@ private InfoNodo bootstrapper;
 */
     /**
      * Send to parent that a node is lost
-     * FIXME: Será que devia ir para o bootstrapper?
+     * NÂO DEVE APARECER
      * @param packet
      */
     private void receiveLostNodeMSG(DatagramPacket packet) {
@@ -320,23 +323,11 @@ private InfoNodo bootstrapper;
             byte[] content = ReceiveData.receiveStreamContentMSG(packet);
 
             System.out.println("Receive stream content, send to sons");
-            for (InfoNodo son : interestedSons){
+            for (InfoNodo son : shared.interestedSons){
                 SendData.sendStreamContentMSG(socket, son, content);
             }
     }
 
 
-    private void receiveMaybeRTPStream(DatagramPacket packet) {
-        for (InfoNodo son : interestedSons){
-            try {
-                System.out.println("Envia para o filho");
-                System.out.println(son);
-                SendData.sendStreamContentMSG(socket, son, packet.getData());
-            } catch (IOException e) {
-                System.out.println("What son not receive: ");
-                System.out.println(son);
-                throw new RuntimeException(e);
-            }
-        }
-    }
+
 }

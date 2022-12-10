@@ -1,28 +1,43 @@
 package Common;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 
 public class InfoNodo {
     public String idNodo;
     public InetAddress ip;
-    public int port;
+    public int portNet;
+    public int portStream;
 
 
-  
-    public InfoNodo(InetAddress ip, int port ) {
-        this.idNodo = InfoNodo.generateId(ip, port);
+    /**
+     * Server and client only have one port to send and receive data.
+     * @param ip
+     * @param portNet
+     */
+    public InfoNodo(InetAddress ip, int portNet) {
+        this.idNodo = InfoNodo.generateId(ip, portNet);
         this.ip = ip;
-        this.port=port;
+        this.portNet = portNet;
+        this.portStream = -1;
     }
-    public InfoNodo(String id, InetAddress ip, int port ) {
+
+    /**
+     * Nodes differenciate the port of stream with the port of network.
+     * @param ip
+     * @param portNet
+     * @param portStream
+     */
+    public InfoNodo(InetAddress ip, int portNet, int portStream) {
+        this.idNodo = InfoNodo.generateId(ip, portNet);
+        this.ip = ip;
+        this.portNet = portNet;
+        this.portStream = portStream;
+    }
+
+    public InfoNodo(String id, InetAddress ip, int portNet) {
         this.idNodo = id;
         this.ip = ip;
-        this.port=port;
+        this.portNet = portNet;
     }
 
     public String getidNodo() { return idNodo; }
@@ -35,17 +50,17 @@ public class InfoNodo {
 
     @Override
     public String toString() {
-        return "{ ip - " + ip.toString() +" " + " porta - " + port + "}";
+        return "{ ip - " + ip.toString() +" " + " porta - " + portNet + "}";
     }
 
-    public String toStringCon() {return "{  id - " + idNodo + " || ip -"  + ip.toString() + " || " + " porta - " + port + "}"; }
+    public String toStringCon() {return "{  id - " + idNodo + " || ip -"  + ip.toString() + " || " + " porta - " + portNet + "}"; }
 
     public static String generateId(InetAddress ip, int port){
         return ip.toString()+"-"+ port;
     }
 
     public static boolean compareInfoNodes (InfoNodo in1, InfoNodo in2){
-        if (in1.ip == in2.ip && in1.port == in2.port) return true;
+        if (in1.ip == in2.ip && in1.portNet == in2.portNet) return true;
         else return false;
     }
 }

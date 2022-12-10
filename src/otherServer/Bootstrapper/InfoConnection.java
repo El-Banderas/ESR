@@ -58,7 +58,7 @@ public class InfoConnection implements Comparable<InfoConnection> {
     @Override
     public String toString() {
         return "InfoConnection{" +
-                "otherNode=" + otherNode.ip + " and port " + otherNode.port +
+                "otherNode=" + otherNode.ip + " and port " + otherNode.portNet +
                 ", delay=" + delay +
                 ", timeLastMessage=" + timeLastMessage +
                 ", isAlive=" + isAlive +

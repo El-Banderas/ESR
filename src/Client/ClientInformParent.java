@@ -141,7 +141,7 @@ public class ClientInformParent implements Runnable {
         @Override
         public void run() {
             try {
-                SendData.wantsStream(socket, parent);
+                SendData.wantsStream(socket, parent, thisPort);
                 //System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

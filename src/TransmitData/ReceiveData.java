@@ -11,6 +11,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,6 +89,9 @@ public class ReceiveData {
 
 
     public static byte[] receiveStreamContentMSG(DatagramPacket packet) throws UnknownHostException {
+
+        System.out.println("\n\n\n\nNão devia aparecer \n\n\n");
+
         // To calculate sizes, this could be put in constants, but I don't know the sizes.
         // Change later.
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
@@ -103,6 +107,40 @@ public class ReceiveData {
 
         return content;
     }
+
+    /**
+     * When receives stream, sends to interested sons.
+     * @param socket
+     * @param interestedSons
+     * @throws IOException
+     */
+    public static void nodeReceiveStream(DatagramSocket socket, ArrayList<InfoNodo> interestedSons) throws IOException {
+        byte[] buf = new byte[15000];
+        DatagramPacket packet
+                = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+        for (InfoNodo son : interestedSons){
+            try {
+               // System.out.println("Envia para o filho");
+               // System.out.println(son);
+                SendData.sendStreamContentMSG(socket, son, packet.getData());
+            } catch (IOException e) {
+                System.out.println("What son not receive: ");
+                System.out.println(son);
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+    public static InfoNodo receivedWantStream(DatagramPacket packet) {
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int portWantStream = msg.getInt();
+        return new InfoNodo(packet.getAddress(), packet.getPort(), portWantStream);
+
+    }
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
             byte[] buf = new byte[15000];
             DatagramPacket packet
@@ -113,4 +151,7 @@ public class ReceiveData {
             return received;
 
         }
+
+
+
 }
