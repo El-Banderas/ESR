@@ -75,7 +75,7 @@ public class Constants {
      * Cliente1 : 8010 8008 8020
      * Cliente2 : 8009 8008 8021
      * Node 1: 8009 8008 8010 8020
-     * Node 2: 8008 8008 8009 8021
+     * Node 2: 8008 8008 8009 8021 8010
      * Server: 8009 8008
      *
      * Client arguments: parent port // boot // this port

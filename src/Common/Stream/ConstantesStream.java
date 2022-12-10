@@ -13,6 +13,8 @@ public class ConstantesStream {
      */
     public static boolean dropPacketsWhenPause = true;
 
+    public static boolean showStream = true;
+
     public static int maxSizeBuffer = 10;
 
 }

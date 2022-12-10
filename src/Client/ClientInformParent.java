@@ -109,7 +109,7 @@ public class ClientInformParent implements Runnable {
                     window = new StreamWindow(shared);
                     startConsumer = true;
                     System.out.println("Start consumer");
-                    window.start();
+                  if (ConstantesStream.showStream)  window.start();
                 }
         }
 
