@@ -1,7 +1,9 @@
 package otherServer.Bootstrapper;
 
 import Common.InfoNodo;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -85,6 +87,9 @@ public class Typology {
         this.bestPaths = bestPaths;
     }
 
+
+    // check for valid IP
+    // separate servers, nodes & clients
     public void parse(String configurationFile) throws IOException {
 
 
@@ -187,10 +192,15 @@ public class Typology {
         }
 
         // probably will set a small sleep here (for now: 100 ms)
-        Thread.sleep(100);
+        //Thread.sleep(100);
         recalculateBestPathsTree();
 
     }
+
+
+
+
+
 
     /*
         Method to recalculate the best Paths Tree and also populates it
@@ -342,7 +352,7 @@ public class Typology {
 
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
         Typology typologyTest = new Typology();
         typologyTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/biggerConfiguration.txt");
         typologyTest.setCompleteNetwork();
@@ -368,11 +378,11 @@ public class Typology {
 
         // Activate some nodes
         typologyTest.activateConnection(typologyTest.getNodes().get("s1"),new Connection(typologyTest.getNodes().get("s1") ,typologyTest.getNodes().get("n1"),2,1), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n2"),11,2), false );
+        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("n2"),11,2), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("n3"),1,2), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("c2"),2,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n3"),3,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n2"),1,3), false );
+        //typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n3"),3,3), false );
+        typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n2"),3,3), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n4"),2,3), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n5"),5,3), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n4"),new Connection(typologyTest.getNodes().get("n4") ,typologyTest.getNodes().get("n5"),2,4), false );
@@ -392,6 +402,7 @@ public class Typology {
         Map<InfoNodo,List <Connection>> bestPaths = typologyTest.getBestPaths();
         printInfoFromMap(bestPaths);
 
+        /*
         // Test getFather
         // When invoking the function, checking for null elements needs to be done
         System.out.println("\n\n");
@@ -406,12 +417,27 @@ public class Typology {
         // Test getNeighbours
         // When invoking the function, checking for empty list
         System.out.println("\n\n");
+
         System.out.println("Test getNeighbours");
         List<InfoNodo> neighboursN2 = typologyTest.getNeighbours(typologyTest.getNodes().get("n2"));
         for (InfoNodo neighbour : neighboursN2){
             System.out.println(neighbour.toStringCon());
-        }
+        }*/
 
+
+        // Test XML
+        System.out.println("\n\n");
+        XMLParser xmlParser = new XMLParser();
+        String xml = xmlParser.generateXML(typologyTest.nodes, typologyTest.bestPaths);
+        System.out.println(xmlParser.prettyPrintByTransformer(xml,1,false));
+        System.out.println("\n\n");
+        xmlParser.parseXML(xml);
+
+        byte[] xmlBytes = xmlParser.fromStringToBytes(xml);
+        String xml2 = xmlParser.fromBytesToString(xmlBytes);
+        System.out.println("\n\n");
+        System.out.println(xmlParser.prettyPrintByTransformer(xml2,1,false));
+        //System.out.println(xml.getXMLString());
 
     }
 
@@ -427,6 +453,9 @@ public class Typology {
             }
         }
     }
+
+
+    // função de update à aresta
 
 }
 
