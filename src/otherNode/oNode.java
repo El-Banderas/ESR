@@ -4,6 +4,7 @@ import Common.InfoNodo;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 
 /**
  * Currently, there are two developing functions in nodes:
@@ -25,33 +26,33 @@ public class oNode {
     public static void main(String[] args) throws UnknownHostException, SocketException {
         System.out.println("[oNode] Started ");
 
-
-        // send hello msg
-        DatagramSocket s ;
-        int portNode = Integer.parseInt(args[0]);
-        int portBoot = Integer.parseInt(args[1]);
-        try {
-            if (portNode > 0) {
-                s = new DatagramSocket(portNode);
-                InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
-                InitializeNode i = new InitializeNode(s,boot);
-                i.start();
-
-
-            }
-            else
-                s = new DatagramSocket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-            System.out.println("[Client] Error creating socket");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+boolean initNode = false;
+if (initNode) {
+    // send hello msg
+    DatagramSocket s;
+    int portNode = Integer.parseInt(args[0]);
+    int portBoot = Integer.parseInt(args[1]);
+    try {
+        if (portNode > 0) {
+            s = new DatagramSocket(portNode);
+            InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"), portBoot);
+            InitializeNode i = new InitializeNode(s, boot);
+            i.start();
 
 
+        } else
+            s = new DatagramSocket();
+    } catch (SocketException e) {
+        e.printStackTrace();
+        System.out.println("[Client] Error creating socket");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+}
 
 
-        /*
+
         boolean stillAliveParte = true;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
@@ -65,7 +66,7 @@ public class oNode {
 
             System.out.println("[Nodo] Endereço nodo atual: " + args[2]);
 
-            ArrayList sons = new ArrayList<>();
+            ArrayList<InfoNodo> sons = new ArrayList<>();
             for (int i = 3; i < args.length; i++){
                 System.out.println("[Nodo] Endereço nodos filhos: " + args[i]);
                 InfoNodo son = new InfoNodo(InetAddress.getByName("localhost"), Integer.parseInt(args[i]));
@@ -80,7 +81,6 @@ public class oNode {
         }
 
 
-         */
 
         }
 
