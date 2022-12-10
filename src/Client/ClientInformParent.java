@@ -98,7 +98,7 @@ public class ClientInformParent implements Runnable {
     private void handleReceivedMessage(MessageAndType received) throws IOException {
         switch (received.msgType) {
             case Constants.sitllAlive:
-                System.out.println();
+                //System.out.println();
                 break;
             default:
                 RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
@@ -129,6 +129,11 @@ public class ClientInformParent implements Runnable {
             shared.insertImage(image);
 
         else shared.replaceImage(image);
+        try {
+            Thread.sleep(ConstantesStream.FRAME_PERIOD);
+        } catch (InterruptedException error) {
+            throw new RuntimeException(error);
+        }
     }
 
     class sendStillAlive extends TimerTask {
@@ -137,7 +142,7 @@ public class ClientInformParent implements Runnable {
         public void run() {
             try {
                 SendData.wantsStream(socket, parent);
-                System.out.println("Send still alive");
+                //System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

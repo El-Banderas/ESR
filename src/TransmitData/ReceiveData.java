@@ -22,9 +22,9 @@ public class ReceiveData {
 
         InfoNodo other = new InfoNodo(packet.getAddress(), packet.getPort());
 
-        boolean interested;
+ //       boolean interested;
         int type = msg.getInt();
-        interested = type != Constants.streamWanted;
+//        interested = type != Constants.sitllAliveNoInterest;
 
         double msgTime = msg.getDouble();
         double now = Constants.getCurrentTime();

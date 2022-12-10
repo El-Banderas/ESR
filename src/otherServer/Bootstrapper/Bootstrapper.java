@@ -159,6 +159,7 @@ public class Bootstrapper implements Runnable{
             if (differenceLastTimeStreamInterested > Constants.timeToConsiderNodeLost){
                 interested = false;
                 shared.setSendStream(false);
+                System.out.println("Check stream interested");
             }
         }
     }
@@ -191,6 +192,7 @@ public class Bootstrapper implements Runnable{
             this.interested = true;
             shared.setSendStream(true);
         }
+        lastTimeSomeoneInterested = info.timeLastMessage;
     }
 
 
