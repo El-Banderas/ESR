@@ -186,13 +186,14 @@ public class Bootstrapper implements Runnable{
 
     private void receivedStreamWanted(DatagramPacket packet) {
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
+        lastTimeSomeoneInterested = info.timeLastMessage;
+        
         // Necessary to warn stream thread that stream must start/stop.
         if (!this.interested){
             System.out.println("Change interess");
             this.interested = true;
             shared.setSendStream(true);
         }
-        lastTimeSomeoneInterested = info.timeLastMessage;
     }
 
 

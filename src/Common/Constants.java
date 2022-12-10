@@ -15,7 +15,12 @@ public class Constants {
      */
     // Still alive messages
     final public static  int sitllAlive = 5;
+    /**
+     * STREAM MESSAGES
+     */
     final public static  int streamWanted = 6;
+
+    final public static  int streamContent = 9;
     // Miliseconds
     final public static int timeoutSockets = 3000;
     // Miliseconds
@@ -61,10 +66,7 @@ public class Constants {
     public static int arraySize = 2048;
 
 
-    /**
-     * STREAM MESSAGES
-     */
-    final public static  int streamContent = 9;
+
 
 
     /**
