@@ -344,7 +344,7 @@ public class Typology {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Typology typologyTest = new Typology();
-        typologyTest.parse("C:/Users/migue/Desktop/ESR/src/otherServer/biggerConfiguration.txt");
+        typologyTest.parse("C:\\Users\\Marco\\Documents\\GitHub\\ESR\\src\\otherServer\\Config\\test.txt");
         typologyTest.setCompleteNetwork();
 
         // Print the complete network
@@ -367,9 +367,11 @@ public class Typology {
          */
 
         // Activate some nodes
+
         typologyTest.activateConnection(typologyTest.getNodes().get("s1"),new Connection(typologyTest.getNodes().get("s1") ,typologyTest.getNodes().get("n1"),2,1), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n2"),11,2), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("n3"),1,2), false );
+        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("n2"),11,2), false );
+        //typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("s1"),1,2), false );
+        /*
         typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("c2"),2,3), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n3"),3,3), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n2"),1,3), false );
@@ -378,6 +380,8 @@ public class Typology {
         typologyTest.activateConnection(typologyTest.getNodes().get("n4"),new Connection(typologyTest.getNodes().get("n4") ,typologyTest.getNodes().get("n5"),2,4), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n5"),new Connection(typologyTest.getNodes().get("n5") ,typologyTest.getNodes().get("n2"),2,4), false );
         typologyTest.activateConnection(typologyTest.getNodes().get("n5"),new Connection(typologyTest.getNodes().get("n5") ,typologyTest.getNodes().get("c1"),2,4), false );
+
+         */
 
 
 

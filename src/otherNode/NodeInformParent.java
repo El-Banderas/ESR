@@ -6,10 +6,12 @@ import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import otherServer.Bootstrapper.Connection;
 import otherServer.Bootstrapper.InfoConnection;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -45,7 +47,7 @@ private InfoNodo bootstrapper;
      * @param thisPort - To create socket (temporária).
      * @param sons - This info comes from XML file.
      */
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons) {
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons, DatagramSocket socket) {
         // O delay tem de vir do xml, alterar depois
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
         this.thisPort = thisPort;
@@ -53,21 +55,12 @@ private InfoNodo bootstrapper;
         this.neibourghs = new ArrayList<>();
         this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
+        this.socket = socket;
     }
 
         @Override
     public void run() {
 
-        try {
-            if (this.thisPort > 0)
-                socket = new DatagramSocket(this.thisPort);
-            else
-                socket = new DatagramSocket();
-                socket.setSoTimeout(Constants.timeoutSockets);
-        } catch (SocketException e) {
-            e.printStackTrace();
-            System.out.println("[Client] Error creating socket");
-        }
 
         System.out.println("Node on");
         byte[] buf = new byte[100];
@@ -138,6 +131,14 @@ private InfoNodo bootstrapper;
             case Constants.sitllAlive:
                 receivedStillAliveMSG(received.packet);
                 break;
+
+            case Constants.timeStamp:
+                // receive packet do nodo c timestamp e calcula delay
+                receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisPort);
+
+            case Constants.ConnectionMsg:
+                Connection n = ReceiveData.receiveConnection(received.packet);
+                SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.port);
 
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
@@ -324,6 +325,25 @@ private InfoNodo bootstrapper;
                 SendData.sendStreamContentMSG(socket, son, content);
             }
     }
+
+    public  Connection receivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta) throws IOException {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        double time = msg.getDouble();
+        int numHops= msg.getInt();
+
+        InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
+        InfoNodo to = new InfoNodo(ip,porta);
+        double delay = Constants.getCurrentTime()-time;
+        Connection n = new Connection(from, to, delay, numHops);
+
+
+        SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.port);
+
+        return n ;
+    }
+
 
 
 }

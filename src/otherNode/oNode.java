@@ -4,6 +4,7 @@ import Common.InfoNodo;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 
 /**
  * Currently, there are two developing functions in nodes:
@@ -27,12 +28,13 @@ public class oNode {
 
 
         // send hello msg
-        DatagramSocket s ;
-        int portNode = Integer.parseInt(args[0]);
+
+        DatagramSocket s = new DatagramSocket();
+        int portNode = Integer.parseInt(args[2]);
         int portBoot = Integer.parseInt(args[1]);
         try {
             if (portNode > 0) {
-                s = new DatagramSocket(portNode);
+                 s = new DatagramSocket(portNode);
                 InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
                 InitializeNode i = new InitializeNode(s,boot);
                 i.start();
@@ -40,7 +42,7 @@ public class oNode {
 
             }
             else
-                s = new DatagramSocket();
+                  s = new DatagramSocket();
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
@@ -49,9 +51,6 @@ public class oNode {
         }
 
 
-
-
-        /*
         boolean stillAliveParte = true;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
@@ -75,12 +74,12 @@ public class oNode {
             // Neste momento, não precisamos de saber os filhos
             // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
             //                                                 pai | boot | porta atual | filhos
-            NodeInformParent comunication_TH = new NodeInformParent(parent, boot , Integer.parseInt(args[2]), sons);
+            NodeInformParent comunication_TH = new NodeInformParent(parent, boot , Integer.parseInt(args[2]), sons, s);
             new Thread(comunication_TH).start();
         }
 
 
-         */
+
 
         }
 

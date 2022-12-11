@@ -2,6 +2,7 @@ package TransmitData;
 
 import Common.Constants;
 import Common.InfoNodo;
+import otherServer.Bootstrapper.Connection;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,6 +23,31 @@ public class SendData {
         System.out.println("Connecting to Server ... \n");
         sendData(socket, bytes, destIP, destPort);
     }
+
+    public static void sendTimeStamp(DatagramSocket socket, InetAddress destIP, int destPort) throws IOException {
+        double dateInSec = Constants.getCurrentTime();
+        // int msg timestamp 22
+        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.timeStamp).putDouble(dateInSec).putInt(1).array();
+        sendData(socket, bytes, destIP, destPort);
+    }
+
+
+    public static void sendConnection(DatagramSocket socket, Connection c, InetAddress destIP, int destPort) throws IOException {
+
+        double delay = c.delay;
+        byte[] info1 = c.from.NodeToBytes();
+        int size1 = info1.length;
+        byte[] info2 = c.to.NodeToBytes();
+        int size2 = info2.length;
+
+        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.ConnectionMsg).putInt(c.numHops+1).putInt(size1).putInt(size2).put(info1).put(info2).putDouble(delay).array();
+        sendData(socket, bytes, destIP, destPort);
+    }
+
+
+
+
+
 
 
 
