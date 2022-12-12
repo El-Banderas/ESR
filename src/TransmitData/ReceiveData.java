@@ -3,10 +3,12 @@ package TransmitData;
 import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
+import org.xml.sax.SAXException;
 import otherServer.Bootstrapper.Connection;
 import otherServer.Bootstrapper.InfoConnection;
 import otherServer.Bootstrapper.Typology;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -155,6 +157,47 @@ public class ReceiveData {
         }
 
     }
+
+    public static Connection BootreceivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta) throws IOException, ParserConfigurationException, SAXException {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        double time = msg.getDouble();
+        int numHops= msg.getInt();
+
+        InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
+        InfoNodo to = new InfoNodo(ip,porta);
+        double delay = Constants.getCurrentTime()-time;
+        Connection co = new Connection(from, to, delay, numHops);
+        //XMLParser parser = new XMLParser();
+        // parser.parseXML(xml);
+
+
+        return co;
+    }
+
+
+
+    public static Connection receivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta, DatagramSocket s, InfoConnection n) throws IOException, ParserConfigurationException, SAXException {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        double time = msg.getDouble();
+        int numHops= msg.getInt();
+
+        InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
+        InfoNodo to = new InfoNodo(ip,porta);
+        double delay = Constants.getCurrentTime()-time;
+        Connection co = new Connection(from, to, delay, numHops);
+        //XMLParser parser = new XMLParser();
+        // parser.parseXML(xml);
+
+
+        SendData.sendConnection(s,co,n.otherNode.ip,n.otherNode.portNet);
+
+        return co;
+    }
+
     public static InfoNodo receivedWantStream(DatagramPacket packet) {
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
 

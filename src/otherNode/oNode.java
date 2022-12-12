@@ -1,6 +1,7 @@
 package otherNode;
 
 import Common.InfoNodo;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.io.IOException;
 import java.net.*;
@@ -35,6 +36,7 @@ public class oNode {
         InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
         try {
             if (portNode > 0) {
+                System.out.println("Socket criado porta : " + portNode);
                  s = new DatagramSocket(portNode);
            //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
                 InitializeNode i = new InitializeNode(s,boot);

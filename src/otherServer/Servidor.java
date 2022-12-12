@@ -44,7 +44,7 @@ public class Servidor //extends JFrame implements ActionListener
                 InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
 
                 CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
-
+                System.out.println("OLÀÀÀÀ");
                 // Precisa: serverInfo; filho; coisa partilhada
                 Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
                 new Thread(bootstrapper).start();
@@ -57,7 +57,6 @@ public class Servidor //extends JFrame implements ActionListener
                 int sonPortStream = Integer.parseInt(argv[1]);
 
                 InfoNodo sonInfo = new InfoNodo(sonIP, sonPortNet, sonPortStream);
-
 
                 InetAddress thisIP = InetAddress.getByName("localhost");
                 int thisPort = Integer.parseInt(argv[1]);
