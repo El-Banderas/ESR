@@ -256,6 +256,20 @@ public class Typology {
         Method to recalculate the best Paths Tree and also populates it
         Uses the Prim's algorithm
      */
+
+    public List<Connection> getConnectedToServer(InfoNodo server){
+        List<Connection> connectedToServer = null;
+
+        for(InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())){
+            if (node.portNet == server.portNet && node.getIp().equals(server.getIp())){
+                connectedToServer = activeNetwork.get(node);
+            }
+        }
+
+        return connectedToServer;
+    }
+
+
     public void recalculateBestPathsTree() {
 
         // to store the minimum spanning tree (best Paths Trees)
@@ -270,7 +284,8 @@ public class Typology {
         // starting at the server
         visited.add(nodes.get("s1"));
 
-        for (Connection connection : activeNetwork.get(nodes.get("s1"))) {
+        List<Connection> connectedToServer = getConnectedToServer(nodes.get("s1"));
+        for (Connection connection : connectedToServer) {
             priorityQueue.add(connection);
         }
 

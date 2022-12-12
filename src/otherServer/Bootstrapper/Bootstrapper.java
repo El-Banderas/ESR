@@ -105,7 +105,7 @@ public class Bootstrapper implements Runnable{
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
-            this.topologyTypology.parse("C:\\Users\\Diogo\\Desktop\\Diogo\\Trabalhos da escola\\4ano1sem\\redes\\ESR\\src\\otherServer\\Config\\test.txt");
+            this.topologyTypology.parse("src/otherServer/Config/test.txt");
             this.topologyTypology.setCompleteNetwork();
         } catch (IOException | InterruptedException e) {
             System.out.println("[SERVERDATA] Error in parte of config file.");
