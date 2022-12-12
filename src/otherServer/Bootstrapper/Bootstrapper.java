@@ -7,16 +7,10 @@ import TransmitData.ReceiveData;
 import TransmitData.SendData;
 import otherServer.CommuncationBetweenThreads;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.net.UnknownHostException;
 
 
@@ -77,9 +71,9 @@ public class Bootstrapper implements Runnable{
         this.topologyTypology = new Typology();
         // Creation of server
         try {
-            if (this.serverInfo.port > 0){
-                System.out.println("Criado na porta " + this.serverInfo.port);
-                socket = new DatagramSocket(this.serverInfo.port);
+            if (this.serverInfo.portNet > 0){
+                System.out.println("Criado na porta " + this.serverInfo.portNet);
+                socket = new DatagramSocket(this.serverInfo.portNet);
         }
             else {
                 socket = new DatagramSocket();
@@ -159,6 +153,7 @@ public class Bootstrapper implements Runnable{
             if (differenceLastTimeStreamInterested > Constants.timeToConsiderNodeLost){
                 interested = false;
                 shared.setSendStream(false);
+                System.out.println("Check stream interested");
             }
         }
     }
@@ -188,6 +183,8 @@ public class Bootstrapper implements Runnable{
 
     private void receivedStreamWanted(DatagramPacket packet) {
         InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
+        lastTimeSomeoneInterested = info.timeLastMessage;
+
         // Necessary to warn stream thread that stream must start/stop.
         if (!this.interested){
             System.out.println("Change interess");
@@ -222,7 +219,7 @@ public class Bootstrapper implements Runnable{
      */
     private void sendStillAlive() {
         try {
-            SendData.sendStillAliveMSG(socket, sonInfo.ip, sonInfo.port);
+            SendData.sendStillAliveMSG(socket, sonInfo.ip, sonInfo.portNet);
         }
         catch (Exception e){
             System.out.println("[Boot] Error sending still alive msg");

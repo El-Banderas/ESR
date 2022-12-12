@@ -4,115 +4,149 @@ package Client;
 import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
+import Common.Stream.ConstantesStream;
+import Common.Stream.RTPpacket;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
-import otherServer.Bootstrapper.InfoConnection;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * Producer
+ * <p>
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
+ * <p>
+ * TODO:
+ * Não ignorar os números de sequência, dar-lhes importância;
  */
 public class ClientInformParent implements Runnable {
-   private InfoConnection parent;
-   private InfoNodo bootstrapper;
+    public InfoNodo parent;
+    public InfoNodo boot;
     public int thisPort;
-    private DatagramSocket socket;
+    public InetAddress parentIP;
+    public DatagramSocket socket;
 
-    /**
-     * Client needs this info because:
-     * @param parent - Target to wantsStream Message
-     * @param boot - When client losts Parent Node
-     * @param thisPort - To create socket
-     */
-    public ClientInformParent(InfoNodo parent,InfoNodo boot, int thisPort) {
-        this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), true);
+    private final Toolkit toolkit;
+
+    private final ShareVariablesClient shared;
+
+    // If the client already started
+    private boolean startConsumer;
+    private StreamWindow window;
+    private int numPacketsReceived;
+
+
+
+
+    public ClientInformParent(InfoNodo parent, InfoNodo boot, int thisPort) throws UnknownHostException {
+        this.parent = parent;
+        this.boot = boot;
         this.thisPort = thisPort;
-        this.bootstrapper = boot;
+        this.parentIP = InetAddress.getByName("localhost");
+        this.toolkit = Toolkit.getDefaultToolkit();
+        this.startConsumer = false;
+        this.numPacketsReceived = 0;
+        this.shared = new ShareVariablesClient();
+        //this.sendStillAlives = new Timer(20, new sendStillAlive());
 
+        //new Timer().scheduleAtFixedRate(new sendStillAlive(), 0, Constants.timeToConsiderNodeLost/2);
+        //this.sendStillAlives.setInitialDelay(0);
         try {
-            if (this.thisPort > 0)
+            if (this.thisPort > 0) {
                 socket = new DatagramSocket(this.thisPort);
-            else
+            } else
                 socket = new DatagramSocket();
             socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
         }
-
     }
+
     @Override
     public void run() {
-
-
         System.out.println("otherServer.otherServer.Client ativo");
-        byte[] buf = new byte[100];
-        DatagramPacket receive = new DatagramPacket(buf, buf.length);
-        // De X em X tempo, envia para o parentport um hello com timestamp
-        // Falta controlar se recebeu mensagem para atualizar pai.
-        while(true) {
+        //sendStillAlives.start();
+        Timer timer = new Timer();
+        TimerTask sendStillAlives = new sendStillAlive();
+        timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeToConsiderNodeLost);
+        while (true) {
             try {
-                // Envia para o pai
-                // O cliente tem sempre interesse
-                checkParent();
-                SendData.wantsStream(socket, parent.otherNode);
-                System.out.println("[Client] Send still alive msg");
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 
             } catch (IOException e) {
                 //e.printStackTrace();
-                System.out.println("[Client] Message not received, timeout socket");
+                System.out.println("[Client] Timeout socket");
             }
         }
     }
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
-        switch (received.msgType){
+        switch (received.msgType) {
             case Constants.sitllAlive:
-                receiveStillAliveMSG(received.packet);
-break;
-            case Constants.streamContent:
-                receiveStreamContentMSG(received.packet);
+                //System.out.println();
                 break;
-
             default:
-                System.out.println("\n[Client] What I received? " +Constants.convertMessageType(received.msgType) + "\n");
+                RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
+                store_packet(rtp_packet);
+                numPacketsReceived++;
+                // When the buffer reaches the minimum size, we start the stream
+                if (numPacketsReceived > ConstantesStream.maxSizeBuffer && !startConsumer) {
+                    window = new StreamWindow(shared);
+                    startConsumer = true;
+                    System.out.println("Start consumer");
+                  if (ConstantesStream.showStream)  window.start();
+                }
+        }
+
+    }
+
+    private void store_packet(RTPpacket rtpPacket) {
+
+        int payload_length = rtpPacket.getpayload_length();
+
+        byte[] payload = new byte[payload_length];
+        rtpPacket.getpayload(payload);
+
+        Image image = toolkit.createImage(payload, 0, payload_length);
+
+        // Here we choose if we want to store all packets or replace the packets.
+        if (shared.isPlay() || (!shared.isPlay() && !ConstantesStream.dropPacketsWhenPause))
+            shared.insertImage(image);
+
+        else shared.replaceImage(image);
+        try {
+            Thread.sleep(ConstantesStream.FRAME_PERIOD);
+        } catch (InterruptedException error) {
+            throw new RuntimeException(error);
         }
     }
 
-    /**
-     * TODO: Se calhar fazer aqui o mesmo que no nodo, too much delay manda mensagem para o BootStrappper.
-     * @param packet
-     */
-    private void receiveStillAliveMSG(DatagramPacket packet) {
-        this.parent = ReceiveData.receiveStillAliveMSG(packet);
-    }
+    class sendStillAlive extends TimerTask {
 
-    private void checkParent() {
-        double timeSinceLastMessage = Constants.getCurrentTime() - parent.timeLastMessage;
-        if (timeSinceLastMessage > Constants.timeToConsiderNodeLost){
+        @Override
+        public void run() {
             try {
-                SendData.sendParentLostMSG(socket, bootstrapper, parent.otherNode );
-            } catch (IOException e) {
-                System.out.println("[Node] Error sending lost parent");
-                throw new RuntimeException(e);
+                SendData.wantsStream(socket, parent, thisPort);
+                //System.out.println("Send still alive");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            System.out.println("[NODE] Parent lost, sending message to Boot");
         }
-
     }
-    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
-        byte[] content = ReceiveData.receiveStreamContentMSG(packet);
-
-        System.out.println("\nReceive stream content:");
-        System.out.println(new String(content, StandardCharsets.UTF_8));
-        System.out.println("");
-    }
-
 
 }

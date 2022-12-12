@@ -1,19 +1,14 @@
 package otherNode;
 
-import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
-import otherServer.Bootstrapper.Bootstrapper;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class InitializeNode {
 
@@ -28,7 +23,7 @@ public class InitializeNode {
 
     public void start() {
         try {
-            SendData.sendHelloMsg(this.socket, this.boot.ip, boot.port);
+            SendData.sendHelloMsg(this.socket, this.boot.ip, boot.portNet);
             MessageAndType neigbours =ReceiveData.receiveData(this.socket);
             String neighboursList = findNeighbours(neigbours);
              InfoNodo[] Nlist = parseVizinhos(neighboursList);

@@ -18,7 +18,12 @@ public class Constants {
      */
     // Still alive messages
     final public static  int sitllAlive = 5;
+    /**
+     * STREAM MESSAGES
+     */
     final public static  int streamWanted = 6;
+
+    final public static  int streamContent = 9;
     // Miliseconds
     final public static int timeoutSockets = 3000;
     // Miliseconds
@@ -65,10 +70,7 @@ public class Constants {
     public static int arraySize = 2048;
 
 
-    /**
-     * STREAM MESSAGES
-     */
-    final public static  int streamContent = 9;
+
 
 
     /**
@@ -79,23 +81,23 @@ public class Constants {
      * server : 8009 8008
      * Run commands of each element:
      *
-     * Cliente1 : 8010 8008 8020
+     * Cliente1 : 8011 8008 8020
      * Cliente2 : 8009 8008 8021
-     * Node 1: 8009 8008 8010 8020
-     * Node 2: 8008 8008 8009 8021
-     * Server: 8009 8008
+     * Node 1: 8009 8008 8011 8012 8020 8020
+     * Node 2: 8008 8008 8009 8010 8021 8021 8011 8012
+     * Server: 8009 8010 8008
      *
      * Client arguments: parent port // boot // this port
-     * Node arguments: parent port //boot // this port // Nodos filhos
-     * Server arguments: son port // this port
+     * Node arguments: parent port (net) //boot // this port (net) // this port (stream) // Nodos filhos (par porta net/stream)
+     * Server arguments: son port (net) // son port (stream) // this port
      *
      *           8021
      *            C2
      *            |
-     * Server  -> N2  ->  N1  ->  Cl1
-     *  8008    8009    8010    8020
+     * Server   ->  N2    ->   N1  ->  Cl1
+     *  8008     8009/8010   8011/8012    8020
      *
-     *
+     *  net/stream
      * Depois testar num nodo sem clientes
      *
      */

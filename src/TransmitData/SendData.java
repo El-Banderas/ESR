@@ -59,12 +59,12 @@ public class SendData {
     public static void sendParentLostMSG(DatagramSocket socket, InfoNodo dest, InfoNodo lostNode) throws IOException {
          ByteBuffer bb = ByteBuffer.allocate(50).
                 putInt(Constants.lostNode).
-                putInt(lostNode.port);
+                putInt(lostNode.portNet);
         byte[] bytesIP = lostNode.ip.getAddress();
 
         byte[] bytes = bb.put(bytesIP).array();
-        System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.port);
-        sendData(socket, bytes, dest.ip, dest.port);
+        System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.portNet);
+        sendData(socket, bytes, dest.ip, dest.portNet);
     }
 
     /**
@@ -73,15 +73,7 @@ public class SendData {
      */
 
     public static void sendStreamContentMSG(DatagramSocket socket, InfoNodo dest, byte[] content) throws IOException {
-        System.out.println("Envia stream");
-        // Size int = 4
-        ByteBuffer bb = ByteBuffer.allocate(content.length+4*2).
-                putInt(Constants.streamContent).
-                putInt(content.length).put(content);
-
-        byte[] bytes = bb.array();
-        System.out.println("Envia Stream");
-        sendData(socket, bytes, dest.ip, dest.port);
+        sendData(socket, content, dest.ip, dest.portStream);
     }
 
     /**
@@ -93,12 +85,12 @@ public class SendData {
     public static void sendTooMuchDelayMSG(DatagramSocket socket, InetAddress destIP, int destPort){
     }
 
-    public static void wantsStream(DatagramSocket socket, InfoNodo parent) throws IOException {
+    public static void wantsStream(DatagramSocket socket, InfoNodo parent, int portReceiveStream) throws IOException {
         ByteBuffer bb = ByteBuffer.allocate(50).
-                putInt(Constants.streamWanted);
+                putInt(Constants.streamWanted).putInt(portReceiveStream);
 
         System.out.println("Envia quero stream");
-        sendData(socket, bb.array(), parent.ip, parent.port);
+        sendData(socket, bb.array(), parent.ip, parent.portNet);
 
     }
 

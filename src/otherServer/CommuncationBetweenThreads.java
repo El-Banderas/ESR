@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class CommuncationBetweenThreads {
     // I am assuming the server has only one node conected.
-    // In case the son is lost, it should be changed by te server (not implemented).
+    // TODO: In case the son is lost, it should be changed by te server (not implemented).
     public final InfoNodo son;
     public boolean sendStream;
 
