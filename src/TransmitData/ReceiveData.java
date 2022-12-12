@@ -118,15 +118,19 @@ public class ReceiveData {
 
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
         int type = msg.getInt();
+        double delay = msg.getDouble();
+
         int saltos = msg.getInt();
         int tamanho1 = msg.getInt();
         int tamanho2 = msg.getInt();
         byte[] info1 = new byte[tamanho1];
         byte[] info2 = new byte[tamanho2];
-        msg.get(info1);
-        msg.get(info2);
-        double delay = msg.getDouble();
+        byte[] twoClasses = new byte[tamanho1+tamanho2];
+        System.arraycopy(msg.array(), 3*4, twoClasses,0,tamanho1+tamanho2);
 
+        System.arraycopy(twoClasses, 0, info1, 0, tamanho1);
+        System.arraycopy(twoClasses, tamanho1, info2, 0, tamanho2);
+        System.out.println("Ver que número é");
         return new Connection(InfoNodo.BytestoNode(info1),InfoNodo.BytestoNode(info2),delay,saltos);
 
     }

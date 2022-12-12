@@ -166,15 +166,17 @@ public class Bootstrapper implements Runnable{
                   Connection c = ReceiveData.receiveConnection(received.packet);
                   // atualiza arvore com esta connection
                   System.out.println(c.numHops);
+                  break;
                 case Constants.timeStamp:
                     Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, serverInfo.ip, serverInfo.portNet);
                     this.topologyTypology.addConection(co.from,co.to,co.delay,co.numHops);
-
+break;
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
                     InfoNodo nodo = new InfoNodo(received.packet.getAddress(),received.packet.getPort());
                     this.topologyTypology.activateConnection(nodo,false);
                     ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology);
+                    break;
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
                     break;

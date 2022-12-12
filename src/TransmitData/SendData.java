@@ -36,11 +36,13 @@ public class SendData {
 
         double delay = c.delay;
         byte[] info1 = c.from.NodeToBytes();
+
         int size1 = info1.length;
         byte[] info2 = c.to.NodeToBytes();
         int size2 = info2.length;
+        int hops = c.numHops + 1;
+        byte[] bytes = ByteBuffer.allocate(size1+size2+40).putInt(Constants.ConnectionMsg).putDouble(delay).putInt(hops).putInt(size1).putInt(size2).put(info1).put(info2).array();
 
-        byte[] bytes = ByteBuffer.allocate(1000).putInt(Constants.ConnectionMsg).putInt(c.numHops+1).putInt(size1).putInt(size2).put(info1).put(info2).putDouble(delay).array();
         sendData(socket, bytes, destIP, destPort);
     }
 

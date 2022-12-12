@@ -159,6 +159,7 @@ public class NodeInformParent implements Runnable {
     }
 
     private void handleReceivedMessage(MessageAndType received) throws IOException, ParserConfigurationException, SAXException {
+        System.out.println("Recebe do tipo "+received.msgType);
         switch (received.msgType){
             case Constants.sitllAlive:
                 receivedStillAliveMSG(received.packet);
@@ -166,13 +167,14 @@ public class NodeInformParent implements Runnable {
 
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
+                System.out.println("Timestamp");
                 ReceiveData.receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet,this.socket,this.parent);
-
+    break;
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
                 // falta enviar ao pai
                 SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
-
+break;
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
                 break;

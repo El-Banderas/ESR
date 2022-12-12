@@ -10,7 +10,7 @@ public class Constants {
 
     final public static  int hellomesage = 10;
     final public  static int timeStamp = 22;
-    final public static int ConnectionMsg = 23;
+    final public static int ConnectionMsg = 100;
 
 
     /**
