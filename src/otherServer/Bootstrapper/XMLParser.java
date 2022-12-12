@@ -11,59 +11,12 @@ import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.net.InetAddress;
 import java.util.*;
 import java.io.*;
 
 public class XMLParser {
-    /*
-    public String XMLString;
-    public Map<InfoNodo,List<Connection>> bestPaths;
-    public byte[] XMLSocket;
 
-    public Map<String,InfoNodo> nodes;
-
-    public XMLParser(String XMLString, Map<InfoNodo, List<Connection>> bestPaths, byte[] XMLSocket) {
-        this.XMLString = XMLString;
-        this.bestPaths = bestPaths;
-        this.XMLSocket = XMLSocket;
-    }
-
-    public XMLParser(Map<InfoNodo, List<Connection>> bestPaths, Map<String,InfoNodo> nodes) {
-        this.bestPaths = bestPaths;
-        this.nodes = nodes;
-    }
-
-    public String getXMLString() {
-        return XMLString;
-    }
-
-    public void setXMLString(String XMLString) {
-        this.XMLString = XMLString;
-    }
-
-    public Map<InfoNodo, List<Connection>> getBestPaths() {
-        return bestPaths;
-    }
-
-    public void setBestPaths(Map<InfoNodo, List<Connection>> bestPaths) {
-        this.bestPaths = bestPaths;
-    }
-
-    public byte[] getXMLSocket() {
-        return XMLSocket;
-    }
-
-    public void setXMLSocket(byte[] XMLSocket) {
-        this.XMLSocket = XMLSocket;
-    }
-
-    public Map<String,InfoNodo> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(Map<String,InfoNodo> nodes) {
-        this.nodes = nodes;
-    }*/
 
     public String prettyPrintByTransformer(String xmlString, int indent, boolean ignoreDeclaration) {
 
@@ -115,7 +68,7 @@ public class XMLParser {
         if(connections != null){
             for (Connection connection :  connections){
 
-                aux.append("<node name=\""+connection.to.getidNodo() +  "\" ip=\"" + connection.to.getIp() + "\" " +">");
+                aux.append("<node name=\""+connection.to.getidNodo() + "\" ip=\"" + connection.to.getIp() + "\" port=\"" + connection.to.portNet + "\" " +">");
                 aux.append(generateXMLaux(connection.to, identation+1, bestPaths));
 
                 aux.append("</node>");
@@ -164,7 +117,7 @@ public class XMLParser {
             // If the node is an element, print its name and value
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                System.out.println("IP: " + element.getAttribute("ip") + " - Name: " + element.getAttribute("name"));
+                System.out.println("IP: " + element.getAttribute("ip") + " - Name: " + element.getAttribute("name") + " - Port: " + element.getAttribute("port"));
             }
 
             parseXMLAux(innerChilds);
@@ -190,12 +143,41 @@ public class XMLParser {
 
 
     /*
-        Needs to be decided how it will be made
+        Separate the parent from the childs info
      */
-    /*
-    public String XMLpartition(String xmlString){
+    public List<InfoNodo> splitInfo(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+        List<InfoNodo> info = new ArrayList<>();
 
-    }*/
+        // Parse the XML string into a document object
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+
+        // Get the root element of the document
+        Element rootElement = doc.getDocumentElement();
+
+        // Get a list of all elements in the document
+        NodeList childNodes = rootElement.getChildNodes();
+
+
+        InfoNodo parent = new InfoNodo(InetAddress.getByName(rootElement.getAttribute("ip")), 8001,8002);
+
+
+        info.add(parent);
+
+
+        for (int i = 0; i<childNodes.getLength(); i++){
+            Node child = childNodes.item(i);
+
+            Element childElem  = (Element) child;
+
+            info.add(new InfoNodo(InetAddress.getByName(childElem.getAttribute("ip")), 8001, 8002));
+        }
+
+
+
+        return  info;
+    }
 
 
 

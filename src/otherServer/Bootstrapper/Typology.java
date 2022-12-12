@@ -154,7 +154,7 @@ public class Typology {
         this.completeNetwork = completeNetwork;
 
         // Server is initialized connecting with himself (but the method will create an empty list if it is server)
-        activateConnection(this.nodes.get("s1"), new Connection(this.nodes.get("s1"),this.nodes.get("s1") , 0.0,  0), true);
+        activateConnection(this.nodes.get("s1"), true);
     }
 
 
@@ -167,33 +167,47 @@ public class Typology {
         activeNetwork.put(nodeToActivate,nodeConnections);
     }
 
+    public  void addConection(InfoNodo from, InfoNodo to, double delay, int numHops){
+        addNeighbour(from, new Connection(from, to, delay, numHops));
+        addNeighbour(to,new Connection(to, from,delay,numHops));
+
+        recalculateBestPathsTree();
+
+    }
+
+
 
     /*
         Method for node activation (Populates the active Network Map)
      */
-    public void activateConnection(InfoNodo nodeToActivate, Connection newConnection, boolean isServer) throws InterruptedException {
+    public void activateConnection(InfoNodo node,  boolean isServer) throws InterruptedException {
         /*
             To make it easier the server is neighbour of itself
          */
 
-        List<InfoConnection> activeNeighbours= new ArrayList<>();
+        //List<InfoConnection> activeNeighbours= new ArrayList<>();
 
-        List<InfoNodo> allNeighbours = this.completeNetwork.get(nodeToActivate.idNodo);
+        //List<InfoNodo> allNeighbours = this.completeNetwork.get(node.idNodo);
 
+
+        this.activeNetwork.put(node, new ArrayList<>());
+
+
+        /*
         //If the active network already has neighbours active, add to list / else create the new list
-        if(this.activeNetwork.get(nodeToActivate) == null){
+        if(this.activeNetwork.get(node) == null){
             List<Connection> neighbours = new ArrayList<>();
             if(!isServer){ //only adding the new connection when it is not a server
                 neighbours.add(newConnection);
             }
-            this.activeNetwork.put(nodeToActivate, neighbours);
+            this.activeNetwork.put(node, neighbours);
         }else{
-            addNeighbour(nodeToActivate,newConnection);
+            addNeighbour(fromToActivate,newConnection);
         }
 
         // probably will set a small sleep here (for now: 100 ms)
         //Thread.sleep(100);
-        recalculateBestPathsTree();
+        recalculateBestPathsTree();*/
 
     }
 
@@ -354,7 +368,7 @@ public class Typology {
 
     public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
         Typology typologyTest = new Typology();
-        typologyTest.parse("C:\\Users\\Marco\\Documents\\GitHub\\ESR\\src\\otherServer\\Config\\test.txt");
+        typologyTest.parse("C:\\Users\\migue\\Desktop\\ESR\\src\\otherServer\\Config\\biggerConfiguration.txt");
         typologyTest.setCompleteNetwork();
 
         // Print the complete network
@@ -378,8 +392,9 @@ public class Typology {
 
         // Activate some nodes
 
-        typologyTest.activateConnection(typologyTest.getNodes().get("s1"),new Connection(typologyTest.getNodes().get("s1") ,typologyTest.getNodes().get("n1"),2,1), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("n2"),11,2), false );
+        typologyTest.activateConnection(typologyTest.getNodes().get("n1") , false);
+        typologyTest.activateConnection(typologyTest.getNodes().get("n2"), false);
+
         //typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("s1"),1,2), false );
         /*
         typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("c2"),2,3), false );

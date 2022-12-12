@@ -70,6 +70,9 @@ public class Constants {
     public static int arraySize = 2048;
 
 
+    public static String env = "Windows";
+
+
 
 
 
