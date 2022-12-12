@@ -34,15 +34,8 @@ public class InitializeNode {
              */
             // envia msg aos vizinhos
              for(int i=0; i<Nlist.length-1;i++) {
-              SendData.sendTimeStamp(this.socket,Nlist[i].ip,Nlist[i].port);
+              SendData.sendTimeStamp(this.socket,Nlist[i].ip,Nlist[i].portNet);
              }
-
-            //recebe msg dos vizinhos
-
-
-            //envia servidor info dos vizinhos ativos
-
-
 
         } catch (
                 IOException e) {
