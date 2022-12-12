@@ -343,7 +343,7 @@ public class Typology {
         List<InfoNodo> allNeighbours = null;
 
         for(InfoNodo entry : entries){
-            if(entry.getIp() == i.getIp() && entry.portNet == i.portNet){
+            if(entry.getIp().equals(i.getIp()) && entry.portNet == i.portNet){
                 allNeighbours = completeNetwork.get(entry);
             }
         }

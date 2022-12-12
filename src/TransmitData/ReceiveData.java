@@ -49,7 +49,7 @@ public class ReceiveData {
         List<InfoNodo> vizinhos = t.getNeighbours(i);
 
         System.out.println("CHEGOU AQUI \n");
-        System.out.println(vizinhos);
+        System.out.println(vizinhos.get(0).toStringCon());
 
         StringBuilder v = new StringBuilder() ;
         for(InfoNodo nodo :vizinhos) {

@@ -4,7 +4,7 @@ public class ConstantesStream {
     public static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
     public static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
     public static int VIDEO_LENGTH = 500; //length of the video in frames
-    public static String VideoFileName = "C:\\Users\\Marco\\Documents\\GitHub\\ESR\\src\\movie.Mjpeg";
+    public static String VideoFileName = "C:\\Users\\migue\\Desktop\\ESR\\src\\out\\production\\ProgEx\\movie.Mjpeg";
 
     /**
      * If we want to drop packets, when we resume the video, we will get to the current time in stream;
