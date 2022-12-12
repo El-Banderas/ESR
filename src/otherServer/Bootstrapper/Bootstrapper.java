@@ -105,7 +105,7 @@ public class Bootstrapper implements Runnable{
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
-            this.topologyTypology.parse("C:\\Users\\migue\\Desktop\\ESR\\src\\otherServer\\Config\\test.txt");
+            this.topologyTypology.parse("C:\\Users\\Diogo\\Desktop\\Diogo\\Trabalhos da escola\\4ano1sem\\redes\\ESR\\src\\otherServer\\Config\\test.txt");
             this.topologyTypology.setCompleteNetwork();
         } catch (IOException | InterruptedException e) {
             System.out.println("[SERVERDATA] Error in parte of config file.");
@@ -167,7 +167,7 @@ public class Bootstrapper implements Runnable{
                   // atualiza arvore com esta connection
                   System.out.println(c.numHops);
                 case Constants.timeStamp:
-                    Connection co = ReceiveData.BootreceivedTimeStamp(received.packet,received.packet.getAddress(),received.packet.getPort());
+                    Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, serverInfo.ip, serverInfo.portNet);
                     this.topologyTypology.addConection(co.from,co.to,co.delay,co.numHops);
 
                 case Constants.hellomesage:

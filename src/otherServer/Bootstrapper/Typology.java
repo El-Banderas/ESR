@@ -2,6 +2,7 @@ package otherServer.Bootstrapper;
 
 import Common.Constants;
 import Common.InfoNodo;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -171,17 +172,43 @@ public class Typology {
         activateConnection(this.nodes.get("s1"), true);
     }
 
+    private List<Connection> getNeibourghs(InfoNodo target){
+        for (Map.Entry<InfoNodo, List<Connection>> x : activeNetwork.entrySet()){
+            if (x.getKey().portNet == target.portNet && target.ip.equals(x.getKey().ip)){
+                return x.getValue();
+            }
+        }
+        System.out.println("NÂO devia aperecer");
+        return new ArrayList<>();
+    }
+
+    private List<Connection> getAndRemoveNeibourghs(InfoNodo target){
+        for (Map.Entry<InfoNodo, List<Connection>> entry : activeNetwork.entrySet()){
+            if (entry.getKey().portNet == target.portNet && target.ip.equals(entry.getKey().ip)){
+                List<Connection> res = entry.getValue();
+                activeNetwork.remove(entry.getKey());
+                return res;
+            }
+        }
+        System.out.println("NÂO devia aperecer");
+        return new ArrayList<>();
+    }
 
     /*
         Method to add connection to node which had already active connections
      */
     public void addNeighbour(InfoNodo nodeToActivate, Connection newConnection) {
-        List<Connection> nodeConnections = activeNetwork.get(nodeToActivate);
+        List<Connection> nodeConnections = getAndRemoveNeibourghs(nodeToActivate);
         nodeConnections.add(newConnection);
         activeNetwork.put(nodeToActivate, nodeConnections);
+        //System.out.println("Depois de adicionar vizinho");
+        //Typology.printInfoFromMap(activeNetwork);
     }
 
     public void addConection(InfoNodo from, InfoNodo to, double delay, int numHops) {
+        System.out.println("Add connection");
+        System.out.println(from);
+        System.out.println(to);
         addNeighbour(from, new Connection(from, to, delay, numHops));
         addNeighbour(to, new Connection(to, from, delay, numHops));
 
@@ -338,7 +365,7 @@ public class Typology {
 
 
     public List<InfoNodo> getAllNeighbours(InfoNodo i){
-        List<InfoNodo> entries = this.completeNetwork.keySet().stream().toList();
+        List<InfoNodo> entries = this.completeNetwork.keySet().stream().collect(Collectors.toList());
         
         List<InfoNodo> allNeighbours = null;
 
@@ -347,7 +374,6 @@ public class Typology {
                 allNeighbours = completeNetwork.get(entry);
             }
         }
-        
         return allNeighbours;
     }
 
@@ -357,11 +383,15 @@ public class Typology {
 
 
         List<InfoNodo> allNeighbours = getAllNeighbours(node);
+        System.out.println("1");
         System.out.println(allNeighbours);
-
-        List<InfoNodo> activeNodes = this.activeNetwork.keySet().stream().toList();
-
-        return activeNodes.stream().distinct().filter(allNeighbours::contains).collect(Collectors.toList());
+        System.out.println("2");
+        List<InfoNodo> activeNodes = this.activeNetwork.keySet().stream().collect(Collectors.toList());
+        System.out.println(activeNodes);
+List<InfoNodo> res = activeNodes.stream().distinct().filter(allNeighbours::contains).collect(Collectors.toList());
+        System.out.println("Result getNeig");
+        System.out.println(res);
+return res;
 
 
 

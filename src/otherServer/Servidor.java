@@ -52,6 +52,7 @@ public class Servidor //extends JFrame implements ActionListener
                 SendStream stream = new SendStream(shared);
                 new Thread(stream).start();
             } else {
+                System.out.println("Versão correta");
                 InetAddress sonIP = InetAddress.getByName("localhost");
                 int sonPortNet = Integer.parseInt(argv[0]);
                 int sonPortStream = Integer.parseInt(argv[1]);

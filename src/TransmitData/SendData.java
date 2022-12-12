@@ -64,7 +64,7 @@ public class SendData {
 
         byte[] bytes = bb.put(bytesIP).array();
         System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.portNet);
-        sendData(socket, bytes, dest.ip, dest.portNet);
+     //   sendData(socket, bytes, dest.ip, dest.portNet);
     }
 
     /**

@@ -59,7 +59,8 @@ public class InitializeNode {
 
         String[] neighboursList = vizinhos.split( "/");
         InfoNodo[] nodos= new InfoNodo[neighboursList.length];
-
+        System.out.println("Vizinhos string completa");
+        System.out.println(vizinhos);
 
         String[] ips = new String[neighboursList.length-1];
         int[] portas = new int[neighboursList.length-1];

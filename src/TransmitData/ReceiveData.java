@@ -158,7 +158,7 @@ public class ReceiveData {
 
     }
 
-    public static Connection BootreceivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta) throws IOException, ParserConfigurationException, SAXException {
+    public static Connection BootreceivedTimeStamp(DatagramPacket packet, InetAddress ipBoot, int portaBoot) throws IOException, ParserConfigurationException, SAXException {
 
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
         int type = msg.getInt();
@@ -166,7 +166,7 @@ public class ReceiveData {
         int numHops= msg.getInt();
 
         InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
-        InfoNodo to = new InfoNodo(ip,porta);
+        InfoNodo to = new InfoNodo(ipBoot,portaBoot);
         double delay = Constants.getCurrentTime()-time;
         Connection co = new Connection(from, to, delay, numHops);
         //XMLParser parser = new XMLParser();
