@@ -5,13 +5,12 @@ import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import org.xml.sax.SAXException;
 import otherServer.CommuncationBetweenThreads;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 
 
 /**
@@ -72,9 +71,10 @@ public class Bootstrapper implements Runnable{
         // Creation of server
         try {
             if (this.serverInfo.portNet > 0){
-                System.out.println("Criado na porta " + this.serverInfo.portNet);
                 socket = new DatagramSocket(this.serverInfo.portNet);
-        }
+                System.out.println("Criado na porta " + this.serverInfo.portNet);
+
+            }
             else {
                 socket = new DatagramSocket();
             }
@@ -123,7 +123,7 @@ public class Bootstrapper implements Runnable{
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException | InterruptedException | ParserConfigurationException | SAXException e) {
                 System.out.println("[Boot] Timeout, listening in: " + socket.getLocalPort());
 
             }
@@ -155,7 +155,7 @@ public class Bootstrapper implements Runnable{
         }
     }
 
-    private void handleReceivedMessage(MessageAndType received) throws IOException, InterruptedException {
+    private void handleReceivedMessage(MessageAndType received) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
             switch (received.msgType){
                 // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
                 //case Constants.sitllAliveNoInterest:
@@ -166,6 +166,10 @@ public class Bootstrapper implements Runnable{
                   Connection c = ReceiveData.receiveConnection(received.packet);
                   // atualiza arvore com esta connection
                   System.out.println(c.numHops);
+                case Constants.timeStamp:
+                    Connection co = ReceiveData.BootreceivedTimeStamp(received.packet,received.packet.getAddress(),received.packet.getPort());
+                    this.topologyTypology.addConection(co.from,co.to,co.delay,co.numHops);
+
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
                     InfoNodo nodo = new InfoNodo(received.packet.getAddress(),received.packet.getPort());

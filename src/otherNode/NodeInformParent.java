@@ -166,7 +166,7 @@ public class NodeInformParent implements Runnable {
 
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
-                receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet);
+                ReceiveData.receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet,this.socket,this.parent);
 
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
@@ -358,25 +358,6 @@ public class NodeInformParent implements Runnable {
             }
     }
 
-    public  Connection receivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta ) throws IOException, ParserConfigurationException, SAXException {
-
-        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
-        int type = msg.getInt();
-        double time = msg.getDouble();
-        int numHops= msg.getInt();
-
-        InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
-        InfoNodo to = new InfoNodo(ip,porta);
-        double delay = Constants.getCurrentTime()-time;
-        Connection n = new Connection(from, to, delay, numHops);
-        //XMLParser parser = new XMLParser();
-       // parser.parseXML(xml);
-
-
-        SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
-
-        return n ;
-    }
 
 
 
