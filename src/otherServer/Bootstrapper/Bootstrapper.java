@@ -106,14 +106,11 @@ public class Bootstrapper implements Runnable{
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
             this.topologyTypology.parse("\\C:\\Users\\Marco\\Documents\\GitHub\\ESR\\src\\otherServer\\Config\\test.txt");
-        } catch (IOException e) {
+            this.topologyTypology.setCompleteNetwork();
+        } catch (IOException | InterruptedException e) {
             System.out.println("[SERVERDATA] Error in parte of config file.");
             e.printStackTrace();
         }
-
-        // Fica à espera de enviar informações sobre vizinhos
-
-        // mudar aqui
 
 
         byte[] buf = new byte[100];
@@ -126,7 +123,7 @@ public class Bootstrapper implements Runnable{
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
 
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 System.out.println("[Boot] Timeout, listening in: " + socket.getLocalPort());
 
             }
@@ -158,7 +155,7 @@ public class Bootstrapper implements Runnable{
         }
     }
 
-    private void handleReceivedMessage(MessageAndType received) throws IOException {
+    private void handleReceivedMessage(MessageAndType received) throws IOException, InterruptedException {
             switch (received.msgType){
                 // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
                 //case Constants.sitllAliveNoInterest:
@@ -167,9 +164,12 @@ public class Bootstrapper implements Runnable{
                     break;
                 case Constants.ConnectionMsg:
                   Connection c = ReceiveData.receiveConnection(received.packet);
+                  // atualiza arvore com esta connection
                   System.out.println(c.numHops);
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
+                    InfoNodo nodo = new InfoNodo(received.packet.getAddress(),received.packet.getPort());
+                    this.topologyTypology.activateConnection(nodo,false);
                     ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology);
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);

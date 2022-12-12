@@ -45,8 +45,11 @@ public class ReceiveData {
     public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t) throws IOException {
 
         InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
-        List<InfoNodo> vizinhos = new ArrayList<InfoNodo>();
-        vizinhos = t.getNeighbours(i);
+
+        List<InfoNodo> vizinhos = t.getNeighbours(i);
+
+        System.out.println("CHEGOU AQUI \n");
+        System.out.println(vizinhos);
 
         StringBuilder v = new StringBuilder() ;
         for(InfoNodo nodo :vizinhos) {
@@ -123,6 +126,7 @@ public class ReceiveData {
         double delay = msg.getDouble();
 
         return new Connection(InfoNodo.BytestoNode(info1),InfoNodo.BytestoNode(info2),delay,saltos);
+
     }
 
 

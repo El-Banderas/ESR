@@ -66,11 +66,14 @@ public class Constants {
     // Info about the ports, that won't change when testing in core.
     public static int portBootSendNeighbours = 1234;
 
-    // Info about send data
+    // Info about send data0
     public static int arraySize = 2048;
 
 
-    public static String env = "Windows";
+    public static boolean Windows = true ;
+
+
+    public static  int port = 8000;
 
 
 

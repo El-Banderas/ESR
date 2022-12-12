@@ -53,11 +53,11 @@ public class NodeInformParent implements Runnable {
   //   * @param thisNode - To create socket (temporária).
      * @param sons - This info comes from XML file.
      */
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons, DatagramSocket socket) {
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons, DatagramSocket socket) throws UnknownHostException {
         // O delay tem de vir do xml, alterar depois
         // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
-        this.thisNode = thisNode;
+        this.thisNode = new InfoNodo(InetAddress.getByName("localhost"),thisPort);
         this.sons = sons;
         this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
@@ -85,7 +85,8 @@ public class NodeInformParent implements Runnable {
 
         try {
             if (this.thisNode.portNet > 0)
-                socket = new DatagramSocket(this.thisNode.portNet);
+              //  socket = new DatagramSocket(this.thisNode.portNet);
+                socket = this.socket;
             else
                 socket = new DatagramSocket();
                 socket.setSoTimeout(Constants.timeoutSockets);
@@ -170,7 +171,7 @@ public class NodeInformParent implements Runnable {
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
                 // falta enviar ao pai
-              //  SendData.sendConnection(this.socket,n,this.thisNode.,this.parent.otherNode.port);
+                SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
 
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
@@ -372,7 +373,7 @@ public class NodeInformParent implements Runnable {
        // parser.parseXML(xml);
 
 
-       // SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.port);
+        SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
 
         return n ;
     }

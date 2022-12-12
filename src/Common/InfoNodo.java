@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class InfoNodo {
     public String idNodo;
@@ -90,4 +91,14 @@ public class InfoNodo {
         if (in1.ip == in2.ip && in1.portNet == in2.portNet) return true;
         else return false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InfoNodo infoNodo = (InfoNodo) o;
+        return portNet == infoNodo.portNet && Objects.equals(ip, infoNodo.ip);
+    }
+
+
 }
