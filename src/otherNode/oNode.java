@@ -26,18 +26,18 @@ public class oNode {
     public static void main(String[] args) throws UnknownHostException, SocketException {
         System.out.println("[oNode] Started ");
 
-        boolean initNode = false;
-        if (initNode) {
-            // send hello msg
-            DatagramSocket s;
-            int portNode = Integer.parseInt(args[0]);
-            int portBoot = Integer.parseInt(args[1]);
-            try {
-                if (portNode > 0) {
-                    s = new DatagramSocket(portNode);
-                    InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"), portBoot);
-                    InitializeNode i = new InitializeNode(s, boot);
-                    i.start();
+
+        // send hello msg
+
+        DatagramSocket s = new DatagramSocket();
+        int portNode = Integer.parseInt(args[2]);
+        int portBoot = Integer.parseInt(args[1]);
+        try {
+            if (portNode > 0) {
+                 s = new DatagramSocket(portNode);
+                InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+                InitializeNode i = new InitializeNode(s,boot);
+                i.start();
 
 
                 } else
@@ -49,7 +49,6 @@ public class oNode {
                 e.printStackTrace();
             }
 
-        }
 
 
         boolean stillAliveParte = true;
@@ -83,7 +82,8 @@ public class oNode {
             // Neste momento, não precisamos de saber os filhos
             // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
             //                                                 pai | boot | porta atual | filhos
-            NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
+            NodeInformParent comunication_TH = new NodeInformParent(parent, boot , Integer.parseInt(args[2]), sons, s);
+           // NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
             new Thread(comunication_TH).start();
 
             StreamNode stream_TH = new StreamNode(thisNode, shared);

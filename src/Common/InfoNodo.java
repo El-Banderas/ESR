@@ -1,6 +1,9 @@
 package Common;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 
 public class InfoNodo {
     public String idNodo;
@@ -47,6 +50,30 @@ public class InfoNodo {
 
 	public void setY(InetAddress ip) { this.ip = ip; }
 
+
+    public byte[] NodeToBytes(){
+        String v = this.toString();
+
+        return  ByteBuffer.allocate(18+(2*v.length())).put(v.getBytes()).array();
+    }
+
+    public static InfoNodo BytestoNode(byte[] bytes) throws UnknownHostException {
+
+        String word = new String(bytes);
+        String[] aux = word.split( "/");
+        String[] aux1 = aux[1].split("\\s+");
+
+        InetAddress ip = InetAddress.getByName(aux1[0]);
+
+        String[] aux2 = word.split( "-");
+        String[] aux3 = aux2[2].split( "}");
+        String[] aux4 = aux3[0].split( "\\s+");
+
+        int porta = Integer.parseInt(aux4[1]);
+
+        return new InfoNodo(ip,porta);
+
+    }
 
     @Override
     public String toString() {

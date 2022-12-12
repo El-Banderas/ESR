@@ -6,10 +6,15 @@ import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import org.xml.sax.SAXException;
+import otherServer.Bootstrapper.Connection;
 import otherServer.Bootstrapper.InfoConnection;
+import otherServer.Bootstrapper.XMLParser;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -45,9 +50,22 @@ public class NodeInformParent implements Runnable {
      * Node needs this info because:
      * @param parent - To send wantsStream, but will get this node with stillAlives. Ao receber o XML, pode fazer getAdress do pai
      * @param boot - When the current node lost connection with parent node.
-     * @param thisNode - To create socket (temporária).
+  //   * @param thisNode - To create socket (temporária).
      * @param sons - This info comes from XML file.
      */
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons, DatagramSocket socket) {
+        // O delay tem de vir do xml, alterar depois
+        // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
+        this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
+        this.thisNode = thisNode;
+        this.sons = sons;
+        this.neibourghs = new ArrayList<>();
+        //this.interestedSons = new ArrayList<>();
+        this.bootstrapper = boot;
+        this.socket = socket;
+        //this.shared = shared;
+    }
+
     public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, ArrayList<InfoNodo> sons, ShareNodes shared) {
         // O delay tem de vir do xml, alterar depois
         // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
@@ -57,8 +75,10 @@ public class NodeInformParent implements Runnable {
         this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
+        //this.socket = socket;
         this.shared = shared;
     }
+
 
         @Override
     public void run() {
@@ -91,7 +111,7 @@ public class NodeInformParent implements Runnable {
               //  System.out.println(" Send still alive msg, type: " + Constants.convertMessageType(messageType));
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
-            } catch (IOException e) {
+            } catch (IOException | ParserConfigurationException | SAXException e) {
                 System.out.println("[Node] Timeout");
             }
 
@@ -137,11 +157,20 @@ public class NodeInformParent implements Runnable {
         }
     }
 
-    private void handleReceivedMessage(MessageAndType received) throws IOException {
+    private void handleReceivedMessage(MessageAndType received) throws IOException, ParserConfigurationException, SAXException {
         switch (received.msgType){
             case Constants.sitllAlive:
                 receivedStillAliveMSG(received.packet);
                 break;
+
+            case Constants.timeStamp:
+                // receive packet do nodo c timestamp e calcula delay
+                receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet);
+
+            case Constants.ConnectionMsg:
+                Connection n = ReceiveData.receiveConnection(received.packet);
+                // falta enviar ao pai
+              //  SendData.sendConnection(this.socket,n,this.thisNode.,this.parent.otherNode.port);
 
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
@@ -327,6 +356,27 @@ public class NodeInformParent implements Runnable {
                 SendData.sendStreamContentMSG(socket, son, content);
             }
     }
+
+    public  Connection receivedTimeStamp(DatagramPacket packet, InetAddress ip, int porta ) throws IOException, ParserConfigurationException, SAXException {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        double time = msg.getDouble();
+        int numHops= msg.getInt();
+
+        InfoNodo from = new InfoNodo(packet.getAddress(),packet.getPort());
+        InfoNodo to = new InfoNodo(ip,porta);
+        double delay = Constants.getCurrentTime()-time;
+        Connection n = new Connection(from, to, delay, numHops);
+        //XMLParser parser = new XMLParser();
+       // parser.parseXML(xml);
+
+
+       // SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.port);
+
+        return n ;
+    }
+
 
 
 

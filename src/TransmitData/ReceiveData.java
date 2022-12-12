@@ -3,7 +3,9 @@ package TransmitData;
 import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
+import otherServer.Bootstrapper.Connection;
 import otherServer.Bootstrapper.InfoConnection;
+import otherServer.Bootstrapper.Typology;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -11,6 +13,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,27 +40,25 @@ public class ReceiveData {
 
 
 
-    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s) throws IOException {
-        // get Vizinhos na TypologyGraph
-        // vizinhos imaginarios para teste
-        InfoNodo[] vizinhos = new InfoNodo[5];
-        InfoNodo v1 = new InfoNodo(InetAddress.getByName("localhost"),2000);
-        InfoNodo v2 = new InfoNodo(InetAddress.getByName("localhost"),2001);
-        InfoNodo v3 = new InfoNodo(InetAddress.getByName("localhost"),2002);
-        InfoNodo v4 = new InfoNodo(InetAddress.getByName("localhost"),2003);
-        InfoNodo v5 = new InfoNodo(InetAddress.getByName("localhost"),2004);
-        vizinhos[0]=v1;
-        vizinhos[1]=v2;
-        vizinhos[2]=v3;
-        vizinhos[3]=v4;
-        vizinhos[4]=v5;
-        // converter a lista de vizinhos num pacote
-        String v = String.valueOf(v1) + v2 + v3 + v4 + v5 + "END";
 
-        byte[] bytes = ByteBuffer.allocate(18+(2*v.length())).put(v.getBytes()).array();
+
+    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t) throws IOException {
+
+        InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
+        List<InfoNodo> vizinhos = new ArrayList<InfoNodo>();
+        vizinhos = t.getNeighbours(i);
+
+        StringBuilder v = new StringBuilder() ;
+        for(InfoNodo nodo :vizinhos) {
+            v.append(nodo.toString());
+        }
+        String vs = v.toString();
+        byte[] bytes = ByteBuffer.allocate(18+(2*vs.length())).put(vs.getBytes()).array();
 
         SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
     }
+
+
 
 
     public static InfoNodo receiveLostNodeMSG(DatagramPacket packet) throws UnknownHostException {
@@ -107,6 +108,24 @@ public class ReceiveData {
 
         return content;
     }
+
+    public static Connection receiveConnection(DatagramPacket packet) throws UnknownHostException {
+
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        int saltos = msg.getInt();
+        int tamanho1 = msg.getInt();
+        int tamanho2 = msg.getInt();
+        byte[] info1 = new byte[tamanho1];
+        byte[] info2 = new byte[tamanho2];
+        msg.get(info1);
+        msg.get(info2);
+        double delay = msg.getDouble();
+
+        return new Connection(InfoNodo.BytestoNode(info1),InfoNodo.BytestoNode(info2),delay,saltos);
+    }
+
+
 
     /**
      * When receives stream, sends to interested sons.

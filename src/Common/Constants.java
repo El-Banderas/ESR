@@ -9,6 +9,9 @@ public class Constants {
     // msg HELLO
 
     final public static  int hellomesage = 10;
+    final public  static int timeStamp = 22;
+    final public static int ConnectionMsg = 23;
+
 
     /**
      * BOOTSRAPPER MESSAGES and other constants
@@ -56,6 +59,7 @@ public class Constants {
     final public static int minDelayToTrigger = 40;
     final public static  int tooMuchDelay = 7;
 
+
     final public static  int lostNode = 8;
 
 
@@ -66,10 +70,18 @@ public class Constants {
     public static int arraySize = 2048;
 
 
+    public static String env = "Windows";
+
+
 
 
 
     /**
+     *
+     *
+     * nodo 1 : 8009 8008 8010
+     * nodo 2 : 8008 8008 8009 8010
+     * server : 8009 8008
      * Run commands of each element:
      *
      * Cliente1 : 8011 8008 8020

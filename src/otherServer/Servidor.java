@@ -60,7 +60,7 @@ public class Servidor //extends JFrame implements ActionListener
 
 
                 InetAddress thisIP = InetAddress.getByName("localhost");
-                int thisPort = Integer.parseInt(argv[2]);
+                int thisPort = Integer.parseInt(argv[1]);
                 InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
 
                 CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);

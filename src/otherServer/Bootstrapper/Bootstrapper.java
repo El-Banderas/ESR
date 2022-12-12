@@ -68,6 +68,7 @@ public class Bootstrapper implements Runnable{
         this.shared = shared;
         this.interested = false;
         this.lastTimeSomeoneInterested = 0;
+        this.topologyTypology = new Typology();
         // Creation of server
         try {
             if (this.serverInfo.portNet > 0){
@@ -101,11 +102,10 @@ public class Bootstrapper implements Runnable{
     public void run() {
         System.out.println("[Server] Bootstrapper on");
         // Topology
-        Typology l = new Typology();
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
-            l.parse("src/otherServer/config.txt");
+            this.topologyTypology.parse("\\C:\\Users\\Marco\\Documents\\GitHub\\ESR\\src\\otherServer\\Config\\test.txt");
         } catch (IOException e) {
             System.out.println("[SERVERDATA] Error in parte of config file.");
             e.printStackTrace();
@@ -165,9 +165,12 @@ public class Bootstrapper implements Runnable{
                 case Constants.streamWanted:
                     receivedStreamWanted(received.packet);
                     break;
+                case Constants.ConnectionMsg:
+                  Connection c = ReceiveData.receiveConnection(received.packet);
+                  System.out.println(c.numHops);
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
-                    ReceiveData.receivedHelloMsg(received.packet, this.socket);
+                    ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology);
                 case Constants.lostNode:
                     receiveLostNodeMSG(received.packet);
                     break;
@@ -209,6 +212,7 @@ public class Bootstrapper implements Runnable{
 
         }
     }
+
 
     /**
      * This method sends still alives messages to son.

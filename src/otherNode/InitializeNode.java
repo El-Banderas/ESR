@@ -27,14 +27,15 @@ public class InitializeNode {
             MessageAndType neigbours =ReceiveData.receiveData(this.socket);
             String neighboursList = findNeighbours(neigbours);
              InfoNodo[] Nlist = parseVizinhos(neighboursList);
+             /*
              for(int i=0;i<Nlist.length-1;i++){
                  System.out.println(Nlist[i].toString());
              }
+             */
             // envia msg aos vizinhos
-            //recebe msg dos vizinhos
-            //envia servidor info dos vizinhos ativos
-
-
+             for(int i=0; i<Nlist.length-1;i++) {
+              SendData.sendTimeStamp(this.socket,Nlist[i].ip,Nlist[i].portNet);
+             }
 
         } catch (
                 IOException e) {
