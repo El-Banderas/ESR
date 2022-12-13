@@ -165,6 +165,7 @@ public class Bootstrapper implements Runnable{
                 case Constants.ConnectionMsg:
                   Connection c = ReceiveData.receiveConnection(received.packet);
                   // atualiza arvore com esta connection
+
                     this.topologyTypology.addConection(c.from,c.to,c.delay,c.numHops, socket, sonInfo);
 
                     break;

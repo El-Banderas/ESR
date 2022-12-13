@@ -231,8 +231,10 @@ public class ReceiveData {
         byte[] xmlBytes = new byte[sizeXML];
         System.arraycopy(msg.array(), 8, xmlBytes,0,sizeXML);
 
-        System.out.println("Ver que número é");
-        return new String(xmlBytes);
+        System.out.println("Ver o XML que recebi");
+        String res = new String(xmlBytes);
+        System.out.println(res);
+        return res;
 
     }
 }

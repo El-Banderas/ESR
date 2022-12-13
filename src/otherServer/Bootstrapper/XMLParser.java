@@ -49,7 +49,7 @@ public class XMLParser {
 
         //xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
-        xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\" " +">");
+        xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\"" +">");
 
         xml.append(generateXMLaux(nodes.get("s1"),1, bestPaths));
 
@@ -86,7 +86,7 @@ public class XMLParser {
         if(connections != null){
             for (Connection connection :  connections){
 
-                aux.append("<node name=\""+connection.to.getidNodo() + "\" ip=\"" + connection.to.getIp() + "\" port=\"" + connection.to.portNet + "\" " +">");
+                aux.append("<node name=\""+connection.to.getidNodo() + "\" ip=\"" + connection.to.getIp() + "\" port=\"" + connection.to.portNet + "\"" +">");
                 aux.append(generateXMLaux(connection.to, identation+1, bestPaths));
 
                 aux.append("</node>");
@@ -182,8 +182,10 @@ public class XMLParser {
             Node child = childNodes.item(i);
 
             Element childElem  = (Element) child;
-
-            partition.put(new InfoNodo(InetAddress.getByName(childElem.getAttribute("ip")), Integer.parseInt(childElem.getAttribute("port"))), childElem.getChildNodes().toString());
+//            String[] ipString = InetAddress.getByName(childElem.getAttribute("ip").split("/"));
+            String[] ipString = childElem.getAttribute("ip").split("/");
+            InetAddress ipChildren = InetAddress.getByName(ipString[1]);
+            partition.put(new InfoNodo(ipChildren, Integer.parseInt(childElem.getAttribute("port"))), childElem.getChildNodes().toString());
         }
 
         return partition;

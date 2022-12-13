@@ -360,7 +360,8 @@ public class Typology {
             InfoNodo key = entry.getKey();
             List<Connection> value = entry.getValue();
 
-            if (InfoNodo.compareInfoNodes(key, node)) {
+            //if (InfoNodo.compareInfoNodes(key, node)) {
+            if ((key.ip.equals(node.ip)) && key.portNet == node.portNet){
                 for (Connection connection : value) {
 
                     incident.add(connection);

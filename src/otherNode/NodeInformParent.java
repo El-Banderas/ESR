@@ -213,11 +213,28 @@ break;
     }
 
     private void handleXML(String xml ) {
-        Map<InfoNodo, String> xmlSeparated = new HashMap<>();
+        XMLParser xmlParser = new XMLParser();
+        Map<InfoNodo, String> xmlSeparated = null;
+        System.out.println("Teste XML");
+        System.out.println(xml);
+        try {
+            xmlSeparated = xmlParser.partitionXML(xml);
+        } catch (Exception e) {
+            System.out.println("ERROR  Parse XML ");
+            throw new RuntimeException(e);
+        }
         for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
             // Maybe Problem, children may not exist?
             try {
-                SendData.sendXML(socket, eachSon.getKey(), eachSon.getValue());
+                if (!eachSon.getValue().equals("[node: null]") ) {
+                    System.out.println("Envia para o filho " + eachSon.getKey());
+                    System.out.println(eachSon.getValue());
+                    SendData.sendXML(socket, eachSon.getKey(), eachSon.getValue());
+                }
+                else{
+                    System.out.println("O que é?");
+                    System.out.println(eachSon.getValue());
+                }
             } catch (IOException e) {
                 System.out.println("Error sending node: "+ eachSon.getKey());
                 throw new RuntimeException(e);
