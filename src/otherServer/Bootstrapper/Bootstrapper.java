@@ -48,8 +48,15 @@ public class Bootstrapper implements Runnable{
         this.topologyTypology = t;
     }
 
-    public Bootstrapper() {
-
+    public Bootstrapper(CommuncationBetweenThreads shared) {
+        this.shared = shared;
+        try {
+            InfoNodo serverInfo = new InfoNodo(InetAddress.getLocalHost(), Constants.portNet);
+            this.serverInfo = serverInfo;
+            initBootGeneral(Constants.portNet);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Talvez não seja necessária a informação do próprio server
@@ -88,21 +95,20 @@ public class Bootstrapper implements Runnable{
     // Quando testamos no windows, precisamos de dar a porta
     public Bootstrapper(InfoNodo serverInfo, CommuncationBetweenThreads shared) {
         this.serverInfo = serverInfo;
-        this.sonInfo = null;
         this.shared = shared;
+        initBootGeneral(serverInfo.portNet);
+
+    }
+
+    public void initBootGeneral(int portBoot){
+        this.sonInfo = null;
         this.interested = false;
         this.lastTimeSomeoneInterested = 0;
         this.topologyTypology = new Typology();
         // Creation of server
         try {
-            if (this.serverInfo.portNet > 0){
-                socket = new DatagramSocket(this.serverInfo.portNet);
-                System.out.println("Criado na porta " + this.serverInfo.portNet);
-
-            }
-            else {
-                socket = new DatagramSocket();
-            }
+                socket = new DatagramSocket(portBoot);
+                System.out.println("Criado na porta " + serverInfo.portNet);
             socket.setSoTimeout(Constants.timeoutSockets);
 
         } catch (SocketException e) {
@@ -110,7 +116,6 @@ public class Bootstrapper implements Runnable{
             System.out.println("[Server] Error creating socket");
         }
     }
-
 
     /**
      * Banderas: In this method, we sent the tree to the network, in one message.
@@ -252,12 +257,17 @@ break;
      * This method sends still alives messages to son.
      */
     private void sendStillAlive() {
-        try {
-            SendData.sendStillAliveMSG(socket, sonInfo.ip, sonInfo.portNet);
+        if (sonInfo != null) {
+            try {
+
+                SendData.sendStillAliveMSG(socket, sonInfo.ip, sonInfo.portNet);
+            } catch (Exception e) {
+                System.out.println("[Boot] Error sending still alive msg");
+                e.printStackTrace();
+            }
         }
-        catch (Exception e){
-            System.out.println("[Boot] Error sending still alive msg");
-            e.printStackTrace();
+        else {
+            System.out.println("Boot - No son connected");
         }
     }
 

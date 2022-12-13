@@ -28,10 +28,6 @@ public class Servidor //extends JFrame implements ActionListener
         InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 
 
-        if (argv.length < 2) {
-            Bootstrapper bootstrapper = new Bootstrapper();
-            new Thread(bootstrapper).start();
-        } else {
             boolean separateNodes = false;
             if (separateNodes) {
                 InetAddress sonIP = InetAddress.getByName("localhost");
@@ -74,7 +70,6 @@ public class Servidor //extends JFrame implements ActionListener
             }
 
         }
-    }
 
     public static void runServer (InfoNodo serverInfo){
 

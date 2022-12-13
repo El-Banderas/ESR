@@ -121,7 +121,7 @@ public class Typology {
 
                     this.nodes.put(aux[0], n);
                 } else {
-                    InfoNodo n = new InfoNodo(aux[0], ip, Constants.port);
+                    InfoNodo n = new InfoNodo(aux[0], ip, Constants.portNet);
                     this.nodes.put(aux[0], n);
                 }
 
