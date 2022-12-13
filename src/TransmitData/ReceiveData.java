@@ -58,7 +58,7 @@ public class ReceiveData {
             v.append(nodo.toString());
         }
         String vs = v.toString();
-        byte[] bytes = ByteBuffer.allocate(18+(2*vs.length())).put(vs.getBytes()).array();
+        byte[] bytes = ByteBuffer.allocate(4+18+(2*vs.length())).putInt(Constants.sendNeibourghs).put(vs.getBytes()).array();
 
         SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
     }

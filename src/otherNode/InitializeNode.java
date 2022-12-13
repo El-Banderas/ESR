@@ -25,11 +25,17 @@ public class InitializeNode {
     private InfoNodo boot;
 
     // Este depois não vai ser preciso
-    public InitializeNode(DatagramSocket s, InfoNodo b) {
+    public InitializeNode(DatagramSocket s, InfoNodo b, int thisPort) {
         this.socket = s;
         this.boot = b;
+        try {
+        InfoNodo thisNodo  = new InfoNodo(InetAddress.getByName("127.0.0.1"), thisPort);
         this.thisNodeStream = null;
-        this.thisNodeNet = null;
+        this.thisNodeNet = thisNodo;
+        }
+        catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -106,7 +112,14 @@ public class InitializeNode {
     private void receiveXML() {
         try {
             MessageAndType received = ReceiveData.receiveData(socket);
+
+            while (received.msgType == Constants.sitllAlive) {
+                System.out.println("Recebi still alive, inútil");
+                received = ReceiveData.receiveData(socket);
+
+            }
             if (received.msgType == Constants.XMLmsg) {
+                System.out.println("Recebi XML ");
                 ShareNodes shared = new ShareNodes();
 
                 InfoNodo parent = new InfoNodo(received.packet.getAddress(), received.packet.getPort());

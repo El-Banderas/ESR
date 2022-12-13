@@ -43,7 +43,7 @@ public class oNode {
 
                 // TODO : Está mal, se for necessário corrigir
                 // O 3 argumento é o própio nodo
-                InitializeNode i = new InitializeNode(s,boot);
+                InitializeNode i = new InitializeNode(s,boot, portNode);
                 i.start();
 
 
@@ -55,7 +55,7 @@ public class oNode {
             }
 
 
-        boolean stillAliveParte = true;
+        boolean stillAliveParte = false;
         if (stillAliveParte) {
             InetAddress parentIP = InetAddress.getByName("localhost");
             InetAddress bootIP = InetAddress.getByName("localhost");

@@ -152,6 +152,7 @@ public class Bootstrapper implements Runnable{
                 checkStreamInterested();
                 sendStillAlive();
                 MessageAndType received = ReceiveData.receiveData(socket);
+                System.out.println("Escuta no " + socket.getLocalPort());
                 handleReceivedMessage(received);
 
             } catch (IOException | InterruptedException | ParserConfigurationException | SAXException e) {

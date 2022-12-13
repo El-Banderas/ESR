@@ -19,6 +19,7 @@ public class Constants {
      */
     // Still alive messages
     final public static  int sitllAlive = 5;
+    final public static  int sendNeibourghs = 33;
     /**
      * STREAM MESSAGES
      */
