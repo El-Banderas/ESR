@@ -162,6 +162,37 @@ public class XMLParser {
     }
 
 
+    public String destiny(String xmlNode) throws IOException, SAXException, ParserConfigurationException {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xmlNode)));
+
+        Element rootElement = doc.getDocumentElement();
+
+
+        return rootElement.getAttribute("ip");
+
+    }
+
+    public InfoNodo destinyInfoNodo(String xmlNode) throws ParserConfigurationException, IOException, SAXException {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xmlNode)));
+
+        Element rootElement = doc.getDocumentElement();
+
+        String ip[] = rootElement.getAttribute("ip").split("/");
+
+        String ipToSend = ip[0];
+
+
+        return  new InfoNodo(InetAddress.getByName(ipToSend),Integer.parseInt(rootElement.getAttribute("port")));
+
+    }
+
+
     /*
         Partition xml
      */
