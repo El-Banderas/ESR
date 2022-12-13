@@ -75,6 +75,31 @@ public class Servidor //extends JFrame implements ActionListener
 
         }
     }
+
+    public static void runServer (InfoNodo serverInfo){
+
+        CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
+
+        // Precisa: serverInfo; filho; coisa partilhada
+        Bootstrapper bootstrapper = new Bootstrapper(serverInfo, shared);
+        new Thread(bootstrapper).start();
+
+        SendStream stream = new SendStream(shared);
+        new Thread(stream).start();
+
+    }
+    public static void runServer (){
+
+        CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
+
+        // Precisa: serverInfo; filho; coisa partilhada
+        Bootstrapper bootstrapper = new Bootstrapper(shared);
+        new Thread(bootstrapper).start();
+
+        SendStream stream = new SendStream(shared);
+        new Thread(stream).start();
+
+    }
 }
 
    

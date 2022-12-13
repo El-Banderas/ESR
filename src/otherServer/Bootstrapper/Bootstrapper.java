@@ -85,6 +85,32 @@ public class Bootstrapper implements Runnable{
             System.out.println("[Server] Error creating socket");
         }
     }
+    // Quando testamos no windows, precisamos de dar a porta
+    public Bootstrapper(InfoNodo serverInfo, CommuncationBetweenThreads shared) {
+        this.serverInfo = serverInfo;
+        this.sonInfo = null;
+        this.shared = shared;
+        this.interested = false;
+        this.lastTimeSomeoneInterested = 0;
+        this.topologyTypology = new Typology();
+        // Creation of server
+        try {
+            if (this.serverInfo.portNet > 0){
+                socket = new DatagramSocket(this.serverInfo.portNet);
+                System.out.println("Criado na porta " + this.serverInfo.portNet);
+
+            }
+            else {
+                socket = new DatagramSocket();
+            }
+            socket.setSoTimeout(Constants.timeoutSockets);
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+            System.out.println("[Server] Error creating socket");
+        }
+    }
+
 
     /**
      * Banderas: In this method, we sent the tree to the network, in one message.

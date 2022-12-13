@@ -2,6 +2,7 @@ package otherServer;
 
 import Common.InfoNodo;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +14,16 @@ import java.util.List;
 public class CommuncationBetweenThreads {
     // I am assuming the server has only one node conected.
     // TODO: In case the son is lost, it should be changed by te server (not implemented).
-    public final InfoNodo son;
+    public InfoNodo son;
     public boolean sendStream;
 
     public CommuncationBetweenThreads(InfoNodo son) {
         this.sendStream = false;
         this.son = son;
     }
-
+    public CommuncationBetweenThreads() {
+        this.sendStream = false;
+    }
     public boolean getSendStream() {
         return sendStream;
     }
