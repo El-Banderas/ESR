@@ -30,16 +30,16 @@ public class Executable {
                     System.out.println("Node Windows");
 
                     InetAddress ipBoot = InetAddress.getByName("127.0.0.1");
-                    int portBoot = Integer.parseInt(args[0]);
+                    int portBoot = Integer.parseInt(args[1]);
                     InfoNodo infoBoot = new InfoNodo(ipBoot, portBoot);
 
 
                     InetAddress ipNodeNet = InetAddress.getByName("127.0.0.1");
-                    int portNodeNet = Integer.parseInt(args[1]);
+                    int portNodeNet = Integer.parseInt(args[2]);
                     InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                     InetAddress ipNodeStream = InetAddress.getByName("127.0.0.1");
-                    int portNodeStream = Integer.parseInt(args[2]);
+                    int portNodeStream = Integer.parseInt(args[3]);
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
 
@@ -83,7 +83,7 @@ public class Executable {
                 InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                 InetAddress ipNodeStream = InetAddress.getLocalHost();
-                int portNodeStream = Constants.portNet;
+                int portNodeStream = Constants.portStream;
                 InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
 

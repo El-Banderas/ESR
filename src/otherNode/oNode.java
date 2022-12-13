@@ -34,11 +34,15 @@ public class oNode {
         int portNode = Integer.parseInt(args[2]);
         int portBoot = Integer.parseInt(args[1]);
         InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+        portNode = -1;
         try {
             if (portNode > 0) {
                 System.out.println("Socket criado porta : " + portNode);
                  s = new DatagramSocket(portNode);
            //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+
+                // TODO : Está mal, se for necessário corrigir
+                // O 3 argumento é o própio nodo
                 InitializeNode i = new InitializeNode(s,boot);
                 i.start();
 
@@ -102,7 +106,7 @@ public class oNode {
             throw new RuntimeException(e);
         }
         //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
-        InitializeNode i = new InitializeNode(socket,boot);
+        InitializeNode i = new InitializeNode(socket,boot, thisNodeNet, thisNodeStream);
         i.start();
 
 
