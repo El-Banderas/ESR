@@ -52,6 +52,8 @@ public class Bootstrapper implements Runnable{
         this.shared = shared;
         try {
             InfoNodo serverInfo = new InfoNodo(InetAddress.getLocalHost(), Constants.portNet);
+            System.out.println("IP do server");
+            System.out.println(serverInfo.getIp());
             this.serverInfo = serverInfo;
             initBootGeneral(Constants.portNet);
         } catch (UnknownHostException e) {

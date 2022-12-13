@@ -72,7 +72,7 @@ public class Constants {
     public static int arraySize = 2048;
 
 
-    public static boolean Windows = true ;
+    public static boolean Windows = false ;
 
 
     public static  int portNet = 8000;
