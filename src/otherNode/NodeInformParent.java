@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -180,6 +182,7 @@ break;
                 String xml = ReceiveData.receivedXML(received.packet);
                 System.out.println("Recebi XML");
                 System.out.println(xml);
+                handleXML(xml);
                 // falta enviar ao pai
                 //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
                 break;
@@ -207,6 +210,21 @@ break;
                 System.out.println("Undefined message, rtp packets are handled in other thread/port.");
                 //receiveMaybeRTPStream(received.packet);
         }
+    }
+
+    private void handleXML(String xml ) {
+        Map<InfoNodo, String> xmlSeparated = new HashMap<>();
+        for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
+            // Maybe Problem, children may not exist?
+            try {
+                SendData.sendXML(socket, eachSon.getKey(), eachSon.getValue());
+            } catch (IOException e) {
+                System.out.println("Error sending node: "+ eachSon.getKey());
+                throw new RuntimeException(e);
+            }
+
+        }
+
     }
 
     /**
