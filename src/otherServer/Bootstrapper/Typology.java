@@ -324,8 +324,6 @@ public class Typology {
         XMLParser temp = new XMLParser();
         String xml = temp.generateXML(this.nodes, mst);
         String res = temp.prettyPrintByTransformer(xml, 1, false);
-        System.out.println("àrvore");
-        System.out.println(res);
         this.bestPaths = mst;
 
         try {

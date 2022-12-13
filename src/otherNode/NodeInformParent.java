@@ -31,7 +31,7 @@ public class NodeInformParent implements Runnable {
     public InfoConnection parent;
 
     // This array is constant, the neibourghs are always the same.
-    public ArrayList<InfoNodo> neibourghs;
+    //public ArrayList<InfoNodo> neibourghs;
 
     // This array is determined by the formulated tree from the bootstrapper.
     // Based on the state of the connections.
@@ -61,24 +61,25 @@ public class NodeInformParent implements Runnable {
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
         this.thisNode = new InfoNodo(InetAddress.getByName("localhost"),thisPort);
         this.sons = sons;
-        this.neibourghs = new ArrayList<>();
+       // this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
         this.socket = socket;
         //this.shared = shared;
     }
 
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, ArrayList<InfoNodo> sons, ShareNodes shared) {
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, DatagramSocket socket, ShareNodes shared) {
         // O delay tem de vir do xml, alterar depois
         // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
         this.thisNode = thisNode;
-        this.sons = sons;
-        this.neibourghs = new ArrayList<>();
+        this.sons = new ArrayList<>();
+        //this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
         //this.socket = socket;
         this.shared = shared;
+        this.socket = socket;
     }
 
 

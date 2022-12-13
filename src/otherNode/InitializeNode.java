@@ -68,7 +68,6 @@ public class InitializeNode {
     public String findNeighbours(MessageAndType neigbours) {
 
         String word = new String(neigbours.packet.getData());
-        System.out.println("Server said: \n Your neighbours: \n");
         String[] neighboursList = word.split("END");
         return neighboursList[0];
     }
@@ -109,7 +108,7 @@ public class InitializeNode {
                 ShareNodes shared = new ShareNodes();
 
                 InfoNodo parent = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
-                NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNodeNet, new ArrayList<>(), shared);
+                NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNodeNet, socket, shared);
                 // NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
                 new Thread(comunication_TH).start();
                 //TODO: Falta thread Stream

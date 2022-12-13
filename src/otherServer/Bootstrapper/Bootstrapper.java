@@ -200,8 +200,12 @@ public class Bootstrapper implements Runnable{
                     this.topologyTypology.addConection(c.from,c.to,c.delay,c.numHops, socket, sonInfo);
 
                     break;
+                    // When we receive a timestamp, it's from the connected node from boot.
                 case Constants.timeStamp:
+                    InfoNodo receivedSon = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
+                    this.sonInfo = receivedSon;
                     Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, serverInfo.ip, serverInfo.portNet);
+
                     this.topologyTypology.addConection(co.from,co.to,co.delay,co.numHops, socket, sonInfo );
 break;
                 case Constants.hellomesage:
