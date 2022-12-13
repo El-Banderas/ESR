@@ -214,6 +214,10 @@ break;
     }
 
     private void handleXML(String xml ) {
+
+        // clear the ArrayList of sons
+        this.sons.clear();
+
         XMLParser xmlParser = new XMLParser();
         Map<InfoNodo, String> xmlSeparated = null;
         System.out.println("Teste XML");
@@ -225,6 +229,8 @@ break;
             throw new RuntimeException(e);
         }
         for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
+            //Add the son to the ArrayList
+            sons.add(eachSon.getKey());
             // Maybe Problem, children may not exist?
             try {
                 if (!eachSon.getValue().equals("")) {
