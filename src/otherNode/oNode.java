@@ -93,8 +93,19 @@ public class oNode {
 
     }
 
-    public static void runNode(InfoNodo boot, InfoNodo thisNode){
-         
+    public static void runNode(InfoNodo boot, InfoNodo thisNodeNet, InfoNodo thisNodeStream){
+        DatagramSocket socket = null;
+        try {
+            socket = new DatagramSocket(thisNodeNet.portNet);
+        } catch (SocketException e) {
+            System.out.println("[oNode] Error creating socket network.");
+            throw new RuntimeException(e);
+        }
+        //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
+        InitializeNode i = new InitializeNode(socket,boot);
+        i.start();
+
+
     }
 
 }

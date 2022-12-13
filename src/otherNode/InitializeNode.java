@@ -1,10 +1,14 @@
 package otherNode;
 
+import Common.Constants;
 import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
+import org.xml.sax.SAXException;
+import otherServer.Bootstrapper.Connection;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -24,6 +28,7 @@ public class InitializeNode {
     public void start() {
         try {
             SendData.sendHelloMsg(this.socket, this.boot.ip, boot.portNet);
+            // TODO: Alterar aqui para meter a porta da stream no windows
             MessageAndType neigbours =ReceiveData.receiveData(this.socket);
             String neighboursList = findNeighbours(neigbours);
              InfoNodo[] Nlist = parseVizinhos(neighboursList);
@@ -36,6 +41,7 @@ public class InitializeNode {
              for(int i=0; i<Nlist.length-1;i++) {
               SendData.sendTimeStamp(this.socket,Nlist[i].ip,Nlist[i].portNet);
              }
+             receiveXML();
 
         } catch (
                 IOException e) {
@@ -43,6 +49,8 @@ public class InitializeNode {
         }
 
     }
+
+
 
 
     public String findNeighbours(MessageAndType neigbours){
@@ -79,5 +87,39 @@ public class InitializeNode {
         }
 
         return nodos;
+    }
+
+
+    private void receiveXML() {
+        MessageAndType received = null;
+        try {
+            received = ReceiveData.receiveData(socket);
+        }
+        handleReceivedMessage(received);
+        ShareNodes shared = new ShareNodes();
+
+        // Neste momento, não precisamos de saber os filhos
+        // Quando for para mandar a árvore dos caminhos, tem de ir preenchendo o array de filhos.
+        //                                                 pai | boot | porta atual | filhos
+        NodeInformParent comunication_TH = new NodeInformParent(parent, boot, Integer.parseInt(args[2]), sons, s);
+        // NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
+        new Thread(comunication_TH).start();
+    }
+    catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleReceivedMessage(MessageAndType received) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
+        switch (received.msgType){
+            // Como stillAlives é pai->filho, boo não tem pais, boot não tem stillAlives
+            //case Constants.sitllAliveNoInterest:
+            case Constants.XMLmsg:
+                break;
+
+            default:
+                System.out.println(received.msgType);
+                System.out.println("\n[Initialize Node] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
+        }
     }
 }
