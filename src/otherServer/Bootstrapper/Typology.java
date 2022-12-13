@@ -2,14 +2,14 @@ package otherServer.Bootstrapper;
 
 import Common.Constants;
 import Common.InfoNodo;
-import org.w3c.dom.Node;
+import TransmitData.SendData;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.List;
@@ -205,14 +205,14 @@ public class Typology {
         //Typology.printInfoFromMap(activeNetwork);
     }
 
-    public void addConection(InfoNodo from, InfoNodo to, double delay, int numHops) {
+    public void addConection(InfoNodo from, InfoNodo to, double delay, int numHops, DatagramSocket socket, InfoNodo destMSG) {
         System.out.println("Add connection");
         System.out.println(from);
         System.out.println(to);
         addNeighbour(from, new Connection(from, to, delay, numHops));
         addNeighbour(to, new Connection(to, from, delay, numHops));
 
-        recalculateBestPathsTree();
+        recalculateBestPathsTree(socket, destMSG);
 
     }
 
@@ -270,7 +270,7 @@ public class Typology {
     }
 
 
-    public void recalculateBestPathsTree() {
+    public void recalculateBestPathsTree(DatagramSocket socket, InfoNodo destMSG) {
 
         // to store the minimum spanning tree (best Paths Trees)
         Map<InfoNodo, List<Connection>> mst = new HashMap<>();
@@ -330,13 +330,15 @@ public class Typology {
         System.out.println(res);
         this.bestPaths = mst;
 
-
+        try {
+            SendData.sendXML(socket, destMSG, xml);
+        } catch (IOException e) {
+            System.out.println("Error sending XML");
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<InfoNodo> getVizinhos(InfoNodo i) {
 
-        return null;
-    }
 
 
     public List<Connection> getIncident(InfoNodo node) {
@@ -385,7 +387,7 @@ public class Typology {
 
     public List<InfoNodo> getAllNeighbours(InfoNodo i){
         List<InfoNodo> entries = this.completeNetwork.keySet().stream().collect(Collectors.toList());
-        
+
         List<InfoNodo> allNeighbours = null;
 
         for(InfoNodo entry : entries){
@@ -407,10 +409,10 @@ public class Typology {
         System.out.println("2");
         List<InfoNodo> activeNodes = this.activeNetwork.keySet().stream().collect(Collectors.toList());
         System.out.println(activeNodes);
-List<InfoNodo> res = activeNodes.stream().distinct().filter(allNeighbours::contains).collect(Collectors.toList());
+        List<InfoNodo> res = activeNodes.stream().distinct().filter(allNeighbours::contains).collect(Collectors.toList());
         System.out.println("Result getNeig");
         System.out.println(res);
-return res;
+        return res;
 
 
 

@@ -104,4 +104,14 @@ public class SendData {
     }
 
 
+    public static void sendXML(DatagramSocket socket, InfoNodo son, String xml) throws IOException {
+        byte[] xmlBytes = xml.getBytes();
+        ByteBuffer bb = ByteBuffer.allocate(8+xmlBytes.length).
+                putInt(Constants.XMLmsg).
+                putInt(xmlBytes.length).
+                put(xmlBytes);
+
+        byte[] bytes = bb.array();
+        sendData(socket, bytes, son.ip, son.portNet);
+    }
 }

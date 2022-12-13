@@ -223,5 +223,16 @@ public class ReceiveData {
         }
 
 
+    public static String receivedXML(DatagramPacket packet) {
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+        int type = msg.getInt();
+        int sizeXML = msg.getInt();
 
+        byte[] xmlBytes = new byte[sizeXML];
+        System.arraycopy(msg.array(), 8, xmlBytes,0,sizeXML);
+
+        System.out.println("Ver que número é");
+        return new String(xmlBytes);
+
+    }
 }

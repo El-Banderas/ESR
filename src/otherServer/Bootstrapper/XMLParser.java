@@ -45,9 +45,9 @@ public class XMLParser {
 
         StringBuilder xml = new StringBuilder();
 
-        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
-        xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() + "\" " +">");
+        xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\" " +">");
 
         xml.append(generateXMLaux(nodes.get("s1"),1, bestPaths));
 

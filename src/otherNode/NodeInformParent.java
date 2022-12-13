@@ -175,6 +175,15 @@ public class NodeInformParent implements Runnable {
                 // falta enviar ao pai
                 SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
 break;
+
+            case Constants.XMLmsg:
+                String xml = ReceiveData.receivedXML(received.packet);
+                System.out.println("Recebi XML");
+                System.out.println(xml);
+                // falta enviar ao pai
+                //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
+                break;
+
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
                 break;
