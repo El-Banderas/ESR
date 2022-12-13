@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.rmi.MarshalledObject;
 import java.util.*;
 import java.io.*;
+import java.util.stream.Collectors;
 
 public class XMLParser {
 
@@ -61,10 +62,26 @@ public class XMLParser {
 
     }
 
+
+    public List<Connection> getPath(InfoNodo node ,Map<InfoNodo,List<Connection>> bestPaths){
+        List<Connection> con = null;
+
+        for (InfoNodo n : bestPaths.keySet().stream().collect(Collectors.toList())){
+            if(n.getIp().equals(node.getIp()) && n.portNet == node.portNet){
+                con = bestPaths.get(n);
+            }
+        }
+
+        return con;
+
+
+    }
+
+
     public StringBuilder generateXMLaux(InfoNodo node ,int identation, Map<InfoNodo,List<Connection>> bestPaths) {
         StringBuilder aux = new StringBuilder();
 
-        List<Connection> connections= bestPaths.get(node);
+        List<Connection> connections= getPath(node,bestPaths);
 
         if(connections != null){
             for (Connection connection :  connections){
