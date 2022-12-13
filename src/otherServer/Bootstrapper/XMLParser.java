@@ -1,4 +1,5 @@
 package otherServer.Bootstrapper;
+import javax.lang.model.util.Elements;
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -8,6 +9,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import Common.InfoNodo;
 import org.w3c.dom.*;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -47,7 +50,7 @@ public class XMLParser {
 
         StringBuilder xml = new StringBuilder();
 
-        //xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
         xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\"" +">");
 
@@ -163,7 +166,24 @@ public class XMLParser {
         Partition xml
      */
 
+    public String innerXml(Node node) {
+        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        LSSerializer lsSerializer = lsImpl.createLSSerializer();
+        lsSerializer.getDomConfig().setParameter("xml-declaration", false);
+        NodeList childNodes = node.getChildNodes();
+        StringBuilder sb = new StringBuilder();
+        sb.append(lsSerializer.writeToString(node));
+        /*for (int i = 0; i < childNodes.getLength(); i++) {
+            sb.append(lsSerializer.writeToString(childNodes.item(i)));
+        }*/
+        return sb.toString();
+    }
+
+
     public Map<InfoNodo, String> partitionXML (String xmlString) throws ParserConfigurationException, IOException, SAXException {
+
+        //parseXML(xmlString);
+
         Map<InfoNodo, String> partition = new HashMap<>();
 
         // Parse the XML string into a document object
@@ -171,21 +191,33 @@ public class XMLParser {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
 
+        String version = doc.getXmlVersion();
+
         // Get the root element of the document
         Element rootElement = doc.getDocumentElement();
-
-        // Get a list of all elements in the document
+        //NodeList childNodes = doc.getChildNodes();
         NodeList childNodes = rootElement.getChildNodes();
 
 
         for (int i = 0; i<childNodes.getLength(); i++){
-            Node child = childNodes.item(i);
+            Node node = childNodes.item(i);
 
-            Element childElem  = (Element) child;
-//            String[] ipString = InetAddress.getByName(childElem.getAttribute("ip").split("/"));
-            String[] ipString = childElem.getAttribute("ip").split("/");
-            InetAddress ipChildren = InetAddress.getByName(ipString[1]);
-            partition.put(new InfoNodo(ipChildren, Integer.parseInt(childElem.getAttribute("port"))), childElem.getChildNodes().toString());
+            NodeList innerChilds = node.getChildNodes();
+
+
+            // If the node is an element, print its name and value
+
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+                Element childElem = (Element) node;
+                System.out.println("IP: " + childElem.getAttribute("ip") + " - Name: " + childElem.getAttribute("name") + " - Port: " + childElem.getAttribute("port"));
+                String[] ipString = childElem.getAttribute("ip").split("/");
+                InetAddress ipChildren = InetAddress.getByName(ipString[1]);
+                String nodeValue = innerXml(node);
+                partition.put(new InfoNodo(ipChildren, Integer.parseInt(childElem.getAttribute("port"))), nodeValue);
+
+            }
+
         }
 
         return partition;

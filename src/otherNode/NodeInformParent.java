@@ -226,10 +226,16 @@ break;
         for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
             // Maybe Problem, children may not exist?
             try {
-                if (!eachSon.getValue().equals("[node: null]") ) {
-                    System.out.println("Envia para o filho " + eachSon.getKey());
-                    System.out.println(eachSon.getValue());
-                    SendData.sendXML(socket, eachSon.getKey(), eachSon.getValue());
+                if (!eachSon.getValue().equals("")) {
+                    //System.out.println("Envia para o filho " + eachSon.getKey());
+                    //System.out.println(eachSon.getValue());
+                    XMLParser p = new XMLParser();
+                    Map<InfoNodo,String> sonsInside = p.partitionXML(eachSon.getValue());
+                    for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
+                        System.out.println("Envia para o filho " + son.getKey());
+                        System.out.println(son.getValue());
+                        SendData.sendXML(socket, son.getKey(), son.getValue());
+                    }
                 }
                 else{
                     System.out.println("O que é?");
@@ -237,6 +243,10 @@ break;
                 }
             } catch (IOException e) {
                 System.out.println("Error sending node: "+ eachSon.getKey());
+                throw new RuntimeException(e);
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
                 throw new RuntimeException(e);
             }
 
