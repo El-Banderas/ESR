@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Executable {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         if (Constants.Windows) {
             if (args[0].equals("boot")) {
                 // Podem haver erros por ser static?
@@ -63,8 +63,12 @@ public class Executable {
             if (args[0].equals("boot")) {
                 // Podem haver erros por ser static?
                     System.out.println("Boot Core");
+                InetAddress ipServer = InetAddress.getByName(args[1]);
 
-                    Servidor.runServer();
+
+                InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
+
+                Servidor.runServer(infoServer);
 
 
                 return;
@@ -73,16 +77,16 @@ public class Executable {
                 System.out.println("Nodo Core");
                 try {
 
-                InetAddress ipBoot = InetAddress.getByName(args[0]);
+                InetAddress ipBoot = InetAddress.getByName(args[1]);
                 int portBoot = Constants.portNet;
                 InfoNodo infoBoot = new InfoNodo(ipBoot, portBoot);
 
 
-                InetAddress ipNodeNet = InetAddress.getLocalHost();
+                InetAddress ipNodeNet = InetAddress.getByName(args[2]);
                 int portNodeNet = Constants.portNet;
                 InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
-                InetAddress ipNodeStream = InetAddress.getLocalHost();
+                InetAddress ipNodeStream = InetAddress.getByName(args[2]);
                 int portNodeStream = Constants.portStream;
                 InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
