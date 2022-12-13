@@ -43,6 +43,8 @@ public class InitializeNode {
     public void start() {
         try {
             SendData.sendHelloMsg(this.socket, this.boot.ip, boot.portNet);
+            System.out.println("Send hello to: " + this.boot.portNet);
+            System.out.println("Aqui");
             MessageAndType neigbours = ReceiveData.receiveData(this.socket);
             String neighboursList = findNeighbours(neigbours);
             InfoNodo[] Nlist = parseVizinhos(neighboursList);

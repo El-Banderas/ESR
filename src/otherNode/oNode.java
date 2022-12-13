@@ -34,7 +34,7 @@ public class oNode {
         int portNode = Integer.parseInt(args[2]);
         int portBoot = Integer.parseInt(args[1]);
         InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
-        portNode = -1;
+        //portNode = -1;
         try {
             if (portNode > 0) {
                 System.out.println("Socket criado porta : " + portNode);

@@ -77,7 +77,7 @@ public class NodeInformParent implements Runnable {
         //this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
-        //this.socket = socket;
+            this.socket = socket;
         this.shared = shared;
         this.socket = socket;
     }
