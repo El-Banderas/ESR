@@ -232,10 +232,18 @@ break;
                     //System.out.println(eachSon.getValue());
                     XMLParser p = new XMLParser();
                     Map<InfoNodo,String> sonsInside = p.partitionXML(eachSon.getValue());
-                    for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
-                        System.out.println("Envia para o filho " + son.getKey());
-                        System.out.println(son.getValue());
-                        SendData.sendXML(socket, son.getKey(), son.getValue());
+                    if(sonsInside.size() > 0){
+                        for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
+                            System.out.println("Envia para o filho " + son.getKey());
+                            System.out.println(son.getValue());
+                            SendData.sendXML(socket, son.getKey(), son.getValue());
+                        }
+                    }else{
+                        String destiny = p.destiny(eachSon.getValue());
+                        System.out.println("Envia para o filho " + destiny);
+
+                        System.out.println(eachSon.getValue());
+                        SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
                     }
                 }
                 else{
