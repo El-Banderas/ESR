@@ -75,8 +75,8 @@ public class Constants {
     public static boolean Windows = false ;
 
 
-    public static  int portNet = 8000;
-    public static  int portStream = 8010;
+    public static  int portNet = 9000;
+    public static  int portStream = 9010;
 
 
 

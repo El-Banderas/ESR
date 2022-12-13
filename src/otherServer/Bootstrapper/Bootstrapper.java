@@ -219,7 +219,7 @@ break;
                 case Constants.hellomesage:
                     System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
                     InfoNodo nodo = new InfoNodo(received.packet.getAddress(),received.packet.getPort());
-                    this.topologyTypology.activateConnection(nodo,false);
+                    this.topologyTypology.activateConnection(nodo);
                     ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology);
                     break;
                 case Constants.lostNode:

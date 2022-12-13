@@ -168,8 +168,11 @@ public class Typology {
         }
         this.completeNetwork = completeNetwork;
 
+        System.out.println("COMPL NET");
+        System.out.println(completeNetwork);
+
         // Server is initialized connecting with himself (but the method will create an empty list if it is server)
-        activateConnection(this.nodes.get("s1"), true);
+        activateConnection(this.nodes.get("s1"));
     }
 
     private List<Connection> getNeibourghs(InfoNodo target){
@@ -220,7 +223,7 @@ public class Typology {
     /*
         Method for node activation (Populates the active Network Map)
      */
-    public void activateConnection(InfoNodo node, boolean isServer) throws InterruptedException {
+    public void activateConnection(InfoNodo node) throws InterruptedException {
         /*
             To make it easier the server is neighbour of itself
          */
@@ -484,8 +487,8 @@ public class Typology {
 
         // Activate some nodes
 
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"), false);
-        typologyTest.activateConnection(typologyTest.getNodes().get("n2"), false);
+        typologyTest.activateConnection(typologyTest.getNodes().get("n1"));
+        typologyTest.activateConnection(typologyTest.getNodes().get("n2"));
 
         //typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("s1"),1,2), false );
         /*
