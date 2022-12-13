@@ -230,6 +230,9 @@ public class Typology {
         //List<InfoNodo> allNeighbours = this.completeNetwork.get(node.idNodo);
 
 
+        System.out.println("ACTIVATE CONNECTION");
+        System.out.println(node.toString());
+
         this.activeNetwork.put(node, new ArrayList<>());
 
 
