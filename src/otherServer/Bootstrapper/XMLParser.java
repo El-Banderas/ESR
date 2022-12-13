@@ -12,6 +12,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.net.InetAddress;
+import java.rmi.MarshalledObject;
 import java.util.*;
 import java.io.*;
 
@@ -45,7 +46,7 @@ public class XMLParser {
 
         StringBuilder xml = new StringBuilder();
 
-//        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        //xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
         xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\" " +">");
 
@@ -106,7 +107,6 @@ public class XMLParser {
 
 
 
-
     public void parseXMLAux(NodeList nodeList) {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
@@ -140,6 +140,41 @@ public class XMLParser {
 
         parseXMLAux(nodeList);
     }
+
+
+    /*
+        Partition xml
+     */
+
+    public Map<InfoNodo, String> partitionXML (String xmlString) throws ParserConfigurationException, IOException, SAXException {
+        Map<InfoNodo, String> partition = new HashMap<>();
+
+        // Parse the XML string into a document object
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+
+        // Get the root element of the document
+        Element rootElement = doc.getDocumentElement();
+
+        // Get a list of all elements in the document
+        NodeList childNodes = rootElement.getChildNodes();
+
+
+        for (int i = 0; i<childNodes.getLength(); i++){
+            Node child = childNodes.item(i);
+
+            Element childElem  = (Element) child;
+
+            partition.put(new InfoNodo(InetAddress.getByName(childElem.getAttribute("ip")), Integer.parseInt(childElem.getAttribute("port"))), childElem.getChildNodes().toString());
+        }
+
+        return partition;
+
+
+    }
+
+
 
 
     /*

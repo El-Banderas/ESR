@@ -301,11 +301,9 @@ public class Typology {
             }
 
             // Add the edge to the minimum spanning tree
-            List<Connection> listCon;
-            if (mst.get(toAdd.from) != null) {
-                listCon = mst.get(toAdd.from);
-
-            } else {
+            List<Connection> listCon ;
+            listCon = getConnections(mst, toAdd.from);
+            if (listCon == null) {
                 listCon = new ArrayList<>();
             }
             listCon.add(toAdd);
@@ -339,6 +337,18 @@ public class Typology {
     }
 
 
+
+    public List<Connection> getConnections(Map<InfoNodo,List<Connection>> mst, InfoNodo toGet){
+        List<Connection> con = null;
+        for(InfoNodo n : mst.keySet().stream().collect(Collectors.toList())){
+            if (n.getIp().equals(toGet.getIp()) && n.portNet==toGet.portNet){
+                con = mst.get(n);
+            }
+        }
+
+        return con;
+
+    }
 
 
     public List<Connection> getIncident(InfoNodo node) {
