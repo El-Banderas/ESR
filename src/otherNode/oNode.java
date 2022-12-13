@@ -93,6 +93,10 @@ public class oNode {
 
     }
 
+    public static void runNode(InfoNodo boot, InfoNodo thisNode){
+         
+    }
+
 }
 
 

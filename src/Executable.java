@@ -1,5 +1,6 @@
 import Common.Constants;
 import Common.InfoNodo;
+import otherNode.oNode;
 import otherServer.Servidor;
 
 import java.net.InetAddress;
@@ -25,8 +26,24 @@ public class Executable {
                 return;
             }
             if (args[0].equals("node")) {
-                System.out.println("Node ");
-                System.out.println("Boot address: " + args[1]);
+                try {
+                    System.out.println("Node");
+
+                    InetAddress ipNode = InetAddress.getByName("127.0.0.1");
+                    int portNode = Integer.parseInt(args[1]);
+                    InfoNodo infoNode = new InfoNodo(ipNode, portNode);
+
+                    InetAddress ipBoot = InetAddress.getByName("127.0.0.1");
+                    int portBoot = Integer.parseInt(args[2]);
+                    InfoNodo infoBoot = new InfoNodo(ipBoot, portBoot);
+
+
+                    oNode.runNode(infoBoot, infoNode);
+
+
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
                 return;
             }
             if (args[0].equals("client")) {
