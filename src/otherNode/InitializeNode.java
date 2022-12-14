@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class InitializeNode {
@@ -23,6 +24,8 @@ public class InitializeNode {
     private final InfoNodo thisNodeStream;
     private DatagramSocket socket;
     private InfoNodo boot;
+
+    private InfoNodo altBoot;
 
     // Este depois não vai ser preciso
     public InitializeNode(DatagramSocket s, InfoNodo b, int thisPort) {
@@ -74,8 +77,27 @@ public class InitializeNode {
 
 
     public String findNeighbours(MessageAndType neigbours) {
+        ByteBuffer msg = ByteBuffer.wrap(neigbours.packet.getData());
+        int type = msg.getInt();
+        int isThereAlterBot = msg.getInt();
+        if (isThereAlterBot == 1){
+            byte[] lostNodeIpPart = new byte[Constants.sizeInetAdressByteArray];
+            System.arraycopy(msg.array(), 4*2, lostNodeIpPart, 0, Constants.sizeInetAdressByteArray);
+            try {
+                InetAddress ipLostNode = InetAddress.getByAddress(lostNodeIpPart);
+                if (Constants.Windows) {
+                    this.altBoot = new InfoNodo(ipLostNode, this);
+                }
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
 
         String word = new String(neigbours.packet.getData());
+
+        System.out.println("Recebe vizinhos:");
+        System.out.println(word);
         String[] neighboursList = word.split("END");
         return neighboursList[0];
     }

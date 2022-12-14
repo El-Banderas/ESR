@@ -47,6 +47,7 @@ public class ReceiveData {
 
 
     public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t, InfoNodo bootAlter) throws IOException {
+        int sizeInetAdressByteArray = 4;
 
         InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
 
@@ -60,7 +61,22 @@ public class ReceiveData {
             v.append(nodo.toString());
         }
         String vs = v.toString();
-        byte[] bytes = ByteBuffer.allocate(4+18+(2*vs.length())).putInt(Constants.sendNeibourghs).put(vs.getBytes()).array();
+        boolean isBootAlter = bootAlter != null;
+        int isBoolAlterInt = isBootAlter ? 1 : 0;
+        byte[] bytesIP = new byte[sizeInetAdressByteArray];
+        if (isBootAlter) {
+             bytesIP = bootAlter.ip.getAddress();
+        }
+        else {
+            ByteBuffer bb = ByteBuffer.allocate(4);
+            bb.putInt(bootAlter.portNet);
+            bytesIP = bb.array();
+        }
+
+        byte[] bytes = ByteBuffer.allocate(4+4+bytesIP.length+18+(2*vs.length()))
+                .putInt(Constants.sendNeibourghs).
+                putInt(isBoolAlterInt).put(bytesIP).
+                put(vs.getBytes()).array();
 
         SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
     }

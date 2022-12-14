@@ -39,6 +39,8 @@ final public static int changeTree = 25;
     // Miliseconds
     final public static int timeToConsiderNodeLost = 6000;
 
+final public static    int sizeInetAdressByteArray = 4;
+
     public static double getCurrentTime(){
 //        LocalDateTime date = LocalDateTime.now();
         //date.toLocalTime().toSecondOfDay();
