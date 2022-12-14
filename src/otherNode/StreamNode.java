@@ -25,9 +25,12 @@ public class StreamNode implements Runnable{
         System.out.println("Redirect stream started");
         while(true) {
             try {
+                //MessageAndType received = ReceiveData.receiveData(socket);
+                //System.out.println("Recebeu msg do tipo: " + received.msgType);
+
                 ReceiveData.nodeReceiveStream(socket, shared.interestedSons);
             } catch (IOException e) {
-                System.out.println("[STREAM] Timout");
+                System.out.println("[STREAM] Timout, listening on "+ socket.getInetAddress() + " "+socket.getLocalPort());
                 //throw new RuntimeException(e);
             }
         }

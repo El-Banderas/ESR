@@ -175,6 +175,9 @@ public class ReceiveData {
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
+        System.out.println("Recebi stream, vou enviar para os filhos");
+        System.out.println(interestedSons);
+
         for (InfoNodo son : interestedSons){
             try {
                // System.out.println("Envia para o filho");
@@ -235,7 +238,8 @@ public class ReceiveData {
         // We already know the type, so we can ignore it
         int type = msg.getInt();
         int portWantStream = msg.getInt();
-        return new InfoNodo(packet.getAddress(), packet.getPort(), portWantStream);
+
+        return new InfoNodo(packet.getAddress(), packet.getPort(),packet.getPort()+1 );
 
     }
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {

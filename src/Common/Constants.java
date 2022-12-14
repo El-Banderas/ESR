@@ -38,7 +38,7 @@ final public static int wakeUpClient = 28;
 final public static int changeTree = 25;
 
     // Miliseconds
-    final public static int timeoutSockets = 30000;
+    final public static int timeoutSockets = 2000;
     // Miliseconds
     final public static int timeToConsiderNodeLost = 60000; // 1 minute
 

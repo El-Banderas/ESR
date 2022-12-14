@@ -131,7 +131,9 @@ public class InitializeNode {
         return nodos;
     }
 
-
+    /**
+     * Here we ignore the xml because, when a node is created, we don't have sons.
+     */
     private void receiveXML() {
         try {
             MessageAndType received = ReceiveData.receiveData(socket);

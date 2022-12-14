@@ -49,6 +49,7 @@ public class ClientInformParent  {
     public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient, DatagramSocket socket) throws UnknownHostException {
         this.parent = parent;
         this.boot = boot;
+        this.socket = socket;
         this.thisClient = thisClient;
         //this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
@@ -133,7 +134,11 @@ public class ClientInformParent  {
         @Override
         public void run() {
             try {
-                SendData.wantsStream(socket, parent, thisClient.portNet);
+                System.out.println("Coisas do cliente");
+                System.out.println(socket);
+                System.out.println(parent);
+                System.out.println(thisClient.portNet+1);
+                SendData.wantsStream(socket, parent, thisClient.portNet+1);
                 //System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

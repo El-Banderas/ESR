@@ -82,7 +82,6 @@ public class SendStream implements Runnable {
     private void sendStream() {
         // While someone is interested.
         while (shared.sendStream) {
-
             if (imagenb < VIDEO_LENGTH) {
                 //update current imagenb
                 imagenb++;
@@ -104,6 +103,7 @@ public class SendStream implements Runnable {
                     //send the packet as a DatagramPacket over the UDP socket
                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portNet+1);
                     RTPsocket.send(senddp);
+                    System.out.println("[SendStream] Envia stream para: " + shared.son.ip + " - " + shared.son.portNet+1);
 
                 } catch (Exception ex) {
                     System.out.println("Exception caught: " + ex);
