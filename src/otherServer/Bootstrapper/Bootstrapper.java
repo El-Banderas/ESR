@@ -294,7 +294,8 @@ public class Bootstrapper implements Runnable {
             // When we receive a timestamp, it's from the connected node from boot.
             case Constants.timeStamp:
                 InfoNodo receivedSon = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
-                InfoNodo receivedSonStream = new InfoNodo(received.packet.getAddress(), received.packet.getPort()+1);
+                InfoNodo receivedSonStream = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
+                System.out.println("Novo filho: " + receivedSonStream);
                 this.sonInfo = receivedSon;
                 this.shared.son = receivedSonStream;
                 Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, thisBoot.ip, thisBoot.portNet);
@@ -380,8 +381,8 @@ public class Bootstrapper implements Runnable {
 
 
     private void receivedStreamWanted(DatagramPacket packet) {
-        InfoConnection info = ReceiveData.receiveStillAliveMSG(packet);
-        lastTimeSomeoneInterested = info.timeLastMessage;
+        ReceiveData.receivedWantStream(packet);
+        lastTimeSomeoneInterested = Constants.getCurrentTime();
 
         // Necessary to warn stream thread that stream must start/stop.
         if (!this.interested) {

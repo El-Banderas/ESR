@@ -23,6 +23,7 @@ public class InitClient {
         this.infoClientNet = infoClientNet;
         try {
             socketNet = new DatagramSocket(infoClientNet.portNet);
+            socketStream = new DatagramSocket(infoClientNet.portNet+1);
 
         } catch (SocketException e) {
             throw new RuntimeException(e);
@@ -63,7 +64,8 @@ public class InitClient {
     private void startClient(DatagramPacket packet) {
         InfoNodo parent = new InfoNodo(packet.getAddress(), packet.getPort());
         try {
-            ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet, socketNet);
+
+            ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet, socketNet, socketStream);
             cli.start();
 
         } catch (UnknownHostException e) {

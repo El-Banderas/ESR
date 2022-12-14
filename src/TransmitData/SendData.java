@@ -222,7 +222,8 @@ public class SendData {
                         putInt(Constants.wakeUpClient).
                         putInt(0).array();
                 System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext );
-
+                System.out.println("A partir do socket: " + socket);
+                System.out.println("Bytes: " + bytes.length);
                 sendData(socket, bytes, ipNextNode, portNext);
 
             }

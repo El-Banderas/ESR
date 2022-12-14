@@ -51,28 +51,6 @@ public class NodeInformParent implements Runnable {
     // Necessary when connection becomes bad
     private InfoNodo altBoot;
 
-
-    /**
-     * Depois tem de poder receber a mensagem do XML
-     * Node needs this info because:
-     * @param parent - To send wantsStream, but will get this node with stillAlives. Ao receber o XML, pode fazer getAdress do pai
-     * @param boot - When the current node lost connection with parent node.
-  //   * @param thisNode - To create socket (temporária).
-     * @param sons - This info comes from XML file.
-     */
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, int thisPort, ArrayList<InfoNodo> sons, DatagramSocket socket) throws UnknownHostException {
-        // O delay tem de vir do xml, alterar depois
-        // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
-        this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
-        this.thisNode = new InfoNodo(InetAddress.getByName("localhost"),thisPort);
-        this.sons = sons;
-       // this.neibourghs = new ArrayList<>();
-        //this.interestedSons = new ArrayList<>();
-        this.bootstrapper = boot;
-        this.socket = socket;
-        //this.shared = shared;
-    }
-
     public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, DatagramSocket socket, ShareNodes shared, InfoNodo altBoot) {
         // O delay tem de vir do xml, alterar depois
         // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
@@ -307,7 +285,7 @@ break;
 //        InfoNodo interestedSon = new InfoNodo(packet.getAddress(), packet.getPort());
         InfoNodo wantStream = ReceiveData.receivedWantStream(packet);
         // Check if the sender of message is already registed.
-
+        System.out.println("Received Want stream from: " + wantStream);
         shared.maybeAddInterestedSon(wantStream);
         try {
             SendData.wantsStream(socket, parent.otherNode, thisNode.portStream);
@@ -368,7 +346,7 @@ break;
     private void sendTooMuchDelay(InfoNodo otherNode) {
         // O destIP e port devem ser do bootstrapper
         //SendData.sendTooMuchDelayMSG(this.socket, );
-        System.out.println("[NodeInformParent] Too much  delay");
+        //System.out.println("[NodeInformParent] Too much  delay");
     }
 /*
      * Update sons array to see wich one's are alive.
@@ -436,20 +414,6 @@ break;
 
         }
 
-    }
-
-    /**
-     *
-     * @param packet
-     * @throws IOException
-     */
-    private void receiveStreamContentMSG(DatagramPacket packet) throws IOException {
-            byte[] content = ReceiveData.receiveStreamContentMSG(packet);
-
-            System.out.println("Receive stream content, send to sons");
-            for (InfoNodo son : shared.interestedSons){
-                SendData.sendStreamContentMSG(socket, son, content);
-            }
     }
 
 

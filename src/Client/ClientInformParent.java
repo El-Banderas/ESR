@@ -33,6 +33,7 @@ public class ClientInformParent  {
     public InfoNodo thisClient;
     public InetAddress parentIP;
     public DatagramSocket socket;
+    public DatagramSocket socketStream;
 
     private final Toolkit toolkit;
 
@@ -44,12 +45,14 @@ public class ClientInformParent  {
     private int numPacketsReceived;
 
 
-
-
-    public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient, DatagramSocket socket) throws UnknownHostException {
+    /**
+     * We decide to differenciate the sockets to be in conformity with the other components.
+     */
+    public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient, DatagramSocket socket, DatagramSocket socketStream) throws UnknownHostException {
         this.parent = parent;
         this.boot = boot;
         this.socket = socket;
+        this.socketStream = socketStream;
         this.thisClient = thisClient;
         //this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
@@ -76,7 +79,7 @@ public class ClientInformParent  {
         timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeToConsiderNodeLost);
         while (true) {
             try {
-                MessageAndType received = ReceiveData.receiveData(socket);
+                MessageAndType received = ReceiveData.receiveData(socketStream);
                 handleReceivedMessage(received);
 
             } catch (IOException e) {

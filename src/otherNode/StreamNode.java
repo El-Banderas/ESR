@@ -30,7 +30,7 @@ public class StreamNode implements Runnable{
 
                 ReceiveData.nodeReceiveStream(socket, shared.interestedSons);
             } catch (IOException e) {
-                System.out.println("[STREAM] Timout, listening on "+ socket.getInetAddress() + " "+socket.getLocalPort());
+                System.out.println("[STREAM] Timout, listening on "+ socket.getLocalAddress() + " "+socket.getLocalPort());
                 //throw new RuntimeException(e);
             }
         }
