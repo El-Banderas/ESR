@@ -339,7 +339,7 @@ public class Bootstrapper implements Runnable {
 
                 System.out.println("Sucesso");
 
-                SendData.sendWakeUpClient(socket, parents);
+                SendData.sendWakeUpClient(socket, parents.subList(1, parents.size()));
 
             }
             else {

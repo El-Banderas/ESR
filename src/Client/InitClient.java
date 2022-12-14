@@ -47,6 +47,8 @@ public class InitClient {
         switch (received.msgType) {
             case Constants.impossibleConnection:
                 System.out.println("Conexão impossível, tente mais tarde.");
+            case Constants.wakeUpClient:
+                System.out.println("Conexão impossível, tente mais tarde.");
         }
     }
 }

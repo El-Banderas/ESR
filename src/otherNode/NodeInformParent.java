@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static TransmitData.SendData.sendWakeUpClient;
+
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
  * Ao mesmo tempo, esta classe é responsável por saber se o nodo pai é alterado.
@@ -195,6 +197,9 @@ break;
                 // falta enviar ao pai
                 //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
                 break;
+            case Constants.wakeUpClient:
+                receivedWakeUpClient(received.packet);
+                break;
 
             case Constants.streamWanted:
                 receivedWantStreamMSG(received.packet);
@@ -218,6 +223,15 @@ break;
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
                 System.out.println("Undefined message, rtp packets are handled in other thread/port.");
                 //receiveMaybeRTPStream(received.packet);
+        }
+    }
+
+    private void receivedWakeUpClient(DatagramPacket packet) {
+        try {
+            SendData.sendWakeUpClient(socket, packet.getData());
+        } catch (IOException e) {
+            System.out.println("Error sending wake up client");
+            throw new RuntimeException(e);
         }
     }
 
