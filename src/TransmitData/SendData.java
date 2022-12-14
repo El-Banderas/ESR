@@ -168,4 +168,22 @@ public class SendData {
                 putInt(Constants.impossibleConnection).array();
         sendData(socket, bytes, newClient.ip, newClient.portNet);
     }
+
+    public static void sendWakeUpClient(DatagramSocket socket, List<InfoNodo> parents) throws IOException {
+        if (Constants.Windows) {
+            // 4 para o tipo, 4 para o  número de elems
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + parents.size() * (Constants.sizeInetAdressByteArray + 4) );
+            buffer.putInt(Constants.wakeUpClient).putInt(parents.size());
+            for (InfoNodo ip : parents) {
+                buffer.put(ip.ip.getAddress());
+                buffer.put(ip.portNet);
+            }
+            sendData(socket, buffer.array(), parents.get(0).ip, parents.get(0).portNet);
+
+        }
+        else {
+
+        }
+
+    }
 }
