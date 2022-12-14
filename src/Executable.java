@@ -2,6 +2,7 @@ import Client.InitClient;
 import Common.Constants;
 import Common.InfoNodo;
 import otherNode.oNode;
+import otherServer.SendStream.SendStream;
 import otherServer.Servidor;
 
 import java.net.InetAddress;
@@ -19,6 +20,8 @@ public class Executable {
                         int portBoot = Integer.parseInt(args[1]);
                         InfoNodo infoServer = new InfoNodo(ipServer, portBoot);
                         Servidor.runServer(infoServer, true);
+
+
                     } else {
                         System.out.println("Boot Alter Windows ");
                         // Info main boot
@@ -53,7 +56,7 @@ public class Executable {
                     InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                     InetAddress ipNodeStream = InetAddress.getByName("127.0.0.1");
-                    int portNodeStream = Integer.parseInt(args[3]);
+                    int portNodeStream = portNodeNet+1;//Integer.parseInt(args[3]);
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
 

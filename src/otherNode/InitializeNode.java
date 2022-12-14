@@ -5,23 +5,19 @@ import Common.InfoNodo;
 import Common.MessageAndType;
 import TransmitData.ReceiveData;
 import TransmitData.SendData;
-import org.xml.sax.SAXException;
-import otherServer.Bootstrapper.Connection;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 public class InitializeNode {
 
     private final InfoNodo thisNodeNet;
 
 
-    private final InfoNodo thisNodeStream;
+    private final DatagramSocket socketStream;
     private DatagramSocket socket;
     private InfoNodo boot;
 
@@ -33,7 +29,7 @@ public class InitializeNode {
         this.boot = b;
         try {
         InfoNodo thisNodo  = new InfoNodo(InetAddress.getByName("127.0.0.1"), thisPort);
-        this.thisNodeStream = null;
+        this.socketStream = null;
         this.thisNodeNet = thisNodo;
         }
         catch (UnknownHostException e) {
@@ -42,9 +38,9 @@ public class InitializeNode {
     }
 
 
-    public InitializeNode(DatagramSocket socket, InfoNodo boot, InfoNodo thisNodeNet, InfoNodo thisNodeStream) {
+    public InitializeNode(DatagramSocket socket, InfoNodo boot, InfoNodo thisNodeNet, DatagramSocket thisNodeStream) {
         this.thisNodeNet = thisNodeNet;
-        this.thisNodeStream = thisNodeStream;
+        this.socketStream = thisNodeStream;
         this.socket = socket;
         this.boot = boot;
     }

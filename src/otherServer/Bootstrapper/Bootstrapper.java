@@ -295,6 +295,7 @@ public class Bootstrapper implements Runnable {
             case Constants.timeStamp:
                 InfoNodo receivedSon = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
                 this.sonInfo = receivedSon;
+                this.shared.son = receivedSon;
                 Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, thisBoot.ip, thisBoot.portNet);
                 addConnection(co.from, co.to, co.delay, co.numHops, socket, sonInfo);
                 break;

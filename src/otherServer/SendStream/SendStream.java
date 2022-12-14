@@ -80,7 +80,6 @@ public class SendStream implements Runnable {
     }
 
     private void sendStream() {
-
         // While someone is interested.
         while (shared.sendStream) {
 
@@ -103,7 +102,7 @@ public class SendStream implements Runnable {
                     rtp_packet.getpacket(packet_bits);
 
                     //send the packet as a DatagramPacket over the UDP socket
-                    senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portStream);
+                    senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portNet+1);
                     RTPsocket.send(senddp);
 
                 } catch (Exception ex) {
