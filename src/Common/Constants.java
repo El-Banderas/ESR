@@ -27,9 +27,9 @@ public class Constants {
 
     final public static  int streamContent = 9;
     // Miliseconds
-    final public static int timeoutSockets = 3000;
+    final public static int timeoutSockets = 30000;
     // Miliseconds
-    final public static int timeToConsiderNodeLost = 6000;
+    final public static int timeToConsiderNodeLost = 60000; // 1 minute
 
     public static double getCurrentTime(){
 //        LocalDateTime date = LocalDateTime.now();

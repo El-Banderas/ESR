@@ -139,7 +139,7 @@ public class Bootstrapper implements Runnable{
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
             if(Constants.Windows){
-                this.topologyTypology.parse("src/otherServer/Config/topCenario1.txt");
+                this.topologyTypology.parse("src/otherServer/Config/test.txt");
             }
             else {
                 topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/topCenario1.txt");

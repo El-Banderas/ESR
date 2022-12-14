@@ -230,7 +230,7 @@ break;
         }
         for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
             //Add the son to the ArrayList
-            sons.add(eachSon.getKey());
+            //sons.add(eachSon.getKey());
             // Maybe Problem, children may not exist?
             try {
                 if (!eachSon.getValue().equals("")) {
@@ -238,19 +238,20 @@ break;
                     //System.out.println(eachSon.getValue());
                     XMLParser p = new XMLParser();
                     Map<InfoNodo,String> sonsInside = p.partitionXML(eachSon.getValue());
-                    if(sonsInside.size() > 0){
+                    /*if(sonsInside.size() > 0){
                         for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
+                            sons.add(son.getKey());
                             System.out.println("Envia para o filho " + son.getKey());
                             System.out.println(son.getValue());
                             SendData.sendXML(socket, son.getKey(), son.getValue());
                         }
-                    }else{
+                    }else{*/
                         String destiny = p.destiny(eachSon.getValue());
                         System.out.println("Envia para o filho " + destiny);
 
                         System.out.println(eachSon.getValue());
                         SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
-                    }
+                    //}
                 }
                 else{
                     System.out.println("O que é?");

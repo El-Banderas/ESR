@@ -21,6 +21,6 @@ public class ConstantesStream {
     public static int maxSizeBuffer = 10;
 
 
-    public  static int streamPort = 8020;
+    public  static int streamPort = 9020;
 
 }
