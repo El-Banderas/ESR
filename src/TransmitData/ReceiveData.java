@@ -196,7 +196,7 @@ public class ReceiveData {
         //XMLParser parser = new XMLParser();
         // parser.parseXML(xml);
 
-
+        System.out.println("Vai enviar send con para " + n.otherNode.ip);
         SendData.sendConnection(s,co,n.otherNode.ip,n.otherNode.portNet);
 
         return co;
