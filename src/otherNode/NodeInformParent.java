@@ -171,7 +171,7 @@ public class NodeInformParent implements Runnable {
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
-                ReceiveData.receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet,this.socket,this.parent);
+                ReceiveData.receivedTimeStamp(received.packet,this.thisNode.ip,this.thisNode.portNet,this.socket,this.parent);
     break;
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
