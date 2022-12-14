@@ -76,7 +76,7 @@ public class ClientInformParent  {
         //sendStillAlives.start();
         Timer timer = new Timer();
         TimerTask sendStillAlives = new sendStillAlive();
-        timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeToConsiderNodeLost);
+        timer.scheduleAtFixedRate(sendStillAlives, 0, Constants.timeoutSockets);
         while (true) {
             try {
                 MessageAndType received = ReceiveData.receiveData(socketStream);

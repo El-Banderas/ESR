@@ -40,7 +40,7 @@ final public static int changeTree = 25;
     // Miliseconds
     final public static int timeoutSockets = 2000;
     // Miliseconds
-    final public static int timeToConsiderNodeLost = 60000; // 1 minute
+    final public static int timeToConsiderNodeLost = 10000; // 1 minute
 
 final public static    int sizeInetAdressByteArray = 4;
 
