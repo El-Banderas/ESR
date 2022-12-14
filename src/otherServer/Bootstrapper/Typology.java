@@ -336,6 +336,7 @@ public class Typology {
         try {
             System.out.println("-------------- AQUI  SEND XML --------------");
             SendData.sendXML(socket, destMSG, xml);
+            System.out.println("-------------AFTER XML--------------------");
         } catch (IOException e) {
             System.out.println("Error sending XML");
             throw new RuntimeException(e);
