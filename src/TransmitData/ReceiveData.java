@@ -65,17 +65,26 @@ public class ReceiveData {
         int isBoolAlterInt = isBootAlter ? 1 : 0;
         byte[] bytesIP = new byte[sizeInetAdressByteArray];
         if (isBootAlter) {
-             bytesIP = bootAlter.ip.getAddress();
-        }
-        else {
-            ByteBuffer bb = ByteBuffer.allocate(4);
-            bb.putInt(bootAlter.portNet);
-            bytesIP = bb.array();
-        }
+            // Se for windows, metos o ip, senão é a porta
+            if (Constants.Windows) {
+                ByteBuffer bb = ByteBuffer.allocate(4);
+                bb.putInt(bootAlter.portNet);
+                bytesIP = bb.array();
+            } else {
+                bytesIP = bootAlter.ip.getAddress();
 
+
+            }
+        }
+        else{
+            // No alter boot
+            bytesIP = InetAddress.getByName("1.2.3.4").getAddress();
+
+        }
         byte[] bytes = ByteBuffer.allocate(4+4+bytesIP.length+18+(2*vs.length()))
                 .putInt(Constants.sendNeibourghs).
-                putInt(isBoolAlterInt).put(bytesIP).
+                putInt(isBoolAlterInt).
+                put(bytesIP).
                 put(vs.getBytes()).array();
 
         SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
