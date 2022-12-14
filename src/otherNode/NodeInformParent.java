@@ -85,7 +85,7 @@ public class NodeInformParent implements Runnable {
 
         @Override
     public void run() {
-
+            System.out.println("------------------Node Inform Parent começou--------------");
         try {
             if (this.thisNode.portNet > 0)
               //  socket = new DatagramSocket(this.thisNode.portNet);
