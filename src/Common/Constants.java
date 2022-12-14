@@ -34,7 +34,7 @@ final public static int StillAliveBootAlt = 23;
 final public static int helloAltBoot = 24;
 final public static int helloClient = 26;
 final public static int impossibleConnection = 27;
-final public static int wakeUpClient = 27;
+final public static int wakeUpClient = 28;
 final public static int changeTree = 25;
 
     // Miliseconds

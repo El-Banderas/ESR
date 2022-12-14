@@ -219,7 +219,7 @@ public class SendData {
                     putInt(Constants.wakeUpClient).
                     putInt(howMany-1).
                     put(restParents).array();
-
+            System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext );
             sendData(socket, bytes, ipNextNode, portNext);
         }
         else {
@@ -235,7 +235,7 @@ public class SendData {
                     putInt(Constants.wakeUpClient).
                     putInt(howMany-1).
                     put(restParents).array();
-
+            System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
             sendData(socket, bytes, ipNextNode, Constants.portNet);
         }
 
