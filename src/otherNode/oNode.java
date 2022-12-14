@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 public class oNode {
 
+    /*
     public static void main(String[] args) throws UnknownHostException, SocketException {
         System.out.println("[oNode] Started ");
 
@@ -95,7 +96,7 @@ public class oNode {
 
         }
 
-    }
+    }*/
 
     public static void runNode(InfoNodo boot, InfoNodo thisNodeNet, InfoNodo thisNodeStream){
         DatagramSocket socket = null;
