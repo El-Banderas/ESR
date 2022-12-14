@@ -62,7 +62,7 @@ public class InitClient {
     private void startClient(DatagramPacket packet) {
         InfoNodo parent = new InfoNodo(packet.getAddress(), packet.getPort());
         try {
-            ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet);
+            ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet, socketNet);
             new Thread(cli).start();
 
         } catch (UnknownHostException e) {

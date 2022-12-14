@@ -11,6 +11,7 @@ import otherServer.CommuncationBetweenThreads;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -339,8 +340,9 @@ public class Bootstrapper implements Runnable {
                 //this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
                 System.out.println("Sucesso");
-
-                SendData.sendWakeUpClient(socket, parents.subList(1, parents.size()));
+                //List<InfoNodo> withoutServer = parents.subList(1, parents.size());
+                parents.add(newClient);
+                SendData.sendWakeUpClient(socket, parents);
 
             }
             else {

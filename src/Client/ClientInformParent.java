@@ -46,7 +46,7 @@ public class ClientInformParent implements Runnable {
 
 
 
-    public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient) throws UnknownHostException {
+    public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient, DatagramSocket socket) throws UnknownHostException {
         this.parent = parent;
         this.boot = boot;
         this.thisClient = thisClient;
@@ -60,12 +60,11 @@ public class ClientInformParent implements Runnable {
         //new Timer().scheduleAtFixedRate(new sendStillAlive(), 0, Constants.timeToConsiderNodeLost/2);
         //this.sendStillAlives.setInitialDelay(0);
         try {
-                socket = new DatagramSocket(this.thisClient.portNet);
-                socket.setSoTimeout(Constants.timeoutSockets);
+            socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
-            e.printStackTrace();
-            System.out.println("[Client] Error creating socket");
+            throw new RuntimeException(e);
         }
+
     }
 
     @Override
