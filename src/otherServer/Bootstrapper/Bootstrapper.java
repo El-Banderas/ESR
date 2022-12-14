@@ -325,9 +325,10 @@ public class Bootstrapper implements Runnable {
             InfoNodo newClient = new InfoNodo(address, port);
             this.topologyTypology.activateConnection(newClient);
             InfoNodo possibleParent = this.topologyTypology.getFather(newClient);
-            if (possibleParent == null){
-                System.out.println("Caminho impossível, mandar mensagem client");
+            if (possibleParent == null) {
+                System.out.println("Caminho impossível, pai não está ativo");
                 this.topologyTypology.removeNode(newClient);
+                SendData.sendImpossibleConnection(socket, newClient);
 
                 return;
             }
@@ -337,14 +338,19 @@ public class Bootstrapper implements Runnable {
                 this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
                 System.out.println("Sucesso");
+                SendData.sendWakeUpClient(socket, parents, )
             }
             else {
                 this.topologyTypology.removeNode(newClient);
-                System.out.println("Impossível chegar lá");
+                System.out.println("Caminho impossível");
+                SendData.sendImpossibleConnection(socket, newClient);
+
             }
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 

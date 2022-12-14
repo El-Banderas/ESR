@@ -80,11 +80,11 @@ public class Executable {
                 int portClientNet = Integer.parseInt(args[2]);
                 InfoNodo infoClientNet = new InfoNodo(ipClientNet, portClientNet);
 
-                InetAddress ipClientStream = InetAddress.getByName("127.0.0.1");
-                int portClientStream = Integer.parseInt(args[3]);
-                InfoNodo infoClientStream = new InfoNodo(ipClientStream, portClientStream);
+                System.out.println("Print informations");
+                System.out.println(infoBoot);
+                System.out.println(infoClientNet);
 
-                InitClient initClient = new InitClient(infoBoot, infoClientNet, infoClientStream);
+                InitClient initClient = new InitClient(infoBoot, infoClientNet);
                 initClient.runClient();
 
 

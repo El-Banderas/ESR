@@ -163,4 +163,10 @@ public class SendData {
                 putInt(Constants.helloClient).array();
         sendData(socket, bytes, serverInfo.ip, serverInfo.portNet);
     }
+
+    public static void sendImpossibleConnection(DatagramSocket socket, InfoNodo newClient) throws IOException {
+        byte[] bytes = ByteBuffer.allocate(4).
+                putInt(Constants.impossibleConnection).array();
+        sendData(socket, bytes, newClient.ip, newClient.portNet);
+    }
 }

@@ -33,6 +33,8 @@ public class Constants {
 final public static int StillAliveBootAlt = 23;
 final public static int helloAltBoot = 24;
 final public static int helloClient = 26;
+final public static int impossibleConnection = 27;
+final public static int wakeUpClient = 27;
 final public static int changeTree = 25;
 
     // Miliseconds
@@ -79,7 +81,7 @@ final public static    int sizeInetAdressByteArray = 4;
     public static int arraySize = 150000;
 
 
-    public static boolean Windows = false ;
+    public static boolean Windows = true ;
 
 
     public static  int portNet = 9000;

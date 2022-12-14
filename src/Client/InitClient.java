@@ -1,6 +1,9 @@
 package Client;
 
+import Common.Constants;
 import Common.InfoNodo;
+import Common.MessageAndType;
+import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
 import java.io.IOException;
@@ -12,15 +15,12 @@ public class InitClient {
     private DatagramSocket socketStream;
     private InfoNodo infoBoot;
     private InfoNodo infoClientNet;
-    private    InfoNodo infoClientStream;
 
-    public InitClient(InfoNodo infoBoot, InfoNodo infoClientNet, InfoNodo infoClientStream) {
+    public InitClient(InfoNodo infoBoot, InfoNodo infoClientNet) {
         this.infoBoot = infoBoot;
         this.infoClientNet = infoClientNet;
-        this.infoClientStream = infoClientStream;
         try {
             socketNet = new DatagramSocket(infoClientNet.portNet);
-            socketStream = new DatagramSocket(infoClientNet.portStream);
 
         } catch (SocketException e) {
             throw new RuntimeException(e);
@@ -31,9 +31,22 @@ public class InitClient {
 
         try {
             SendData.sendHelloMsgClient(this.socketNet, infoBoot);
+            MessageAndType received = ReceiveData.receiveData(socketNet);
+
+            handleReceivedMessage(received);
+
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void handleReceivedMessage(MessageAndType received) {
+        switch (received.msgType) {
+            case Constants.impossibleConnection:
+                System.out.println("Conexão impossível, tente mais tarde.");
+        }
     }
 }
