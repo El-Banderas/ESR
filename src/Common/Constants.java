@@ -35,9 +35,9 @@ final public static int helloAltBoot = 24;
 final public static int changeTree = 25;
 
     // Miliseconds
-    final public static int timeoutSockets = 3000;
+    final public static int timeoutSockets = 30000;
     // Miliseconds
-    final public static int timeToConsiderNodeLost = 6000;
+    final public static int timeToConsiderNodeLost = 60000; // 1 minute
 
 final public static    int sizeInetAdressByteArray = 4;
 

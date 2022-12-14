@@ -71,6 +71,7 @@ public class  InfoNodo implements Serializable {
         String[] aux3 = aux2[2].split( "}");
         String[] aux4 = aux3[0].split( "\\s+");
 
+        System.out.println(aux4[1]);
         int porta = Integer.parseInt(aux4[1]);
 
         return new InfoNodo(ip,porta);

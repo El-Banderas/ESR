@@ -158,10 +158,11 @@ public class Bootstrapper implements Runnable {
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
-            if (Constants.Windows) {
-                this.topologyTypology.parse("src/otherServer/Config/test.txt");
-            } else {
-                topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/test.txt");
+            if(Constants.Windows){
+                this.topologyTypology.parse("src/otherServer/Config/testWindows.txt");
+            }
+            else {
+                topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/topCenario2.txt");
             }
             this.topologyTypology.setCompleteNetwork();
         } catch (IOException | InterruptedException e) {
@@ -185,6 +186,7 @@ public class Bootstrapper implements Runnable {
                 checkStreamInterested();
                 sendStillAlive();
                 MessageAndType received = ReceiveData.receiveData(socket);
+
                 System.out.println("Escuta no " + socket.getLocalPort());
                 handleReceivedMessagePrinciple(received);
 

@@ -10,8 +10,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import static Common.Stream.ConstantesStream.VIDEO_LENGTH;
-import static Common.Stream.ConstantesStream.VideoFileName;
+import static Common.Stream.ConstantesStream.*;
 import static java.lang.Thread.sleep;
 
 public class SendStream implements Runnable {
@@ -47,7 +46,11 @@ public class SendStream implements Runnable {
 
             RTPsocket = new DatagramSocket(); //init RTP socket (o mesmo para o cliente e servidor)
             RTPsocket.setSoTimeout(Constants.timeoutSockets); // setimeout to 5s
-            video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
+            if(Constants.Windows){
+                video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
+            }else {
+                video = new VideoStream(VideoFileNameCORE);
+            }
 
         } catch(SocketException e)
         {

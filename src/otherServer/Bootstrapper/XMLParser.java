@@ -185,7 +185,10 @@ public class XMLParser {
 
         String ip[] = rootElement.getAttribute("ip").split("/");
 
-        String ipToSend = ip[0];
+        String ipToSend = ip[1];
+
+        System.out.println("---------AQUIIIIII-------");
+        System.out.println(ipToSend);
 
 
         return  new InfoNodo(InetAddress.getByName(ipToSend),Integer.parseInt(rootElement.getAttribute("port")));

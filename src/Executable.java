@@ -83,6 +83,9 @@ public class Executable {
                 }
                 else {
                     System.out.println("Boot Alter Core");
+                    InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
+                    System.out.println("Info this node");
+                    System.out.println(infoServer);
 
                     InetAddress ipBoot = InetAddress.getByName(args[1]);
                     InfoNodo infoServer = new InfoNodo(ipBoot, Constants.portNet);
@@ -113,6 +116,10 @@ public class Executable {
                     int portNodeStream = Constants.portStream;
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
+                    System.out.println("Info this node");
+                    System.out.println(infoBoot);
+                    System.out.println(infoNodeNet);
+                    System.out.println(infoNodeStream);
 
                     oNode.runNode(infoBoot, infoNodeNet, infoNodeStream);
 

@@ -108,6 +108,7 @@ public class SendData {
 
     public static void sendXML(DatagramSocket socket, InfoNodo son, String xml) throws IOException {
         System.out.println("Vai enviar o XML: " + son.portNet);
+        System.out.println("Vai enviar o XML ---------IP-------- : " + son.ip);
         System.out.println(xml);
 
         byte[] xmlBytes = xml.getBytes();

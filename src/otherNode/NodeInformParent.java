@@ -89,7 +89,7 @@ public class NodeInformParent implements Runnable {
 
         @Override
     public void run() {
-
+            System.out.println("------------------Node Inform Parent começou--------------");
         try {
             if (this.thisNode.portNet > 0)
               //  socket = new DatagramSocket(this.thisNode.portNet);
@@ -175,7 +175,7 @@ public class NodeInformParent implements Runnable {
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
-                ReceiveData.receivedTimeStamp(received.packet,InetAddress.getByName("localhost"),this.thisNode.portNet,this.socket,this.parent);
+                ReceiveData.receivedTimeStamp(received.packet,this.thisNode.ip,this.thisNode.portNet,this.socket,this.parent);
     break;
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
@@ -223,6 +223,9 @@ break;
 
     private void handleXML(String xml ) {
 
+        // clear the ArrayList of sons
+        this.sons.clear();
+
         XMLParser xmlParser = new XMLParser();
         Map<InfoNodo, String> xmlSeparated = null;
         System.out.println("Teste XML");
@@ -234,6 +237,8 @@ break;
             throw new RuntimeException(e);
         }
         for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
+            //Add the son to the ArrayList
+            //sons.add(eachSon.getKey());
             // Maybe Problem, children may not exist?
             try {
                 if (!eachSon.getValue().equals("")) {
@@ -241,19 +246,20 @@ break;
                     //System.out.println(eachSon.getValue());
                     XMLParser p = new XMLParser();
                     Map<InfoNodo,String> sonsInside = p.partitionXML(eachSon.getValue());
-                    if(sonsInside.size() > 0){
+                    /*if(sonsInside.size() > 0){
                         for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
+                            sons.add(son.getKey());
                             System.out.println("Envia para o filho " + son.getKey());
                             System.out.println(son.getValue());
                             SendData.sendXML(socket, son.getKey(), son.getValue());
                         }
-                    }else{
+                    }else{*/
                         String destiny = p.destiny(eachSon.getValue());
-                        System.out.println("Envia para o filho " + destiny);
+                        System.out.println("Envia para o filho " + p.destinyInfoNodo(eachSon.getValue()));
 
                         System.out.println(eachSon.getValue());
                         SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
-                    }
+                    //}
                 }
                 else{
                     System.out.println("O que é?");

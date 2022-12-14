@@ -5,12 +5,14 @@ import Common.InfoNodo;
 import TransmitData.SendData;
 import org.xml.sax.SAXException;
 
+import javax.sound.midi.Soundbank;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -275,6 +277,27 @@ public class Typology {
         return connectedToServer;
     }
 
+    public boolean isInMST(InfoNodo node){
+        boolean b = false;
+        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+                b = true;
+                break;
+            }
+        }
+        return b;
+
+    }
+
+
+    public void removeFromMST(InfoNodo node){
+        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+                this.bestPaths.remove(n);
+            }
+        }
+    }
+
 
     public void recalculateBestPathsTree(DatagramSocket socket, InfoNodo destMSG) {
 
@@ -307,6 +330,19 @@ public class Typology {
             }
 
             // Add the edge to the minimum spanning tree
+            /*
+            List<Connection> listCon ;
+            listCon = getConnections(mst, toAdd.from);
+            if (listCon == null) {
+                listCon = new ArrayList<>();
+            }
+            listCon.add(toAdd);
+            if(isInMST(toAdd.from)){
+                removeFromMST(toAdd.from);
+            }
+            mst.put(toAdd.from, listCon);*/
+
+
             List<Connection> listCon ;
             listCon = getConnections(mst, toAdd.from);
             if (listCon == null) {
@@ -333,7 +369,10 @@ public class Typology {
         this.bestPaths = mst;
 
         try {
+            System.out.println("-------------- AQUI  SEND XML --------------");
+            System.out.println(destMSG);
             SendData.sendXML(socket, destMSG, xml);
+            System.out.println("-------------AFTER XML--------------------");
         } catch (IOException e) {
             System.out.println("Error sending XML");
             throw new RuntimeException(e);
@@ -568,7 +607,61 @@ public class Typology {
     }
 
 
-    // função de update à aresta
+    // função de update à aresta (vai ter de receber o from e to : from e to dão para obter os Infos Nodos onde ela é manipulada
+
+
+    /*
+        Path from server to specific node
+     */
+
+    public List<InetAddress> getPath(InfoNodo destiny) throws UnknownHostException {
+
+        List<InetAddress> ips = new ArrayList<>();
+
+        InfoNodo objective = new InfoNodo(destiny.getIp(),destiny.portNet);
+
+        boolean bool = true;
+
+        while (bool){
+
+            InfoNodo tmp =new InfoNodo(destiny.getIp(),destiny.portNet);
+
+            for(InfoNodo node : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+
+                for(Connection con : this.bestPaths.get(node)){
+                    if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet){
+                        String ip[] = con.from.getIp().toString().split("/");
+
+                        ips.add(InetAddress.getByName(ip[1]));
+
+
+                        objective.portNet = con.from.portNet;
+                        objective.ip = con.from.getIp();
+
+
+                        break;
+
+                    }
+                }
+
+
+            }
+
+
+            if(tmp.getIp().equals(objective.getIp()) || tmp.portNet == objective.portNet){
+
+                bool = false;
+
+            }
+
+
+
+        }
+
+        return ips;
+
+
+    }
 
 }
 
