@@ -95,6 +95,7 @@ public class SendStream implements Runnable {
 
                     //get to total length of the full rtp packet to send
                     int packet_length = rtp_packet.getlength();
+                    System.out.println("Tamanho packet length: " + packet_length);
 
                     //retrieve the packet bitstream and store it in an array of bytes
                     byte[] packet_bits = new byte[packet_length];

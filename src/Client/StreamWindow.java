@@ -49,10 +49,8 @@ public class StreamWindow extends Thread {
 
         //Buttons
         buttonPanel.setLayout(new GridLayout(1,0));
-        buttonPanel.add(setupButton);
         buttonPanel.add(playButton);
         buttonPanel.add(pauseButton);
-        buttonPanel.add(tearButton);
         playButton.addActionListener(new StreamWindow.playButtonListener());
         pauseButton.addActionListener(new StreamWindow.pauseButtonListener());
 

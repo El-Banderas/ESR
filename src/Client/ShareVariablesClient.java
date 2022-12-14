@@ -1,5 +1,6 @@
 package Client;
 
+import Common.Constants;
 import Common.Stream.ConstantesStream;
 
 import java.awt.*;
@@ -14,11 +15,15 @@ public class ShareVariablesClient {
 
     // If the stream is showing or is in pause.
     private boolean play;
+    private int numPackets;
+    private double lastMeasure;
 
     public ShareVariablesClient() {
         this.receivedContent = new LinkedList<>();
         this.play=true;
         this.sizeQueue = 0;
+        this.numPackets = 0;
+        lastMeasure = Constants.getCurrentTime();
     }
 
     /**
@@ -41,6 +46,7 @@ public class ShareVariablesClient {
     public void insertImage(Image img){
         receivedContent.add(img);
         sizeQueue++;
+        numPackets++;
     }
 
     public boolean haveImages(){
@@ -58,5 +64,14 @@ public class ShareVariablesClient {
 
     public boolean isPlay() {
         return play;
+    }
+
+    public double getDebit(){
+        double currentTime = Constants.getCurrentTime();
+        double lastTime = this.lastMeasure;
+        double oldNumPackets = numPackets;
+        lastMeasure = Constants.getCurrentTime();
+        return oldNumPackets/(currentTime-lastTime);
+
     }
 }
