@@ -4,11 +4,13 @@ import Common.Constants;
 import Common.InfoNodo;
 import otherServer.Bootstrapper.Connection;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 
 public class SendData {
 
@@ -125,10 +127,38 @@ public class SendData {
 
     }
 
-    public static void sendStillAliveBootAlt(DatagramSocket socket, InfoNodo otherBoot, int timestampStream) {
+    public static void sendStillAliveBootAlt(DatagramSocket socket, InfoNodo otherBoot, int timestampStream) throws IOException {
         byte[] bytes = ByteBuffer.allocate(50).
                 putInt(Constants.StillAliveBootAlt).putInt(timestampStream).array();
         sendData(socket, bytes, otherBoot.ip, otherBoot.portNet);
+
+    }
+
+    public static void sendActiveNetwork(DatagramSocket socket, InfoNodo otherBoot, Map<InfoNodo, List<Connection>> activeNetwork) {
+        try {
+
+        System.out.println("Vamos tentar enviar a árvore");
+        ByteArrayOutputStream ba = new ByteArrayOutputStream(activeNetwork.size()*200);
+        ObjectOutputStream oba = new ObjectOutputStream(ba);
+        oba.writeObject(activeNetwork);
+        byte[] toSend = ba.toByteArray();
+            System.out.println("Tamanho do conteúdo que vai enviar, árvore: "+ toSend.length);
+            byte[] bytes = ByteBuffer.allocate(toSend.length+8).
+                    putInt(Constants.changeTree).putInt(toSend.length).put(toSend).array();
+            System.out.println("O que envia");
+            System.out.println(bytes);
+
+            ByteArrayInputStream ba1 = new ByteArrayInputStream(toSend);
+            ObjectInputStream oba1 = new ObjectInputStream(ba1);
+            System.out.println("Como a árvore deve aparecer do outro lado");
+            System.out.println(oba1.readObject());
+            sendData(socket, bytes, otherBoot.ip, otherBoot.portNet);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

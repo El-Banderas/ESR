@@ -198,14 +198,22 @@ public class Bootstrapper implements Runnable {
     private void startAlterServer() {
         try {
 
-        SendData.sendHelloFromAlt(socket, this.thisBoot);
+        SendData.sendHelloFromAlt(socket, this.otherBoot);
+
         MessageAndType received = ReceiveData.receiveData(socket);
         while (received.msgType != Constants.StillAliveBootAlt){
             System.out.println("Receu mensagem estranha no server alternativo: " + received.msgType);
+            received = ReceiveData.receiveData(socket);
         }
         while (true){
-            received = ReceiveData.receiveData(socket);
-            handleReceivedMessageAlternative(received);
+            try {
+                received = ReceiveData.receiveData(socket);
+                handleReceivedMessageAlternative(received);
+            }
+            catch (IOException e) {
+              //  throw new RuntimeException(e);
+                System.out.println("Não recebe still ALive do boot");
+            }
 
         }
         } catch (IOException e) {
@@ -222,10 +230,18 @@ public class Bootstrapper implements Runnable {
             case Constants.StillAliveBootAlt:
                 receivedStillAlivePrimeBoot(received.packet);
                 break;
+            case Constants.changeTree:
+                receivedActiveTree(received.packet);
+                break;
+
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " + Constants.convertMessageType(received.msgType) + "\n");
 
         }
+    }
+
+    private void receivedActiveTree(DatagramPacket packet) {
+        topologyTypology.activeNetwork = ReceiveData.getActiveNodes(packet);
     }
 
     private void receivedStillAlivePrimeBoot(DatagramPacket packet) {
@@ -268,17 +284,14 @@ public class Bootstrapper implements Runnable {
             case Constants.ConnectionMsg:
                 Connection c = ReceiveData.receiveConnection(received.packet);
                 // atualiza arvore com esta connection
-
-                this.topologyTypology.addConection(c.from, c.to, c.delay, c.numHops, socket, sonInfo);
-
+                addConnection(c.from, c.to, c.delay, c.numHops, socket, sonInfo);
                 break;
             // When we receive a timestamp, it's from the connected node from boot.
             case Constants.timeStamp:
                 InfoNodo receivedSon = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
                 this.sonInfo = receivedSon;
                 Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, thisBoot.ip, thisBoot.portNet);
-
-                this.topologyTypology.addConection(co.from, co.to, co.delay, co.numHops, socket, sonInfo);
+                addConnection(co.from, co.to, co.delay, co.numHops, socket, sonInfo);
                 break;
             case Constants.hellomesage:
                 System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
@@ -291,8 +304,19 @@ public class Bootstrapper implements Runnable {
                 break;
             case Constants.helloAltBoot:
                 handleHelloFromAlt(received.packet);
+                break;
             default:
-                System.out.println("\n[NodeInfomParen] Received message type: " + Constants.convertMessageType(received.msgType) + "\n");
+                System.out.println("\n[NodeInfomParen] Received message type: " + received.msgType + "\n");
+        }
+    }
+
+
+    private void addConnection(InfoNodo from, InfoNodo to, double delay, int numHops, DatagramSocket socket, InfoNodo sonInfo) {
+        this.topologyTypology.addConection(from, to, delay, numHops, socket, sonInfo);
+        // Se o boot alter estiver ativo, devemos atualizá-lo
+        if (this.otherBoot != null){
+            System.out.println("Enviar ao alt nova árvore");
+            SendData.sendActiveNetwork(socket, otherBoot,topologyTypology.activeNetwork);
         }
     }
 
@@ -352,7 +376,13 @@ public class Bootstrapper implements Runnable {
             System.out.println("Boot - No son connected");
         }
         if (this.otherBoot != null){
-            SendData.sendStillAliveBootAlt(socket, this.otherBoot, shared.timestampStream);
+            try {
+                SendData.sendStillAliveBootAlt(socket, this.otherBoot, shared.timestampStream);
+                System.out.println("Send still alive to alter boot, timestamp: " + shared.timestampStream);
+            } catch (IOException e) {
+                System.out.println("Error sendind still alive to alt server");
+                throw new RuntimeException(e);
+            }
         }
     }
 

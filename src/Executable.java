@@ -12,7 +12,7 @@ public class Executable {
             if (args[0].equals("boot")) {
                 // Podem haver erros por ser static?
                 try {
-                    if (args.length < 2) {
+                    if (args.length < 3) {
                         System.out.println("Boot Principal Windows ");
                         InetAddress ipServer = InetAddress.getByName("127.0.0.1");
                         int portBoot = Integer.parseInt(args[1]);

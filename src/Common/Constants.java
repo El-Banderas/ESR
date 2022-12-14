@@ -31,7 +31,9 @@ public class Constants {
 
     final public static  int lostNode = 8;
 final public static int StillAliveBootAlt = 23;
-final public static int helloAltBoot = 23;
+final public static int helloAltBoot = 24;
+final public static int changeTree = 25;
+
     // Miliseconds
     final public static int timeoutSockets = 3000;
     // Miliseconds
@@ -71,7 +73,7 @@ final public static int helloAltBoot = 23;
     public static int portBootSendNeighbours = 1234;
 
     // Info about send data0
-    public static int arraySize = 2048;
+    public static int arraySize = 150000;
 
 
     public static boolean Windows = true ;

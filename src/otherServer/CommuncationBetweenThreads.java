@@ -25,6 +25,8 @@ public class CommuncationBetweenThreads {
     }
     public CommuncationBetweenThreads() {
         this.sendStream = false;
+        this.timestampStream = 44;
+
     }
     public boolean getSendStream() {
         return sendStream;
