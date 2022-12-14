@@ -7,8 +7,10 @@ import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class InitClient {
     private DatagramSocket socketNet;
@@ -50,9 +52,23 @@ public class InitClient {
                 break;
             case Constants.wakeUpClient:
                 System.out.println("Recebeu o pai.");
+                startClient(received.packet);
                 break;
             default:
                 System.out.println("Recebeu mensagem do tipo: " + received.msgType);
         }
+    }
+
+    private void startClient(DatagramPacket packet) {
+        InfoNodo parent = new InfoNodo(packet.getAddress(), packet.getPort());
+        try {
+            ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet);
+            new Thread(cli).start();
+
+        } catch (UnknownHostException e) {
+            System.out.println("Error creating final client.");
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 public class MainClient {
     // Recebe parent port / boot /  porta atual
     public static void main(String[] args) throws UnknownHostException {
+        /*
         if(Constants.Windows){
             //InetAddress connectedNode = InetAddress.getByName(args[1]);
             InetAddress parentIP = InetAddress.getByName("localhost");
@@ -38,6 +39,6 @@ public class MainClient {
             new Thread(comunication_TH).start();
 
         }
-
+*/
     }
 }

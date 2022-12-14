@@ -10,7 +10,6 @@ import TransmitData.ReceiveData;
 import TransmitData.SendData;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -18,10 +17,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Producer
@@ -35,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class ClientInformParent implements Runnable {
     public InfoNodo parent;
     public InfoNodo boot;
-    public int thisPort;
+    public InfoNodo thisClient;
     public InetAddress parentIP;
     public DatagramSocket socket;
 
@@ -51,10 +46,10 @@ public class ClientInformParent implements Runnable {
 
 
 
-    public ClientInformParent(InfoNodo parent, InfoNodo boot, int thisPort) throws UnknownHostException {
+    public ClientInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisClient) throws UnknownHostException {
         this.parent = parent;
         this.boot = boot;
-        this.thisPort = thisPort;
+        this.thisClient = thisClient;
         this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
         this.startConsumer = false;
@@ -65,11 +60,8 @@ public class ClientInformParent implements Runnable {
         //new Timer().scheduleAtFixedRate(new sendStillAlive(), 0, Constants.timeToConsiderNodeLost/2);
         //this.sendStillAlives.setInitialDelay(0);
         try {
-            if (this.thisPort > 0) {
-                socket = new DatagramSocket(this.thisPort);
-            } else
-                socket = new DatagramSocket();
-            socket.setSoTimeout(Constants.timeoutSockets);
+                socket = new DatagramSocket(this.thisClient.portNet);
+                socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
@@ -141,7 +133,7 @@ public class ClientInformParent implements Runnable {
         @Override
         public void run() {
             try {
-                SendData.wantsStream(socket, parent, thisPort);
+                SendData.wantsStream(socket, parent, thisClient.portNet);
                 //System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
