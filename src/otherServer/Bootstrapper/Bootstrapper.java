@@ -333,7 +333,7 @@ public class Bootstrapper implements Runnable {
                 return;
             }
 
-            List<InetAddress> parents = topologyTypology.getPath(newClient);
+            List<InfoNodo> parents = topologyTypology.getPath(newClient);
             if (parents.size() >= 0){
                 this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
