@@ -250,6 +250,10 @@ public class SendData {
                     put(restParents).array();
             System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
             System.out.println("Tem x elems"+ ((int) (howMany-1) ));
+            System.out.println("TAMANHO ARRRAY ------------" + bytes.length);
+            for(byte b : bytes){
+                System.out.println(b);
+            }
             sendData(socket, bytes, ipNextNode, Constants.portNet);
         }
 
