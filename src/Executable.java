@@ -158,7 +158,22 @@ public class Executable {
             }
             if (args[0].equals("client")) {
                 System.out.println("Client Core");
-                System.out.println("Boot address: " + args[1]);
+
+                InetAddress ipBoot = InetAddress.getByName(args[1]);//InetAddress.getByName("127.0.0.1");
+                int portBoot = Constants.portNet;
+                InfoNodo infoBoot = new InfoNodo(ipBoot, portBoot);
+
+                InetAddress ipClientNet = InetAddress.getByName(args[2]);//InetAddress.getByName("127.0.0.1");
+                int portClientNet = Constants.portNet;
+                InfoNodo infoClientNet = new InfoNodo(ipClientNet, portClientNet);
+
+                System.out.println("Print informations");
+                System.out.println(infoBoot);
+                System.out.println(infoClientNet);
+
+                InitClient initClient = new InitClient(infoBoot, infoClientNet);
+                initClient.runClient();
+
 
                 return;
             }
