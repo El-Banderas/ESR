@@ -11,6 +11,8 @@ import otherServer.CommuncationBetweenThreads;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.*;
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 
 
 /**
@@ -301,15 +303,51 @@ public class Bootstrapper implements Runnable {
                 this.topologyTypology.activateConnection(nodo);
                 ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology, this.otherBoot);
                 break;
+            case Constants.helloClient:
+                handleHelloClient(received.packet.getAddress(), received.packet.getPort());
+                break;
+
             case Constants.lostNode:
                 receiveLostNodeMSG(received.packet);
                 break;
             case Constants.helloAltBoot:
                 handleHelloFromAlt(received.packet);
+                System.out.println("Falta ativar o boot na tipologia");
                 break;
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " + received.msgType + "\n");
         }
+    }
+
+    private void handleHelloClient(InetAddress address, int port) {
+        try {
+
+            InfoNodo newClient = new InfoNodo(address, port);
+            this.topologyTypology.activateConnection(newClient);
+            InfoNodo possibleParent = this.topologyTypology.getFather(newClient);
+            if (possibleParent == null){
+                System.out.println("Caminho impossível, mandar mensagem client");
+                this.topologyTypology.removeNode(newClient);
+
+                return;
+            }
+
+            List<InetAddress> parents = topologyTypology.getPath(newClient);
+            if (parents.size() >= 0){
+                this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
+
+                System.out.println("Sucesso");
+            }
+            else {
+                this.topologyTypology.removeNode(newClient);
+                System.out.println("Impossível chegar lá");
+            }
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

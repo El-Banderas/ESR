@@ -109,14 +109,13 @@ public class Typology {
             while (line != null) {
 
 
-
                 String[] parts = line.split(" *; *");
 
 
                 // loop through all neighbours of a node
                 String[] aux = parts[0].split(" *: *");
                 InetAddress ip = InetAddress.getByName(aux[1]);
-                if (Constants.Windows==true) {
+                if (Constants.Windows == true) {
 
                     InfoNodo n = new InfoNodo(aux[0], ip, port);
                     port = port + 10;
@@ -177,9 +176,9 @@ public class Typology {
         activateConnection(this.nodes.get("s1"));
     }
 
-    private List<Connection> getNeibourghs(InfoNodo target){
-        for (Map.Entry<InfoNodo, List<Connection>> x : activeNetwork.entrySet()){
-            if (x.getKey().portNet == target.portNet && target.ip.equals(x.getKey().ip)){
+    private List<Connection> getNeibourghs(InfoNodo target) {
+        for (Map.Entry<InfoNodo, List<Connection>> x : activeNetwork.entrySet()) {
+            if (x.getKey().portNet == target.portNet && target.ip.equals(x.getKey().ip)) {
                 return x.getValue();
             }
         }
@@ -187,9 +186,9 @@ public class Typology {
         return new ArrayList<>();
     }
 
-    private List<Connection> getAndRemoveNeibourghs(InfoNodo target){
-        for (Map.Entry<InfoNodo, List<Connection>> entry : activeNetwork.entrySet()){
-            if (entry.getKey().portNet == target.portNet && target.ip.equals(entry.getKey().ip)){
+    private List<Connection> getAndRemoveNeibourghs(InfoNodo target) {
+        for (Map.Entry<InfoNodo, List<Connection>> entry : activeNetwork.entrySet()) {
+            if (entry.getKey().portNet == target.portNet && target.ip.equals(entry.getKey().ip)) {
                 List<Connection> res = entry.getValue();
                 activeNetwork.remove(entry.getKey());
                 return res;
@@ -265,11 +264,11 @@ public class Typology {
         Uses the Prim's algorithm
      */
 
-    public List<Connection> getConnectedToServer(InfoNodo server){
+    public List<Connection> getConnectedToServer(InfoNodo server) {
         List<Connection> connectedToServer = null;
 
-        for(InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())){
-            if (node.portNet == server.portNet && node.getIp().equals(server.getIp())){
+        for (InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())) {
+            if (node.portNet == server.portNet && node.getIp().equals(server.getIp())) {
                 connectedToServer = activeNetwork.get(node);
             }
         }
@@ -277,10 +276,10 @@ public class Typology {
         return connectedToServer;
     }
 
-    public boolean isInMST(InfoNodo node){
+    public boolean isInMST(InfoNodo node) {
         boolean b = false;
-        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
-            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+        for (InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())) {
+            if (n.portNet == node.portNet && n.getIp().equals(node.getIp())) {
                 b = true;
                 break;
             }
@@ -290,9 +289,9 @@ public class Typology {
     }
 
 
-    public void removeFromMST(InfoNodo node){
-        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
-            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+    public void removeFromMST(InfoNodo node) {
+        for (InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())) {
+            if (n.portNet == node.portNet && n.getIp().equals(node.getIp())) {
                 this.bestPaths.remove(n);
             }
         }
@@ -343,7 +342,7 @@ public class Typology {
             mst.put(toAdd.from, listCon);*/
 
 
-            List<Connection> listCon ;
+            List<Connection> listCon;
             listCon = getConnections(mst, toAdd.from);
             if (listCon == null) {
                 listCon = new ArrayList<>();
@@ -367,24 +366,24 @@ public class Typology {
         String xml = temp.generateXML(this.nodes, mst);
         String res = temp.prettyPrintByTransformer(xml, 1, false);
         this.bestPaths = mst;
-
-        try {
-            System.out.println("-------------- AQUI  SEND XML --------------");
-            System.out.println(destMSG);
-            SendData.sendXML(socket, destMSG, xml);
-            System.out.println("-------------AFTER XML--------------------");
-        } catch (IOException e) {
-            System.out.println("Error sending XML");
-            throw new RuntimeException(e);
+        if (socket != null) {
+            try {
+                System.out.println("-------------- AQUI  SEND XML --------------");
+                System.out.println(destMSG);
+                SendData.sendXML(socket, destMSG, xml);
+                System.out.println("-------------AFTER XML--------------------");
+            } catch (IOException e) {
+                System.out.println("Error sending XML");
+                throw new RuntimeException(e);
+            }
         }
     }
 
 
-
-    public List<Connection> getConnections(Map<InfoNodo,List<Connection>> mst, InfoNodo toGet){
+    public List<Connection> getConnections(Map<InfoNodo, List<Connection>> mst, InfoNodo toGet) {
         List<Connection> con = null;
-        for(InfoNodo n : mst.keySet().stream().collect(Collectors.toList())){
-            if (n.getIp().equals(toGet.getIp()) && n.portNet==toGet.portNet){
+        for (InfoNodo n : mst.keySet().stream().collect(Collectors.toList())) {
+            if (n.getIp().equals(toGet.getIp()) && n.portNet == toGet.portNet) {
                 con = mst.get(n);
             }
         }
@@ -404,7 +403,7 @@ public class Typology {
             List<Connection> value = entry.getValue();
 
             //if (InfoNodo.compareInfoNodes(key, node)) {
-            if ((key.ip.equals(node.ip)) && key.portNet == node.portNet){
+            if ((key.ip.equals(node.ip)) && key.portNet == node.portNet) {
                 for (Connection connection : value) {
 
                     incident.add(connection);
@@ -439,19 +438,18 @@ public class Typology {
     }
 
 
-    public List<InfoNodo> getAllNeighbours(InfoNodo i){
+    public List<InfoNodo> getAllNeighbours(InfoNodo i) {
         List<InfoNodo> entries = this.completeNetwork.keySet().stream().collect(Collectors.toList());
 
         List<InfoNodo> allNeighbours = null;
 
-        for(InfoNodo entry : entries){
-            if(entry.getIp().equals(i.getIp()) && entry.portNet == i.portNet){
+        for (InfoNodo entry : entries) {
+            if (entry.getIp().equals(i.getIp()) && entry.portNet == i.portNet) {
                 allNeighbours = completeNetwork.get(entry);
             }
         }
         return allNeighbours;
     }
-
 
 
     public List<InfoNodo> getNeighbours(InfoNodo node) {
@@ -618,18 +616,18 @@ public class Typology {
 
         List<InetAddress> ips = new ArrayList<>();
 
-        InfoNodo objective = new InfoNodo(destiny.getIp(),destiny.portNet);
+        InfoNodo objective = new InfoNodo(destiny.getIp(), destiny.portNet);
 
         boolean bool = true;
 
-        while (bool){
+        while (bool) {
 
-            InfoNodo tmp =new InfoNodo(destiny.getIp(),destiny.portNet);
+            InfoNodo tmp = new InfoNodo(destiny.getIp(), destiny.portNet);
 
-            for(InfoNodo node : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+            for (InfoNodo node : this.bestPaths.keySet().stream().collect(Collectors.toList())) {
 
-                for(Connection con : this.bestPaths.get(node)){
-                    if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet){
+                for (Connection con : this.bestPaths.get(node)) {
+                    if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet) {
                         String ip[] = con.from.getIp().toString().split("/");
 
                         ips.add(InetAddress.getByName(ip[1]));
@@ -648,12 +646,11 @@ public class Typology {
             }
 
 
-            if(tmp.getIp().equals(objective.getIp()) || tmp.portNet == objective.portNet){
+            if (tmp.getIp().equals(objective.getIp()) || tmp.portNet == objective.portNet) {
 
                 bool = false;
 
             }
-
 
 
         }
@@ -663,6 +660,10 @@ public class Typology {
 
     }
 
+    // TODO: Meter função
+    public void removeNode(InfoNodo newClient) {
+        System.out.println("[Typology] ELIMEm-me");
+    }
 }
 
 

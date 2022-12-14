@@ -32,6 +32,7 @@ public class Constants {
     final public static  int lostNode = 8;
 final public static int StillAliveBootAlt = 23;
 final public static int helloAltBoot = 24;
+final public static int helloClient = 26;
 final public static int changeTree = 25;
 
     // Miliseconds

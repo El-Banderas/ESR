@@ -1,3 +1,4 @@
+import Client.InitClient;
 import Common.Constants;
 import Common.InfoNodo;
 import otherNode.oNode;
@@ -67,6 +68,26 @@ public class Executable {
             if (args[0].equals("client")) {
                 System.out.println("Client Windows");
                 System.out.println("Boot address: " + args[1]);
+
+                System.out.println("Node Windows");
+
+                InetAddress ipBoot = InetAddress.getByName("127.0.0.1");
+                int portBoot = Integer.parseInt(args[1]);
+                InfoNodo infoBoot = new InfoNodo(ipBoot, portBoot);
+
+
+                InetAddress ipClientNet = InetAddress.getByName("127.0.0.1");
+                int portClientNet = Integer.parseInt(args[2]);
+                InfoNodo infoClientNet = new InfoNodo(ipClientNet, portClientNet);
+
+                InetAddress ipClientStream = InetAddress.getByName("127.0.0.1");
+                int portClientStream = Integer.parseInt(args[3]);
+                InfoNodo infoClientStream = new InfoNodo(ipClientStream, portClientStream);
+
+                InitClient initClient = new InitClient(infoBoot, infoClientNet, infoClientStream);
+                initClient.runClient();
+
+
 
                 return;
             }

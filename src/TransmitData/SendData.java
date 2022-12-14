@@ -125,7 +125,6 @@ public class SendData {
         byte[] bytes = ByteBuffer.allocate(50).
                 putInt(Constants.helloAltBoot).array();
         sendData(socket, bytes, serverInfo.ip, serverInfo.portNet);
-
     }
 
     public static void sendStillAliveBootAlt(DatagramSocket socket, InfoNodo otherBoot, int timestampStream) throws IOException {
@@ -157,5 +156,11 @@ public class SendData {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void sendHelloMsgClient(DatagramSocket socket, InfoNodo serverInfo) throws IOException {
+        byte[] bytes = ByteBuffer.allocate(4).
+                putInt(Constants.helloClient).array();
+        sendData(socket, bytes, serverInfo.ip, serverInfo.portNet);
     }
 }
