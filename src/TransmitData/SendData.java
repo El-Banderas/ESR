@@ -188,6 +188,7 @@ public class SendData {
                 buffer.put(parent.ip.getAddress());
             }
             System.out.println("Sending wake up to: " + sendTo);
+            System.out.println("Parents"+ parents);
             sendData(socket, buffer.array(), sendTo.ip, sendTo.portNet);
 
         }
@@ -248,6 +249,7 @@ public class SendData {
                     putInt(howMany - 1).
                     put(restParents).array();
             System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
+            System.out.println("Tem x elems"+ ((int) (howMany-1) ));
             sendData(socket, bytes, ipNextNode, Constants.portNet);
         }
 
