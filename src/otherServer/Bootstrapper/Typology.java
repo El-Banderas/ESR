@@ -5,6 +5,7 @@ import Common.InfoNodo;
 import TransmitData.SendData;
 import org.xml.sax.SAXException;
 
+import javax.sound.midi.Soundbank;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -333,6 +334,7 @@ public class Typology {
         this.bestPaths = mst;
 
         try {
+            System.out.println("-------------- AQUI  SEND XML --------------");
             SendData.sendXML(socket, destMSG, xml);
         } catch (IOException e) {
             System.out.println("Error sending XML");
