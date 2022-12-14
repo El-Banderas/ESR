@@ -419,17 +419,18 @@ public class Typology {
     }
 
 
+
     public InfoNodo getFather(InfoNodo son) {
 
         InfoNodo father = null;
 
-        for (Map.Entry<InfoNodo, List<Connection>> entry : bestPaths.entrySet()) {
+        for (Map.Entry<InfoNodo, List<InfoNodo>> entry : completeNetwork.entrySet()) {
             InfoNodo key = entry.getKey();
-            List<Connection> value = entry.getValue();
+            List<InfoNodo> value = entry.getValue();
 
-            for (Connection con : value) {
-                if (con.to.equals(son)) {
-                    father = con.from;
+            for (InfoNodo node : value) {
+                if (node.portNet == son.portNet && node.getIp().equals(son.getIp())) {
+                    father = new InfoNodo(key.getIp(), key.portNet);
                 }
             }
         }
@@ -498,98 +499,7 @@ public class Typology {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
-        Typology typologyTest = new Typology();
-        typologyTest.parse("C:\\Users\\migue\\Desktop\\ESR\\src\\otherServer\\Config\\biggerConfiguration.txt");
-        typologyTest.setCompleteNetwork();
 
-        // Print the complete network
-        System.out.println("Complete Network");
-        Map<InfoNodo, List<InfoNodo>> completeLayoutTest = typologyTest.getCompleteNetwork();
-        for (Map.Entry<InfoNodo, List<InfoNodo>> entry : completeLayoutTest.entrySet()) {
-            InfoNodo key = entry.getKey();
-            List<InfoNodo> value = entry.getValue();
-
-            System.out.println(">>>" + key.toStringCon());
-
-            for (InfoNodo node : value) {
-                System.out.println(node.toStringCon());
-            }
-        }
-        System.out.println("\n\n");
-
-        /*
-            The following code is not yet a formal test: the delay values were hand crafted
-         */
-
-        // Activate some nodes
-
-        typologyTest.activateConnection(typologyTest.getNodes().get("n1"));
-        typologyTest.activateConnection(typologyTest.getNodes().get("n2"));
-
-        //typologyTest.activateConnection(typologyTest.getNodes().get("n1"),new Connection(typologyTest.getNodes().get("n1") ,typologyTest.getNodes().get("s1"),1,2), false );
-        /*
-        typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("c2"),2,3), false );
-        //typologyTest.activateConnection(typologyTest.getNodes().get("n2"),new Connection(typologyTest.getNodes().get("n2") ,typologyTest.getNodes().get("n3"),3,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n2"),3,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n4"),2,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n3"),new Connection(typologyTest.getNodes().get("n3") ,typologyTest.getNodes().get("n5"),5,3), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n4"),new Connection(typologyTest.getNodes().get("n4") ,typologyTest.getNodes().get("n5"),2,4), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n5"),new Connection(typologyTest.getNodes().get("n5") ,typologyTest.getNodes().get("n2"),2,4), false );
-        typologyTest.activateConnection(typologyTest.getNodes().get("n5"),new Connection(typologyTest.getNodes().get("n5") ,typologyTest.getNodes().get("c1"),2,4), false );
-
-         */
-
-
-        // Print the active nodes
-        System.out.println("Active Network");
-        Map<InfoNodo, List<Connection>> activeLayoutTest = typologyTest.getActiveNetwork();
-        printInfoFromMap(activeLayoutTest);
-
-        // Print the best paths tree (it was setted during the activation of the nodes)
-        System.out.println("\n\n");
-        System.out.println("Best Paths Tree");
-        Map<InfoNodo, List<Connection>> bestPaths = typologyTest.getBestPaths();
-        printInfoFromMap(bestPaths);
-
-        /*
-        // Test getFather
-        // When invoking the function, checking for null elements needs to be done
-        System.out.println("\n\n");
-        System.out.println("Test getFather");
-        if(typologyTest.getFather(typologyTest.getNodes().get("n2")) != null) {
-            System.out.println(typologyTest.getFather(typologyTest.getNodes().get("n2")).toString());
-        }
-        if(typologyTest.getFather(typologyTest.getNodes().get("n7")) != null) {
-            System.out.println(typologyTest.getFather(typologyTest.getNodes().get("n7")).toString());
-        }
-
-        // Test getNeighbours
-        // When invoking the function, checking for empty list
-        System.out.println("\n\n");
-
-        System.out.println("Test getNeighbours");
-        List<InfoNodo> neighboursN2 = typologyTest.getNeighbours(typologyTest.getNodes().get("n2"));
-        for (InfoNodo neighbour : neighboursN2){
-            System.out.println(neighbour.toStringCon());
-        }*/
-
-
-        // Test XML
-        System.out.println("\n\n");
-        XMLParser xmlParser = new XMLParser();
-        String xml = xmlParser.generateXML(typologyTest.nodes, typologyTest.bestPaths);
-        System.out.println(xmlParser.prettyPrintByTransformer(xml, 1, false));
-        System.out.println("\n\n");
-        xmlParser.parseXML(xml);
-
-        byte[] xmlBytes = xmlParser.fromStringToBytes(xml);
-        String xml2 = xmlParser.fromBytesToString(xmlBytes);
-        System.out.println("\n\n");
-        System.out.println(xmlParser.prettyPrintByTransformer(xml2, 1, false));
-        //System.out.println(xml.getXMLString());
-
-    }
 
     public static void printInfoFromMap(Map<InfoNodo, List<Connection>> bestPaths) {
         for (Map.Entry<InfoNodo, List<Connection>> entry : bestPaths.entrySet()) {
@@ -612,9 +522,9 @@ public class Typology {
         Path from server to specific node
      */
 
-    public List<InetAddress> getPath(InfoNodo destiny) throws UnknownHostException {
+    public List<InfoNodo> getPath(InfoNodo destiny) throws UnknownHostException {
 
-        List<InetAddress> ips = new ArrayList<>();
+        List<InfoNodo> ips = new ArrayList<>();
 
         InfoNodo objective = new InfoNodo(destiny.getIp(), destiny.portNet);
 
@@ -628,9 +538,9 @@ public class Typology {
 
                 for (Connection con : this.bestPaths.get(node)) {
                     if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet) {
-                        String ip[] = con.from.getIp().toString().split("/");
+                        //String ip[] = con.from.getIp().toString().split("/");
 
-                        ips.add(InetAddress.getByName(ip[1]));
+                        ips.add(new InfoNodo(con.from.getIp(),con.from.portNet));
 
 
                         objective.portNet = con.from.portNet;
@@ -662,7 +572,24 @@ public class Typology {
 
     // TODO: Meter função
     public void removeNode(InfoNodo newClient) {
-        System.out.println("[Typology] ELIMEm-me");
+
+        System.out.println("[Typology] Eliminei-me");
+
+        for (InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())){
+            if(node.portNet == newClient.portNet && node.getIp().equals(newClient.getIp())){
+                activeNetwork.remove(node);
+            }else{
+                List<Connection> otherConnections = activeNetwork.get(node);
+
+                for (Connection con :  otherConnections){
+                    if (con.getTo().getIp().equals(newClient.getIp()) && con.getTo().portNet == newClient.portNet){
+                        otherConnections.remove(con);
+                    }
+                }
+            }
+        }
+
+
     }
 }
 

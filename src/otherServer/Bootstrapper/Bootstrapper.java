@@ -338,7 +338,9 @@ public class Bootstrapper implements Runnable {
                 this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
                 System.out.println("Sucesso");
+
                 SendData.sendWakeUpClient(socket, parents);
+
             }
             else {
                 this.topologyTypology.removeNode(newClient);
