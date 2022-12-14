@@ -187,6 +187,8 @@ public class XMLParser {
 
         String ipToSend = ip[0];
 
+        System.out.println(ipToSend);
+
 
         return  new InfoNodo(InetAddress.getByName(ipToSend),Integer.parseInt(rootElement.getAttribute("port")));
 
