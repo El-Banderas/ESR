@@ -67,6 +67,8 @@ public class Executable {
 
 
                 InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
+                System.out.println("Info this node");
+                System.out.println(infoServer);
 
                 Servidor.runServer(infoServer);
 
@@ -90,7 +92,10 @@ public class Executable {
                 int portNodeStream = Constants.portStream;
                 InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
-
+                    System.out.println("Info this node");
+                    System.out.println(infoBoot);
+                    System.out.println(infoNodeNet);
+                    System.out.println(infoNodeStream);
 
                 oNode.runNode(infoBoot, infoNodeNet, infoNodeStream);
 
