@@ -565,6 +565,8 @@ public class Typology {
 
         }
 
+        Collections.reverse(ips);
+
         return ips;
 
 

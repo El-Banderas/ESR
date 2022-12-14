@@ -332,10 +332,11 @@ public class Bootstrapper implements Runnable {
 
                 return;
             }
-
+            this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
             List<InfoNodo> parents = topologyTypology.getPath(newClient);
-            if (parents.size() >= 0){
-                this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
+
+            if (parents.size() > 0){
+                //this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
                 System.out.println("Sucesso");
 

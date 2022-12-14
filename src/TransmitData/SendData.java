@@ -176,7 +176,7 @@ public class SendData {
             buffer.putInt(Constants.wakeUpClient).putInt(parents.size());
             for (InfoNodo ip : parents) {
                 buffer.put(ip.ip.getAddress());
-                buffer.put(ip.portNet);
+                buffer.putInt(ip.portNet);
             }
             sendData(socket, buffer.array(), parents.get(0).ip, parents.get(0).portNet);
 
