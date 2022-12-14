@@ -43,16 +43,10 @@ public class SendData {
         byte[] info2 = c.to.NodeToBytes();
         int size2 = info2.length;
         int hops = c.numHops + 1;
-        byte[] bytes = ByteBuffer.allocate(size1+size2+40).putInt(Constants.ConnectionMsg).putDouble(delay).putInt(hops).putInt(size1).putInt(size2).put(info1).put(info2).array();
+        byte[] bytes = ByteBuffer.allocate(size1 + size2 + 40).putInt(Constants.ConnectionMsg).putDouble(delay).putInt(hops).putInt(size1).putInt(size2).put(info1).put(info2).array();
 
         sendData(socket, bytes, destIP, destPort);
     }
-
-
-
-
-
-
 
 
     /**
@@ -60,14 +54,14 @@ public class SendData {
      * MessageType |  Port Lost Node | IP Lost Node
      */
     public static void sendParentLostMSG(DatagramSocket socket, InfoNodo dest, InfoNodo lostNode) throws IOException {
-         ByteBuffer bb = ByteBuffer.allocate(50).
+        ByteBuffer bb = ByteBuffer.allocate(50).
                 putInt(Constants.lostNode).
                 putInt(lostNode.portNet);
         byte[] bytesIP = lostNode.ip.getAddress();
 
         byte[] bytes = bb.put(bytesIP).array();
         System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.portNet);
-     //   sendData(socket, bytes, dest.ip, dest.portNet);
+        //   sendData(socket, bytes, dest.ip, dest.portNet);
     }
 
     /**
@@ -81,11 +75,12 @@ public class SendData {
 
     /**
      * TODO: Servidor alternativo
+     *
      * @param socket
      * @param destIP
      * @param destPort
      */
-    public static void sendTooMuchDelayMSG(DatagramSocket socket, InetAddress destIP, int destPort){
+    public static void sendTooMuchDelayMSG(DatagramSocket socket, InetAddress destIP, int destPort) {
     }
 
     public static void wantsStream(DatagramSocket socket, InfoNodo parent, int portReceiveStream) throws IOException {
@@ -111,7 +106,7 @@ public class SendData {
         System.out.println(xml);
 
         byte[] xmlBytes = xml.getBytes();
-        ByteBuffer bb = ByteBuffer.allocate(8+xmlBytes.length).
+        ByteBuffer bb = ByteBuffer.allocate(8 + xmlBytes.length).
                 putInt(Constants.XMLmsg).
                 putInt(xmlBytes.length).
                 put(xmlBytes);
@@ -136,11 +131,11 @@ public class SendData {
     public static void sendActiveNetwork(DatagramSocket socket, InfoNodo otherBoot, Map<InfoNodo, List<Connection>> activeNetwork) {
         try {
 
-        ByteArrayOutputStream ba = new ByteArrayOutputStream(activeNetwork.size()*200);
-        ObjectOutputStream oba = new ObjectOutputStream(ba);
-        oba.writeObject(activeNetwork);
-        byte[] toSend = ba.toByteArray();
-            byte[] bytes = ByteBuffer.allocate(toSend.length+8).
+            ByteArrayOutputStream ba = new ByteArrayOutputStream(activeNetwork.size() * 200);
+            ObjectOutputStream oba = new ObjectOutputStream(ba);
+            oba.writeObject(activeNetwork);
+            byte[] toSend = ba.toByteArray();
+            byte[] bytes = ByteBuffer.allocate(toSend.length + 8).
                     putInt(Constants.changeTree).putInt(toSend.length).put(toSend).array();
 
             ByteArrayInputStream ba1 = new ByteArrayInputStream(toSend);
@@ -176,7 +171,7 @@ public class SendData {
             System.out.println("Lista de parents");
             System.out.println(parents);
             // 4 para o tipo, 4 para o  número de elems
-            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + parents.size() * (Constants.sizeInetAdressByteArray + 4) );
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + parents.size() * (Constants.sizeInetAdressByteArray + 4));
             buffer.putInt(Constants.wakeUpClient).putInt(parents.size());
             for (InfoNodo parent : parents) {
                 buffer.putInt(parent.portNet);
@@ -185,8 +180,7 @@ public class SendData {
             }
             System.out.println("Sending wake up to: " + sendTo);
             sendData(socket, buffer.array(), sendTo.ip, sendTo.portNet);
-        }
-        else {
+        } else {
             // 4 para o tipo, 4 para o  número de elems
             ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + parents.size() * Constants.sizeInetAdressByteArray);
             buffer.putInt(Constants.wakeUpClient).putInt(parents.size());
@@ -218,42 +212,40 @@ public class SendData {
 
             InetAddress ipNextNode = InetAddress.getByAddress(ipNext);
             if (howMany <= 1) {
-                byte[] bytes = ByteBuffer.allocate(4*2).
+                byte[] bytes = ByteBuffer.allocate(4 * 2).
                         putInt(Constants.wakeUpClient).
                         putInt(0).array();
-                System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext );
+                System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext);
                 System.out.println("A partir do socket: " + socket);
                 System.out.println("Bytes: " + bytes.length);
                 sendData(socket, bytes, ipNextNode, portNext);
 
+            } else {
+
+                byte[] restParents = new byte[data.length - 12];
+
+                System.arraycopy(data, 12, restParents, 0, restParents.length);
+
+                byte[] bytes = ByteBuffer.allocate(restParents.length + 4 * 2 + 100).
+                        putInt(Constants.wakeUpClient).
+                        putInt(howMany - 1).
+                        put(restParents).array();
+                System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext);
+                sendData(socket, bytes, ipNextNode, portNext);
             }
-            else {
 
-            byte[] restParents = new byte[data.length-12];
-
-            System.arraycopy(data, 12, restParents, 0, restParents.length);
-
-            byte[] bytes = ByteBuffer.allocate(restParents.length+4*2+100).
-                    putInt(Constants.wakeUpClient).
-                    putInt(howMany-1).
-                    put(restParents).array();
-            System.out.println("Sending wake up to: " + ipNextNode + " - " + portNext );
-            sendData(socket, bytes, ipNextNode, portNext);
-            }
-
-        }
-        else {
+        } else {
             byte[] ipNext = new byte[Constants.sizeInetAdressByteArray];
             // Cuidado com este 8, é o tamanho de 2 ints
-            System.arraycopy(data, 0, ipNext, 0, Constants.sizeInetAdressByteArray);
+            System.arraycopy(data, 8, ipNext, 0, Constants.sizeInetAdressByteArray);
 
             InetAddress ipNextNode = InetAddress.getByAddress(ipNext);
-            byte[] restParents = new byte[data.length-4];
-            System.arraycopy(data, 4, restParents, 0, restParents.length);
+            byte[] restParents = new byte[data.length - 8];
+            System.arraycopy(data, 8, restParents, 0, restParents.length);
 
-            byte[] bytes = ByteBuffer.allocate(restParents.length+4*2).
+            byte[] bytes = ByteBuffer.allocate(restParents.length + 4 * 2).
                     putInt(Constants.wakeUpClient).
-                    putInt(howMany-1).
+                    putInt(howMany - 1).
                     put(restParents).array();
             System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
             sendData(socket, bytes, ipNextNode, Constants.portNet);
