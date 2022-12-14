@@ -58,7 +58,6 @@ public class SendData {
     /**
      * This message sends:
      * MessageType |  Port Lost Node | IP Lost Node
-     * TODO: Verificar se dá para juntar o getAdress com a linha de cima
      */
     public static void sendParentLostMSG(DatagramSocket socket, InfoNodo dest, InfoNodo lostNode) throws IOException {
          ByteBuffer bb = ByteBuffer.allocate(50).
@@ -81,7 +80,7 @@ public class SendData {
     }
 
     /**
-     * TODO: Falta decidir como fazemos isto
+     * TODO: Servidor alternativo
      * @param socket
      * @param destIP
      * @param destPort
