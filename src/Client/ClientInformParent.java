@@ -137,10 +137,8 @@ public class ClientInformParent  {
         @Override
         public void run() {
             try {
-                System.out.println("Coisas do cliente");
-                System.out.println(socket);
+                System.out.println("Envio want stream para");
                 System.out.println(parent);
-                System.out.println(thisClient.portNet+1);
                 SendData.wantsStream(socket, parent, thisClient.portNet+1);
                 //System.out.println("Send still alive");
             } catch (IOException ex) {

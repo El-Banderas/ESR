@@ -324,6 +324,7 @@ public class Bootstrapper implements Runnable {
     }
 
     private void handleHelloClient(InetAddress address, int port) {
+        System.out.println("Recebeu hello do client " + port);
         try {
 
             InfoNodo newClient = new InfoNodo(address, port);
@@ -342,8 +343,9 @@ public class Bootstrapper implements Runnable {
             if (parents.size() > 0){
                 //this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
-                System.out.println("Sucesso");
+                System.out.println("Sucesso: " + newClient);
                 //List<InfoNodo> withoutServer = parents.subList(1, parents.size());
+                System.out.println("Lista de caminhos: " + parents);
                 parents.add(newClient);
                 SendData.sendWakeUpClient(socket, parents);
 

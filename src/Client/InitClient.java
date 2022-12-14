@@ -63,6 +63,7 @@ public class InitClient {
 
     private void startClient(DatagramPacket packet) {
         InfoNodo parent = new InfoNodo(packet.getAddress(), packet.getPort());
+        System.out.println("Create parent " + parent);
         try {
 
             ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet, socketNet, socketStream);

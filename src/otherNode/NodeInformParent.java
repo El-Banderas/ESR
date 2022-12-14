@@ -97,6 +97,7 @@ public class NodeInformParent implements Runnable {
                 sendStillAliveMSG();
                 //SendData.sendStillAliveMSG(socket, this.parent.ip, this.parent.port, messageType);
               //  System.out.println(" Send still alive msg, type: " + Constants.convertMessageType(messageType));
+                System.out.println("Escuto msg : " + socket.getLocalPort());
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
             } catch (IOException | ParserConfigurationException | SAXException e) {
@@ -176,6 +177,7 @@ break;
                 //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
                 break;
             case Constants.wakeUpClient:
+                System.out.println("Envia wake up");
                 receivedWakeUpClient(received.packet);
                 break;
 
