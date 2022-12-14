@@ -149,7 +149,9 @@ public class InitializeNode {
                 NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNodeNet, socket, shared, this.altBoot);
                 // NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
                 new Thread(comunication_TH).start();
-                //TODO: Falta thread Stream
+                StreamNode stream_TH = new StreamNode(this.socketStream, shared);
+                new Thread(stream_TH).start();
+
 
             } else {
                 System.out.println("InitializeNodes - Not expecting message type: " + received.msgType);

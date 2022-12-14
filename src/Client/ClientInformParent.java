@@ -27,7 +27,7 @@ import java.util.TimerTask;
  * TODO:
  * Não ignorar os números de sequência, dar-lhes importância;
  */
-public class ClientInformParent implements Runnable {
+public class ClientInformParent  {
     public InfoNodo parent;
     public InfoNodo boot;
     public InfoNodo thisClient;
@@ -50,7 +50,7 @@ public class ClientInformParent implements Runnable {
         this.parent = parent;
         this.boot = boot;
         this.thisClient = thisClient;
-        this.parentIP = InetAddress.getByName("localhost");
+        //this.parentIP = InetAddress.getByName("localhost");
         this.toolkit = Toolkit.getDefaultToolkit();
         this.startConsumer = false;
         this.numPacketsReceived = 0;
@@ -67,8 +67,7 @@ public class ClientInformParent implements Runnable {
 
     }
 
-    @Override
-    public void run() {
+    public void start() {
         System.out.println("otherServer.otherServer.Client ativo");
         //sendStillAlives.start();
         Timer timer = new Timer();
@@ -88,6 +87,8 @@ public class ClientInformParent implements Runnable {
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
         switch (received.msgType) {
+            // TODO: Quando deixa de receber still alive está grave, porque só tem um pai.
+            // Talvez atualizar o pai?
             case Constants.sitllAlive:
                 //System.out.println();
                 break;

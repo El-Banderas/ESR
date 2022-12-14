@@ -55,6 +55,7 @@ public class InitClient {
                 startClient(received.packet);
                 break;
             default:
+                System.out.println("Ignora");
                 System.out.println("Recebeu mensagem do tipo: " + received.msgType);
         }
     }
@@ -63,7 +64,7 @@ public class InitClient {
         InfoNodo parent = new InfoNodo(packet.getAddress(), packet.getPort());
         try {
             ClientInformParent cli = new ClientInformParent(parent, infoBoot, infoClientNet, socketNet);
-            new Thread(cli).start();
+            cli.start();
 
         } catch (UnknownHostException e) {
             System.out.println("Error creating final client.");

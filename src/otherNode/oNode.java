@@ -1,5 +1,6 @@
 package otherNode;
 
+import Common.Constants;
 import Common.InfoNodo;
 
 
@@ -104,13 +105,15 @@ public class oNode {
         try {
             socketNet = new DatagramSocket(thisNodeNet.portNet, thisNodeNet.ip);
             socketStream = new DatagramSocket(thisNodeNet.portNet+1, thisNodeNet.ip);
+            socketNet.setSoTimeout(Constants.timeoutSockets);
+            socketStream.setSoTimeout(Constants.timeoutSockets);
+
         } catch (SocketException e) {
             System.out.println("[oNode] Error creating socket network.");
             throw new RuntimeException(e);
         }
         //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
-        InitializeNode i = new Init
-        ializeNode(socketNet,boot, thisNodeNet, socketStream);
+        InitializeNode i = new InitializeNode(socketNet,boot, thisNodeNet, socketStream);
 
 
         i.start();

@@ -15,18 +15,9 @@ public class StreamNode implements Runnable{
     private DatagramSocket socket;
     private ShareNodes shared;
 
-    public StreamNode(InfoNodo thisNode, ShareNodes shared) {
+    public StreamNode(DatagramSocket socket, ShareNodes shared) {
         this.shared = shared;
-        try {
-            if (thisNode.portStream > 0)
-                socket = new DatagramSocket(thisNode.portStream);
-            else
-                socket = new DatagramSocket();
-            socket.setSoTimeout(Constants.timeoutSockets);
-        } catch (SocketException e) {
-            e.printStackTrace();
-            System.out.println("[Client] Error creating socket");
-        }
+        this.socket = socket;
     }
 
     @Override
