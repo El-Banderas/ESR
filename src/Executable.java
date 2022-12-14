@@ -142,7 +142,7 @@ public class Executable {
                     InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                     InetAddress ipNodeStream = InetAddress.getByName(args[2]);
-                    int portNodeStream = Constants.portStream;
+                    int portNodeStream = Constants.portNet+1;
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
                     System.out.println("Info this node");
@@ -155,8 +155,6 @@ public class Executable {
                 } catch (UnknownHostException e) {
                     throw new RuntimeException(e);
                 }
-
-
                 return;
             }
             if (args[0].equals("client")) {
