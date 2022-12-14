@@ -74,7 +74,7 @@ public class Executable {
             if (args[0].equals("boot")) {
                 // Podem haver erros por ser static?
 
-                if (args.length < 2) {
+                if (args.length < 3) {
 
                     InetAddress ipServer = InetAddress.getByName(args[1]);
                     System.out.println("Boot Principle Core");
