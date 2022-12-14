@@ -81,7 +81,7 @@ final public static    int sizeInetAdressByteArray = 4;
     public static int arraySize = 150000;
 
 
-    public static boolean Windows = false ;
+    public static boolean Windows = true ;
 
 
     public static  int portNet = 9000;
