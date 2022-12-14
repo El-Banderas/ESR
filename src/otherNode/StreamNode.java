@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 public class StreamNode implements Runnable{
     private DatagramSocket socket;
@@ -28,7 +29,7 @@ public class StreamNode implements Runnable{
                 //MessageAndType received = ReceiveData.receiveData(socket);
                 //System.out.println("Recebeu msg do tipo: " + received.msgType);
 
-                ReceiveData.nodeReceiveStream(socket, shared.interestedSons);
+                ReceiveData.nodeReceiveStream(socket, new ArrayList<>(shared.interestedSons));
             } catch (IOException e) {
                 System.out.println("[STREAM] Timout, listening on "+ socket.getLocalAddress() + " "+socket.getLocalPort());
                 //throw new RuntimeException(e);

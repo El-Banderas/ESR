@@ -3,6 +3,7 @@ package otherNode;
 import Common.InfoNodo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShareNodes {
     public ArrayList<InfoNodo> interestedSons;
@@ -17,8 +18,8 @@ public class ShareNodes {
      * @param maybeNew
      */
     public void maybeAddInterestedSon(InfoNodo maybeNew) {
-        boolean alreadyInterested = interestedSons.stream().anyMatch(oneSon -> InfoNodo.compareInfoNodes(oneSon, maybeNew));
+        ArrayList<InfoNodo> copyInterestedSons = new ArrayList<>(interestedSons);
+        boolean alreadyInterested = copyInterestedSons.stream().anyMatch(oneSon -> InfoNodo.compareInfoNodes(oneSon, maybeNew));
         if (!alreadyInterested) interestedSons.add(maybeNew);
-
     }
 }
