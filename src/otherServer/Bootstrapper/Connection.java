@@ -1,10 +1,14 @@
 package otherServer.Bootstrapper;
 
+import Common.Constants;
 import Common.InfoNodo;
 
+import java.io.Serializable;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
-public class Connection implements Comparable<Connection>{
+public class Connection implements Comparable<Connection>, Serializable {
     public InfoNodo from;
     public InfoNodo to;
     public double delay;
@@ -75,6 +79,50 @@ public class Connection implements Comparable<Connection>{
 
     public int compareTo(Connection that) {
         return (int) ((this.delay*0.6 + this.numHops*0.4 )- (that.delay*0.6 + that.numHops*0.4));
+    }
+
+    public static byte[] toByte(Connection con){
+        byte[] fromBytes = con.from.NodeToBytes();
+        byte[] toBytes = con.to.NodeToBytes();
+        int sizeInt = 4;
+        int sizeDouble = 8;
+        byte[] bytes = ByteBuffer.allocate(sizeInt*3+sizeDouble+fromBytes.length+toBytes.length+1).
+                putInt(con.numHops).
+                putDouble(con.delay).
+                putInt(fromBytes.length).
+                putInt(toBytes.length).
+                put(fromBytes).
+                put(toBytes).
+                array();
+        return bytes;
+
+    }
+
+    public static Connection fromByte(byte[] bytes){
+        int sizeInt = 4;
+        int sizeDouble = 8;
+
+        ByteBuffer msg = ByteBuffer.wrap(bytes);
+        int numHops = msg.getInt();
+        double delay = msg.getDouble();
+        int fromBytesLen = msg.getInt();
+        int toBytesLen = msg.getInt();
+
+
+        byte[] fromBytes = new byte[fromBytesLen];
+        byte[] toBytes = new byte[toBytesLen];
+        byte[] twoClasses = new byte[fromBytesLen+toBytesLen];
+        System.arraycopy(msg.array(),sizeInt*3+sizeDouble*1 , twoClasses,0,fromBytesLen+toBytesLen);
+
+        System.arraycopy(twoClasses, 0, fromBytes, 0, fromBytesLen);
+        System.arraycopy(twoClasses, fromBytesLen, toBytes, 0, toBytesLen);
+        try {
+            InfoNodo from = InfoNodo.BytestoNode(fromBytes);
+            InfoNodo to = InfoNodo.BytestoNode(toBytes);
+            return new Connection(from, to, delay, numHops);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

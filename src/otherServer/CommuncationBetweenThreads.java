@@ -16,13 +16,17 @@ public class CommuncationBetweenThreads {
     // TODO: In case the son is lost, it should be changed by te server (not implemented).
     public InfoNodo son;
     public boolean sendStream;
+    public int timestampStream;
 
     public CommuncationBetweenThreads(InfoNodo son) {
         this.sendStream = false;
         this.son = son;
+        this.timestampStream = 44;
     }
     public CommuncationBetweenThreads() {
         this.sendStream = false;
+        this.timestampStream = 44;
+
     }
     public boolean getSendStream() {
         return sendStream;

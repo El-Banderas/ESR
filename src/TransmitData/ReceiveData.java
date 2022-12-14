@@ -9,7 +9,9 @@ import otherServer.Bootstrapper.InfoConnection;
 import otherServer.Bootstrapper.Typology;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -44,7 +46,8 @@ public class ReceiveData {
 
 
 
-    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t) throws IOException {
+    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t, InfoNodo bootAlter) throws IOException {
+        int sizeInetAdressByteArray = 4;
 
         InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
 
@@ -58,7 +61,31 @@ public class ReceiveData {
             v.append(nodo.toString());
         }
         String vs = v.toString();
-        byte[] bytes = ByteBuffer.allocate(4+18+(2*vs.length())).putInt(Constants.sendNeibourghs).put(vs.getBytes()).array();
+        boolean isBootAlter = bootAlter != null;
+        int isBoolAlterInt = isBootAlter ? 1 : 0;
+        byte[] bytesIP = new byte[sizeInetAdressByteArray];
+        if (isBootAlter) {
+            // Se for windows, metos o ip, senão é a porta
+            if (Constants.Windows) {
+                ByteBuffer bb = ByteBuffer.allocate(4);
+                bb.putInt(bootAlter.portNet);
+                bytesIP = bb.array();
+            } else {
+                bytesIP = bootAlter.ip.getAddress();
+
+
+            }
+        }
+        else{
+            // No alter boot
+            bytesIP = InetAddress.getByName("1.2.3.4").getAddress();
+
+        }
+        byte[] bytes = ByteBuffer.allocate(4+4+bytesIP.length+18+(2*vs.length()))
+                .putInt(Constants.sendNeibourghs).
+                putInt(isBoolAlterInt).
+                put(bytesIP).
+                put(vs.getBytes()).array();
 
         SendData.sendData(s,bytes,packet.getAddress(), packet.getPort());
     }
@@ -212,7 +239,7 @@ public class ReceiveData {
 
     }
     public static MessageAndType receiveData(DatagramSocket socket) throws IOException {
-            byte[] buf = new byte[15000];
+            byte[] buf = new byte[Constants.arraySize];
             DatagramPacket packet
                     = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
@@ -235,6 +262,39 @@ public class ReceiveData {
         String res = new String(xmlBytes);
         System.out.println(res);
         return res;
+
+    }
+
+    public static int receiveStillAliveFromPrimeBoot(DatagramPacket packet) {
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int timeStamp = msg.getInt();
+        return timeStamp;
+    }
+
+    public static Map<InfoNodo, List<Connection>> getActiveNodes(DatagramPacket packet){
+        try {
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int sizArray = msg.getInt();
+        byte[] map = msg.array();
+        // 8 = 2 * 4 (size int)
+        byte[] mapCutted = Arrays.copyOfRange(packet.getData(), 8, sizArray+8);
+            ByteArrayInputStream bais = new ByteArrayInputStream(mapCutted);
+            ObjectInputStream inputStream = new ObjectInputStream(bais);
+            Map<InfoNodo, List<Connection>> o = (Map<InfoNodo, List<Connection>>) inputStream.readObject();
+            System.out.println("O que recebeu");
+            System.out.println(o);
+            return o;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

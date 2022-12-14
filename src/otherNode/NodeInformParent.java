@@ -46,6 +46,9 @@ public class NodeInformParent implements Runnable {
 
     private ShareNodes shared;
 
+    // Necessary when connection becomes bad
+    private InfoNodo altBoot;
+
 
     /**
      * Depois tem de poder receber a mensagem do XML
@@ -68,7 +71,7 @@ public class NodeInformParent implements Runnable {
         //this.shared = shared;
     }
 
-    public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, DatagramSocket socket, ShareNodes shared) {
+    public NodeInformParent(InfoNodo parent, InfoNodo boot, InfoNodo thisNode, DatagramSocket socket, ShareNodes shared, InfoNodo altBoot) {
         // O delay tem de vir do xml, alterar depois
         // Here, the last time the parent answer is now, because this class is created after we receive the xml file.
         this.parent = new InfoConnection(parent, 100, Constants.getCurrentTime(), false);
@@ -80,6 +83,7 @@ public class NodeInformParent implements Runnable {
             this.socket = socket;
         this.shared = shared;
         this.socket = socket;
+        this.altBoot = altBoot;
     }
 
 
@@ -183,6 +187,10 @@ break;
                 String xml = ReceiveData.receivedXML(received.packet);
                 System.out.println("Recebi XML");
                 System.out.println(xml);
+                InfoNodo newParent = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
+                // Aqui não metemos uma conexão, porque a mensagem de XML já é bastante complexa.
+                // A conexão é atualizada com o StillAlive, que é uma mensagem mais simples.
+                this.parent.otherNode = newParent;
                 handleXML(xml);
                 // falta enviar ao pai
                 //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);

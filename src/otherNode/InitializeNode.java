@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class InitializeNode {
@@ -23,6 +24,8 @@ public class InitializeNode {
     private final InfoNodo thisNodeStream;
     private DatagramSocket socket;
     private InfoNodo boot;
+
+    private InfoNodo altBoot;
 
     // Este depois não vai ser preciso
     public InitializeNode(DatagramSocket s, InfoNodo b, int thisPort) {
@@ -74,8 +77,34 @@ public class InitializeNode {
 
 
     public String findNeighbours(MessageAndType neigbours) {
+        ByteBuffer msg = ByteBuffer.wrap(neigbours.packet.getData());
+        int type = msg.getInt();
+        int isThereAlterBot = msg.getInt();
+        if (isThereAlterBot == 1){
+            try {
+                if (Constants.Windows) {
+                    int portAlterBoot = msg.getInt();
+                    InetAddress ipBootAlter = InetAddress.getByName("127.0.0.1");
+                    this.altBoot = new InfoNodo(ipBootAlter, portAlterBoot);
+                }
+                else {
+                    byte[] ipArray = new byte[Constants.sizeInetAdressByteArray];
+                    System.arraycopy(msg.array(), 4*2, ipArray, 0, Constants.sizeInetAdressByteArray);
+                    InetAddress ipLostNode = InetAddress.getByAddress(ipArray);
+                    this.altBoot = new InfoNodo(ipLostNode, Constants.portNet);
 
+                }
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        else {
+            this.altBoot = null;
+        }
+        System.out.println("O boot alternativo é: "+ this.altBoot);
         String word = new String(neigbours.packet.getData());
+
         String[] neighboursList = word.split("END");
         return neighboursList[0];
     }
@@ -86,8 +115,6 @@ public class InitializeNode {
 
         String[] neighboursList = vizinhos.split("/");
         InfoNodo[] nodos = new InfoNodo[neighboursList.length];
-        System.out.println("Vizinhos string completa");
-        System.out.println(vizinhos);
 
         String[] ips = new String[neighboursList.length - 1];
         int[] portas = new int[neighboursList.length - 1];
@@ -123,7 +150,7 @@ public class InitializeNode {
                 ShareNodes shared = new ShareNodes();
 
                 InfoNodo parent = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
-                NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNodeNet, socket, shared);
+                NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNodeNet, socket, shared, this.altBoot);
                 // NodeInformParent comunication_TH = new NodeInformParent(parent, boot, thisNode, sons, shared);
                 new Thread(comunication_TH).start();
                 //TODO: Falta thread Stream

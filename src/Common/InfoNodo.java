@@ -1,12 +1,13 @@
 package Common;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class InfoNodo {
+public class  InfoNodo implements Serializable {
     public String idNodo;
     public InetAddress ip;
     public int portNet;

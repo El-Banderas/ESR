@@ -26,10 +26,20 @@ public class Constants {
     final public static  int streamWanted = 6;
 
     final public static  int streamContent = 9;
+    final public static  int tooMuchDelay = 7;
+
+
+    final public static  int lostNode = 8;
+final public static int StillAliveBootAlt = 23;
+final public static int helloAltBoot = 24;
+final public static int changeTree = 25;
+
     // Miliseconds
     final public static int timeoutSockets = 30000;
     // Miliseconds
     final public static int timeToConsiderNodeLost = 60000; // 1 minute
+
+final public static    int sizeInetAdressByteArray = 4;
 
     public static double getCurrentTime(){
 //        LocalDateTime date = LocalDateTime.now();
@@ -59,20 +69,16 @@ public class Constants {
     // Não consigo testar, porque no mesmo computador dá sempre 0, praticamente.
     // Percentage to trigger a "Too much delay message".
     final public static int minDelayToTrigger = 40;
-    final public static  int tooMuchDelay = 7;
-
-
-    final public static  int lostNode = 8;
 
 
     // Info about the ports, that won't change when testing in core.
     public static int portBootSendNeighbours = 1234;
 
     // Info about send data0
-    public static int arraySize = 2048;
+    public static int arraySize = 150000;
 
 
-    public static boolean Windows = false ;
+    public static boolean Windows = true ;
 
 
     public static  int portNet = 9000;
