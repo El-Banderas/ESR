@@ -240,8 +240,8 @@ public class SendData {
             System.arraycopy(data, 8, ipNext, 0, Constants.sizeInetAdressByteArray);
 
             InetAddress ipNextNode = InetAddress.getByAddress(ipNext);
-            byte[] restParents = new byte[data.length - 8];
-            System.arraycopy(data, 8, restParents, 0, restParents.length);
+            byte[] restParents = new byte[data.length - 12];
+            System.arraycopy(data, 12, restParents, 0, restParents.length);
 
             byte[] bytes = ByteBuffer.allocate(restParents.length + 4 * 2).
                     putInt(Constants.wakeUpClient).
