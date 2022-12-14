@@ -251,8 +251,6 @@ public class ReceiveData {
 
     public static Map<InfoNodo, List<Connection>> getActiveNodes(DatagramPacket packet){
         try {
-            System.out.println("O que recebe da árvore");
-            System.out.println(packet.getData());
         ByteBuffer msg = ByteBuffer.wrap(packet.getData());
 
         // We already know the type, so we can ignore it
@@ -261,7 +259,6 @@ public class ReceiveData {
         byte[] map = msg.array();
         // 8 = 2 * 4 (size int)
         byte[] mapCutted = Arrays.copyOfRange(packet.getData(), 8, sizArray+8);
-            System.out.println("O que vai interpretar:" + mapCutted.length);
             ByteArrayInputStream bais = new ByteArrayInputStream(mapCutted);
             ObjectInputStream inputStream = new ObjectInputStream(bais);
             Map<InfoNodo, List<Connection>> o = (Map<InfoNodo, List<Connection>>) inputStream.readObject();

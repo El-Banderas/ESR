@@ -137,16 +137,12 @@ public class SendData {
     public static void sendActiveNetwork(DatagramSocket socket, InfoNodo otherBoot, Map<InfoNodo, List<Connection>> activeNetwork) {
         try {
 
-        System.out.println("Vamos tentar enviar a árvore");
         ByteArrayOutputStream ba = new ByteArrayOutputStream(activeNetwork.size()*200);
         ObjectOutputStream oba = new ObjectOutputStream(ba);
         oba.writeObject(activeNetwork);
         byte[] toSend = ba.toByteArray();
-            System.out.println("Tamanho do conteúdo que vai enviar, árvore: "+ toSend.length);
             byte[] bytes = ByteBuffer.allocate(toSend.length+8).
                     putInt(Constants.changeTree).putInt(toSend.length).put(toSend).array();
-            System.out.println("O que envia");
-            System.out.println(bytes);
 
             ByteArrayInputStream ba1 = new ByteArrayInputStream(toSend);
             ObjectInputStream oba1 = new ObjectInputStream(ba1);

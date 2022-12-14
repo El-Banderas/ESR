@@ -30,12 +30,7 @@ public class Executable {
                         int altPortBoot = Integer.parseInt(args[2]);
                         InfoNodo thisInfo = new InfoNodo(ipAltBoot, altPortBoot);
 
-
-
                         Servidor.runServer(otherInfo, thisInfo);
-
-
-
                     }
 
                 } catch (UnknownHostException e) {
@@ -89,9 +84,25 @@ public class Executable {
                 else {
                     System.out.println("Boot Alter Core");
 
-                    InetAddress ipServer = InetAddress.getByName(args[1]);
-                    InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
+                    InetAddress ipBoot = InetAddress.getByName(args[1]);
+                    InfoNodo infoServer = new InfoNodo(ipBoot, Constants.portNet);
                     Servidor.runServer(infoServer, false);
+
+
+                    /**
+                     System.out.println("Boot Alter Windows ");
+                     // Info main boot
+                     InetAddress ipBoot = InetAddress.getByName("127.0.0.1");
+                     int portBoot = Integer.parseInt(args[1]);
+                     InfoNodo otherInfo = new InfoNodo(ipBoot, portBoot);
+
+                     // Info this boot (alter)
+                     InetAddress ipAltBoot = InetAddress.getByName("127.0.0.1");
+                     int altPortBoot = Integer.parseInt(args[2]);
+                     InfoNodo thisInfo = new InfoNodo(ipAltBoot, altPortBoot);
+
+                     Servidor.runServer(otherInfo, thisInfo);
+                     */
 
                 }
 
