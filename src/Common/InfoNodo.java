@@ -23,7 +23,7 @@ public class  InfoNodo implements Serializable {
         this.idNodo = InfoNodo.generateId(ip, portNet);
         this.ip = ip;
         this.portNet = portNet;
-        this.portStream = -1;
+        this.portStream = portNet+1;
     }
 
     /**
