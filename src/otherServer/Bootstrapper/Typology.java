@@ -369,6 +369,7 @@ public class Typology {
 
         try {
             System.out.println("-------------- AQUI  SEND XML --------------");
+            System.out.println(destMSG);
             SendData.sendXML(socket, destMSG, xml);
             System.out.println("-------------AFTER XML--------------------");
         } catch (IOException e) {
