@@ -73,19 +73,21 @@ public class Executable {
         } else {
             if (args[0].equals("boot")) {
                 // Podem haver erros por ser static?
+
                 if (args.length < 2) {
 
+                    InetAddress ipServer = InetAddress.getByName(args[1]);
                     System.out.println("Boot Principle Core");
 
-                    InetAddress ipServer = InetAddress.getByName(args[1]);
+
                     InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
                     Servidor.runServer(infoServer, true);
                 }
                 else {
                     System.out.println("Boot Alter Core");
-                    InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
+                    //InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
                     System.out.println("Info this node");
-                    System.out.println(infoServer);
+
 
                     InetAddress ipBoot = InetAddress.getByName(args[1]);
                     InfoNodo infoServer = new InfoNodo(ipBoot, Constants.portNet);
@@ -93,9 +95,12 @@ public class Executable {
                     InetAddress ipAltBoot = InetAddress.getByName(args[2]);
                     InfoNodo thisInfo = new InfoNodo(ipAltBoot, Constants.portNet);
 
+
+                    System.out.println(infoServer);
                     Servidor.runServer(infoServer, thisInfo);
 
                 }
+
 
                 return;
             }
