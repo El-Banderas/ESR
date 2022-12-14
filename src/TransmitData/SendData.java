@@ -117,4 +117,18 @@ public class SendData {
         byte[] bytes = bb.array();
         sendData(socket, bytes, son.ip, son.portNet);
     }
+
+    public static void sendHelloFromAlt(DatagramSocket socket, InfoNodo serverInfo) throws IOException {
+        byte[] bytes = ByteBuffer.allocate(50).
+                putInt(Constants.helloAltBoot).array();
+        sendData(socket, bytes, serverInfo.ip, serverInfo.portNet);
+
+    }
+
+    public static void sendStillAliveBootAlt(DatagramSocket socket, InfoNodo otherBoot, int timestampStream) {
+        byte[] bytes = ByteBuffer.allocate(50).
+                putInt(Constants.StillAliveBootAlt).putInt(timestampStream).array();
+        sendData(socket, bytes, otherBoot.ip, otherBoot.portNet);
+
+    }
 }

@@ -237,4 +237,13 @@ public class ReceiveData {
         return res;
 
     }
+
+    public static int receiveStillAliveFromPrimeBoot(DatagramPacket packet) {
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int timeStamp = msg.getInt();
+        return timeStamp;
+    }
 }

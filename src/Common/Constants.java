@@ -26,6 +26,12 @@ public class Constants {
     final public static  int streamWanted = 6;
 
     final public static  int streamContent = 9;
+    final public static  int tooMuchDelay = 7;
+
+
+    final public static  int lostNode = 8;
+final public static int StillAliveBootAlt = 23;
+final public static int helloAltBoot = 23;
     // Miliseconds
     final public static int timeoutSockets = 3000;
     // Miliseconds
@@ -59,10 +65,6 @@ public class Constants {
     // Não consigo testar, porque no mesmo computador dá sempre 0, praticamente.
     // Percentage to trigger a "Too much delay message".
     final public static int minDelayToTrigger = 40;
-    final public static  int tooMuchDelay = 7;
-
-
-    final public static  int lostNode = 8;
 
 
     // Info about the ports, that won't change when testing in core.
@@ -72,7 +74,7 @@ public class Constants {
     public static int arraySize = 2048;
 
 
-    public static boolean Windows = false ;
+    public static boolean Windows = true ;
 
 
     public static  int portNet = 9000;

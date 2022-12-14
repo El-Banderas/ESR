@@ -42,7 +42,7 @@ public class Servidor //extends JFrame implements ActionListener
                 CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
                 System.out.println("OLÀÀÀÀ");
                 // Precisa: serverInfo; filho; coisa partilhada
-                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
+                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
                 new Thread(bootstrapper).start();
 
                 SendStream stream = new SendStream(shared);
@@ -62,7 +62,7 @@ public class Servidor //extends JFrame implements ActionListener
                 CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
 
                 // Precisa: serverInfo; filho; coisa partilhada
-                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared);
+                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
                 new Thread(bootstrapper).start();
 
                 SendStream stream = new SendStream(shared);
@@ -71,24 +71,38 @@ public class Servidor //extends JFrame implements ActionListener
 
         }
 
-    public static void runServer (InfoNodo serverInfo){
+    public static void runServer (InfoNodo serverInfo, boolean isPrinciple){
 
         CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
         // Precisa: serverInfo; filho; coisa partilhada
-        Bootstrapper bootstrapper = new Bootstrapper(serverInfo, shared);
+        Bootstrapper bootstrapper = new Bootstrapper(serverInfo, shared, isPrinciple);
         new Thread(bootstrapper).start();
 
         SendStream stream = new SendStream(shared);
         new Thread(stream).start();
 
     }
+
+    public static void runServer (InfoNodo bootInfo, InfoNodo altBootInfo){
+
+        CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
+
+        // Precisa: serverInfo; filho; coisa partilhada
+        Bootstrapper bootstrapper = new Bootstrapper(bootInfo, altBootInfo, shared);
+        new Thread(bootstrapper).start();
+
+        SendStream stream = new SendStream(shared);
+        new Thread(stream).start();
+
+    }
+
     public static void runServer (){
 
         CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
         // Precisa: serverInfo; filho; coisa partilhada
-        Bootstrapper bootstrapper = new Bootstrapper(shared);
+        Bootstrapper bootstrapper = new Bootstrapper(shared, true);
         new Thread(bootstrapper).start();
 
         SendStream stream = new SendStream(shared);
