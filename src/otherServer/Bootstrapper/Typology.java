@@ -276,6 +276,27 @@ public class Typology {
         return connectedToServer;
     }
 
+    public boolean isInMST(InfoNodo node){
+        boolean b = false;
+        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+                b = true;
+                break;
+            }
+        }
+        return b;
+
+    }
+
+
+    public void removeFromMST(InfoNodo node){
+        for(InfoNodo n : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+            if(n.portNet == node.portNet && n.getIp().equals(node.getIp())){
+                this.bestPaths.remove(n);
+            }
+        }
+    }
+
 
     public void recalculateBestPathsTree(DatagramSocket socket, InfoNodo destMSG) {
 
@@ -308,6 +329,19 @@ public class Typology {
             }
 
             // Add the edge to the minimum spanning tree
+            /*
+            List<Connection> listCon ;
+            listCon = getConnections(mst, toAdd.from);
+            if (listCon == null) {
+                listCon = new ArrayList<>();
+            }
+            listCon.add(toAdd);
+            if(isInMST(toAdd.from)){
+                removeFromMST(toAdd.from);
+            }
+            mst.put(toAdd.from, listCon);*/
+
+
             List<Connection> listCon ;
             listCon = getConnections(mst, toAdd.from);
             if (listCon == null) {
