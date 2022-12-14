@@ -229,9 +229,9 @@ public class SendData {
             }
             else {
 
-            byte[] restParents = new byte[data.length-8];
+            byte[] restParents = new byte[data.length-12];
 
-            System.arraycopy(data, 8, restParents, 0, restParents.length);
+            System.arraycopy(data, 12, restParents, 0, restParents.length);
 
             byte[] bytes = ByteBuffer.allocate(restParents.length+4*2+100).
                     putInt(Constants.wakeUpClient).
