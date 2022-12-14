@@ -187,6 +187,7 @@ public class XMLParser {
 
         String ipToSend = ip[0];
 
+        System.out.println("---------AQUIIIIII-------");
         System.out.println(ipToSend);
 
 
