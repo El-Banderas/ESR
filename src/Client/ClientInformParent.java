@@ -122,7 +122,7 @@ public class ClientInformParent  {
 
         // Here we choose if we want to store all packets or replace the packets.
         if (shared.isPlay() || (!shared.isPlay() && !ConstantesStream.dropPacketsWhenPause))
-            shared.insertImage(image);
+            shared.insertImage(image, payload.length);
 
         else shared.replaceImage(image);
         try {
@@ -140,6 +140,7 @@ public class ClientInformParent  {
                 System.out.println("Envio want stream para");
                 System.out.println(parent);
                 SendData.wantsStream(socket, parent, thisClient.portNet+1);
+                System.out.println("Current debit: " + shared.getDebit());
                 //System.out.println("Send still alive");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

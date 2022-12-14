@@ -15,14 +15,14 @@ public class ShareVariablesClient {
 
     // If the stream is showing or is in pause.
     private boolean play;
-    private int numPackets;
+    private double sizePackets;
     private double lastMeasure;
 
     public ShareVariablesClient() {
         this.receivedContent = new LinkedList<>();
         this.play=true;
         this.sizeQueue = 0;
-        this.numPackets = 0;
+        this.sizePackets = 0;
         lastMeasure = Constants.getCurrentTime();
     }
 
@@ -43,10 +43,10 @@ public class ShareVariablesClient {
             receivedContent.remove();
         }
     }
-    public void insertImage(Image img){
+    public void insertImage(Image img, int sizePacket){
         receivedContent.add(img);
         sizeQueue++;
-        numPackets++;
+        sizePackets += sizePacket;
     }
 
     public boolean haveImages(){
@@ -69,9 +69,10 @@ public class ShareVariablesClient {
     public double getDebit(){
         double currentTime = Constants.getCurrentTime();
         double lastTime = this.lastMeasure;
-        double oldNumPackets = numPackets;
+        double oldsizePackets = sizePackets;
         lastMeasure = Constants.getCurrentTime();
-        return oldNumPackets/(currentTime-lastTime);
+        sizePackets = 0;
+        return oldsizePackets/(currentTime-lastTime);
 
     }
 }
