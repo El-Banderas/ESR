@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -606,7 +607,61 @@ public class Typology {
     }
 
 
-    // função de update à aresta
+    // função de update à aresta (vai ter de receber o from e to : from e to dão para obter os Infos Nodos onde ela é manipulada
+
+
+    /*
+        Path from server to specific node
+     */
+
+    public List<InetAddress> getPath(InfoNodo destiny) throws UnknownHostException {
+
+        List<InetAddress> ips = new ArrayList<>();
+
+        InfoNodo objective = new InfoNodo(destiny.getIp(),destiny.portNet);
+
+        boolean bool = true;
+
+        while (bool){
+
+            InfoNodo tmp =new InfoNodo(destiny.getIp(),destiny.portNet);
+
+            for(InfoNodo node : this.bestPaths.keySet().stream().collect(Collectors.toList())){
+
+                for(Connection con : this.bestPaths.get(node)){
+                    if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet){
+                        String ip[] = con.from.getIp().toString().split("/");
+
+                        ips.add(InetAddress.getByName(ip[1]));
+
+
+                        objective.portNet = con.from.portNet;
+                        objective.ip = con.from.getIp();
+
+
+                        break;
+
+                    }
+                }
+
+
+            }
+
+
+            if(tmp.getIp().equals(objective.getIp()) || tmp.portNet == objective.portNet){
+
+                bool = false;
+
+            }
+
+
+
+        }
+
+        return ips;
+
+
+    }
 
 }
 
