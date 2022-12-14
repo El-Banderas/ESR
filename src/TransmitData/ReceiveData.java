@@ -46,7 +46,7 @@ public class ReceiveData {
 
 
 
-    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t) throws IOException {
+    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t, InfoNodo bootAlter) throws IOException {
 
         InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
 

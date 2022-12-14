@@ -183,6 +183,10 @@ break;
                 String xml = ReceiveData.receivedXML(received.packet);
                 System.out.println("Recebi XML");
                 System.out.println(xml);
+                InfoNodo newParent = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
+                // Aqui não metemos uma conexão, porque a mensagem de XML já é bastante complexa.
+                // A conexão é atualizada com o StillAlive, que é uma mensagem mais simples.
+                this.parent.otherNode = newParent;
                 handleXML(xml);
                 // falta enviar ao pai
                 //SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
@@ -214,6 +218,7 @@ break;
     }
 
     private void handleXML(String xml ) {
+
         XMLParser xmlParser = new XMLParser();
         Map<InfoNodo, String> xmlSeparated = null;
         System.out.println("Teste XML");

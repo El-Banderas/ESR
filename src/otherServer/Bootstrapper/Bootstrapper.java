@@ -297,7 +297,7 @@ public class Bootstrapper implements Runnable {
                 System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
                 InfoNodo nodo = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
                 this.topologyTypology.activateConnection(nodo);
-                ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology);
+                ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology, this.otherBoot);
                 break;
             case Constants.lostNode:
                 receiveLostNodeMSG(received.packet);

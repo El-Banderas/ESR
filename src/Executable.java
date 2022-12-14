@@ -86,23 +86,11 @@ public class Executable {
 
                     InetAddress ipBoot = InetAddress.getByName(args[1]);
                     InfoNodo infoServer = new InfoNodo(ipBoot, Constants.portNet);
-                    Servidor.runServer(infoServer, false);
 
+                    InetAddress ipAltBoot = InetAddress.getByName(args[2]);
+                    InfoNodo thisInfo = new InfoNodo(ipAltBoot, Constants.portNet);
 
-                    /**
-                     System.out.println("Boot Alter Windows ");
-                     // Info main boot
-                     InetAddress ipBoot = InetAddress.getByName("127.0.0.1");
-                     int portBoot = Integer.parseInt(args[1]);
-                     InfoNodo otherInfo = new InfoNodo(ipBoot, portBoot);
-
-                     // Info this boot (alter)
-                     InetAddress ipAltBoot = InetAddress.getByName("127.0.0.1");
-                     int altPortBoot = Integer.parseInt(args[2]);
-                     InfoNodo thisInfo = new InfoNodo(ipAltBoot, altPortBoot);
-
-                     Servidor.runServer(otherInfo, thisInfo);
-                     */
+                    Servidor.runServer(infoServer, thisInfo);
 
                 }
 
