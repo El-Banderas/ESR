@@ -167,7 +167,7 @@ public class SendData {
 
     public static void sendWakeUpClient(DatagramSocket socket, List<InfoNodo> parents) throws IOException {
         InfoNodo sendTo = parents.remove(0);
-        sendTo = parents.remove(0);
+        //sendTo = parents.remove(0);
         if (Constants.Windows) {
             System.out.println("Lista de parents");
             System.out.println(parents);
