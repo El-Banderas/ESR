@@ -165,7 +165,7 @@ public class Bootstrapper implements Runnable {
                 this.topologyTypology.parse("src/otherServer/Config/testWindows.txt");
             }
             else {
-                topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/biggerConfiguration.txt");
+                topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/topCenario2.txt");
             }
             this.topologyTypology.setCompleteNetwork();
         } catch (IOException | InterruptedException e) {
