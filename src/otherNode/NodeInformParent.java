@@ -287,6 +287,7 @@ break;
 
                         System.out.println(eachSon.getValue());
                         SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
+                        sons.add(p.destinyInfoNodo(eachSon.getValue()));
                     //}
                 }
                 else{
