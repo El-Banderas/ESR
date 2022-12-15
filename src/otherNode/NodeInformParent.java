@@ -355,7 +355,7 @@ break;
         if (tooMuchDelay(parent.delay, parentNow.delay)){
             sendTooMuchDelay(parentNow.otherNode);
         }
-        System.out.println("[Node] Receive still alive from parent");
+        System.out.println("[Node] Receive still alive from parent " + parentNow);
         parent = parentNow;
 /*
         int portOther = parentNow.otherNode.port;

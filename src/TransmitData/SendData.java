@@ -21,7 +21,7 @@ public class SendData {
     }
 
     public static void sendHelloMsg(DatagramSocket socket, InetAddress destIP, int destPort) throws IOException {
-        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.hellomesage).array();
+        byte[] bytes = ByteBuffer.allocate(100).putInt(Constants.hellomesageNode).array();
         System.out.println("Connecting to Server ... \n");
         sendData(socket, bytes, destIP, destPort);
     }

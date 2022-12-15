@@ -11,8 +11,6 @@ import otherServer.CommuncationBetweenThreads;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
 
@@ -312,11 +310,11 @@ public class Bootstrapper implements Runnable {
                 Connection co = ReceiveData.BootreceivedTimeStamp(received.packet, thisBoot.ip, thisBoot.portNet);
                 addConnection(co.from, co.to, co.delay, co.numHops, socket, sonInfo);
                 break;
-            case Constants.hellomesage:
+            case Constants.hellomesageNode:
                 System.out.println("Node " + received.packet.getAddress().toString() + " connecting ... \n");
                 InfoNodo nodo = new InfoNodo(received.packet.getAddress(), received.packet.getPort());
                 this.topologyTypology.activateConnection(nodo);
-                ReceiveData.receivedHelloMsg(received.packet, this.socket, this.topologyTypology, this.otherBoot);
+                ReceiveData.receivedHelloNodeMsg(received.packet, this.socket, this.topologyTypology, this.otherBoot);
                 break;
             case Constants.helloClient:
                 handleHelloClient(received.packet.getAddress(), received.packet.getPort());
@@ -391,7 +389,7 @@ public class Bootstrapper implements Runnable {
         InfoNodo alterBoot = new InfoNodo(packet.getAddress(), packet.getPort());
         this.otherBoot = alterBoot;
         try {
-            SendData.sendAltServerInfo(socket, this.sonInfo, alterBoot);
+            if (this.sonInfo != null) SendData.sendAltServerInfo(socket, this.sonInfo, alterBoot);
         } catch (IOException e) {
             System.out.println("Error sending alt server info");
             throw new RuntimeException(e);

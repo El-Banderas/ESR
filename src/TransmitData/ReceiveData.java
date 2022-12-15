@@ -20,8 +20,6 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 public class ReceiveData {
 
@@ -46,7 +44,7 @@ public class ReceiveData {
 
 
 
-    public static void receivedHelloMsg(DatagramPacket packet, DatagramSocket s, Typology t, InfoNodo bootAlter) throws IOException {
+    public static void receivedHelloNodeMsg(DatagramPacket packet, DatagramSocket s, Typology t, InfoNodo bootAlter) throws IOException {
         int sizeInetAdressByteArray = 4;
 
         InfoNodo i = new InfoNodo(packet.getAddress(),packet.getPort());
@@ -64,7 +62,10 @@ public class ReceiveData {
         boolean isBootAlter = bootAlter != null;
         int isBoolAlterInt = isBootAlter ? 1 : 0;
         byte[] bytesIP = new byte[sizeInetAdressByteArray];
+        System.out.println("Boot: ");
+        System.out.println(bootAlter);
         if (isBootAlter) {
+            System.out.println("Envia boot alt");
             // Se for windows, metos o ip, senão é a porta
             if (Constants.Windows) {
                 ByteBuffer bb = ByteBuffer.allocate(4);
@@ -72,14 +73,13 @@ public class ReceiveData {
                 bytesIP = bb.array();
             } else {
                 bytesIP = bootAlter.ip.getAddress();
-
-
             }
         }
         else{
+            System.out.println("Não Envia boot alt");
+
             // No alter boot
             bytesIP = InetAddress.getByName("1.2.3.4").getAddress();
-
         }
         byte[] bytes = ByteBuffer.allocate(4+4+bytesIP.length+18+(2*vs.length()))
                 .putInt(Constants.sendNeibourghs).

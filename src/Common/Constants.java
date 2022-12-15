@@ -8,7 +8,7 @@ public class Constants {
 
     // msg HELLO
 
-    final public static  int hellomesage = 10;
+    final public static  int hellomesageNode = 10;
     final public  static int timeStamp = 22;
     final public static int ConnectionMsg = 100;
     final public static int XMLmsg = 101;
@@ -60,7 +60,7 @@ final public static    int sizeInetAdressByteArray = 4;
             case streamWanted:
                 return "Still alive and interested.";
 
-            case hellomesage:
+            case hellomesageNode:
                 return "Node Connected";
 
             default:
