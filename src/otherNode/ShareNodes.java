@@ -20,6 +20,7 @@ public class ShareNodes {
     public void maybeAddInterestedSon(InfoNodo maybeNew) {
         ArrayList<InfoNodo> copyInterestedSons = new ArrayList<>(interestedSons);
         boolean alreadyInterested = copyInterestedSons.stream().anyMatch(oneSon -> InfoNodo.compareInfoNodes(oneSon, maybeNew));
+        System.out.println("Adiciona filho interessado");
         if (!alreadyInterested) interestedSons.add(maybeNew);
     }
 }
