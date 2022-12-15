@@ -42,7 +42,7 @@ final public static int changeTree = 25;
     // Miliseconds
     final public static int timeoutSockets = 2000;
     // Miliseconds
-    final public static int timeToConsiderNodeLost = 60000;
+    final public static int timeToConsiderNodeLost = 10000;
 
 final public static    int sizeInetAdressByteArray = 4;
 
@@ -83,7 +83,7 @@ final public static    int sizeInetAdressByteArray = 4;
     public static int arraySize = 150000;
 
 
-    public static boolean Windows = true ;
+    public static boolean Windows = false ;
 
 
     public static  int portNet = 9000;

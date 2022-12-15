@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static TransmitData.SendData.sendWakeUpClient;
+import static java.lang.System.exit;
 
 /**
  * This class is responsible for sending "alive" messages to the parent node, from time to time.
@@ -224,6 +225,7 @@ break;
         }
         else {
             System.out.println("Não temos pai, fim :(");
+            exit(0);
         }
     }
 
