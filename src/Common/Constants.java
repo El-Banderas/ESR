@@ -37,6 +37,7 @@ final public static int impossibleConnection = 27;
 final public static int wakeUpClient = 28;
 final public static int changeTree = 25;
     final public static int altServerInfo = 34;
+    final public static int helpAlterServer = 34;
 
     // Miliseconds
     final public static int timeoutSockets = 2000;

@@ -277,4 +277,10 @@ public class SendData {
         buffer.putInt(Constants.altServerInfo).putInt(alterBoot.portNet).put(alterBoot.ip.getAddress());
         sendData(socket, buffer.array(), sonInfo.ip, sonInfo.portNet);
     }
+
+    public static void helpAltServer(DatagramSocket socket, InfoNodo altBoot) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(4).putInt(Constants.helpAlterServer);
+        sendData(socket, buffer.array(), altBoot.ip, altBoot.portNet);
+
+    }
 }

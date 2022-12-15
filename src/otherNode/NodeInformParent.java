@@ -157,6 +157,8 @@ public class NodeInformParent implements Runnable {
             case Constants.altServerInfo:
                 receivedAltServerInfo(received.packet);
                 break;
+            case Constants.impossibleConnection:
+                receivedImpossibleConnection();
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
@@ -207,6 +209,16 @@ break;
                 System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
                 System.out.println("Undefined message, rtp packets are handled in other thread/port.");
                 //receiveMaybeRTPStream(received.packet);
+        }
+    }
+
+    private void receivedImpossibleConnection() {
+        if (altBoot != null){
+            try {
+                SendData.helpAltServer(socket, altBoot);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
