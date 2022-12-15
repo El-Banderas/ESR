@@ -119,6 +119,8 @@ public class NodeInformParent implements Runnable {
         if (timeSinceLastMessage > Constants.timeToConsiderNodeLost){
             try {
                 SendData.sendParentLostMSG(socket, bootstrapper, parent.otherNode );
+                // Para não mandar mensagens a mais
+                parent.timeLastMessage = Constants.getCurrentTime();
             } catch (IOException e) {
                 System.out.println("[Node] Error sending lost parent");
                 throw new RuntimeException(e);
@@ -152,7 +154,8 @@ public class NodeInformParent implements Runnable {
             case Constants.sitllAlive:
                 receivedStillAliveMSG(received.packet);
                 break;
-
+            case Constants.altServerInfo:
+                receivedAltServerInfo(received.packet);
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
@@ -204,6 +207,18 @@ break;
                 System.out.println("Undefined message, rtp packets are handled in other thread/port.");
                 //receiveMaybeRTPStream(received.packet);
         }
+    }
+
+    private void receivedAltServerInfo(DatagramPacket packet) {
+
+        try {
+            this.altBoot = ReceiveData.receiveAltServerInfo(packet, socket, sons);
+        System.out.println("Recebeu info sobre servidor alternativo: " + altBoot);
+        } catch (IOException e) {
+            System.out.println("Error receiving/sending info alt server");
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void receivedWakeUpClient(DatagramPacket packet) {

@@ -379,6 +379,12 @@ public class Bootstrapper implements Runnable {
     private void handleHelloFromAlt(DatagramPacket packet) {
         InfoNodo alterBoot = new InfoNodo(packet.getAddress(), packet.getPort());
         this.otherBoot = alterBoot;
+        try {
+            SendData.sendAltServerInfo(socket, this.sonInfo, alterBoot);
+        } catch (IOException e) {
+            System.out.println("Error sending alt server info");
+            throw new RuntimeException(e);
+        }
     }
 
 

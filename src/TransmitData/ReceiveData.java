@@ -301,4 +301,33 @@ public class ReceiveData {
         }
 
     }
+
+    /**
+     * When we receive, we should send to sons, too.
+     * @param packet
+     * @param socket
+     * @param sonInfo
+     * @return
+     * @throws IOException
+     */
+    public static InfoNodo receiveAltServerInfo(DatagramPacket packet, DatagramSocket socket, List<InfoNodo> sons) throws IOException {
+        int sizeInt = 4;
+        ByteBuffer msg = ByteBuffer.wrap(packet.getData());
+
+        // We already know the type, so we can ignore it
+        int type = msg.getInt();
+        int portAltSer = msg.getInt();
+
+        byte[] altServerIpPart = new byte[Constants.sizeInetAdressByteArray];
+        // Cuidado com este 8, é o tamanho de 2 ints
+        System.arraycopy(msg.array(), sizeInt*2, altServerIpPart, 0, Constants.sizeInetAdressByteArray);
+
+        InetAddress ipAltServer = InetAddress.getByAddress(altServerIpPart);
+        InfoNodo altServer = new InfoNodo(ipAltServer, portAltSer);
+        for (InfoNodo son: sons){
+            SendData.sendAltServerInfo(socket, son, altServer);
+        }
+        return altServer ;
+    }
+
 }

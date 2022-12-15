@@ -60,8 +60,9 @@ public class SendData {
         byte[] bytesIP = lostNode.ip.getAddress();
 
         byte[] bytes = bb.put(bytesIP).array();
-        System.out.println("Envia msg filho perdido: " + dest.ip + " e porta: " + dest.portNet);
-        //   sendData(socket, bytes, dest.ip, dest.portNet);
+        System.out.println("Envia msg filho perdido para: " + dest.ip + " e porta: " + dest.portNet);
+        System.out.println("Perdeu-se " + lostNode.ip + " - " + lostNode.portNet);
+        sendData(socket, bytes, dest.ip, dest.portNet);
     }
 
     /**
@@ -271,4 +272,9 @@ public class SendData {
 
     }
 
+    public static void sendAltServerInfo(DatagramSocket socket, InfoNodo sonInfo, InfoNodo alterBoot) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + Constants.sizeInetAdressByteArray);
+        buffer.putInt(Constants.altServerInfo).putInt(alterBoot.portNet).put(alterBoot.ip.getAddress());
+        sendData(socket, buffer.array(), sonInfo.ip, sonInfo.portNet);
+    }
 }
