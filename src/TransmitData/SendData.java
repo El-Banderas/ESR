@@ -241,20 +241,32 @@ public class SendData {
             System.arraycopy(data, 8, ipNext, 0, Constants.sizeInetAdressByteArray);
 
             InetAddress ipNextNode = InetAddress.getByAddress(ipNext);
-            byte[] restParents = new byte[data.length - 12];
-            System.arraycopy(data, 12, restParents, 0, restParents.length);
+            if (howMany <= 1) {
+                byte[] bytes = ByteBuffer.allocate(4 * 2).
+                        putInt(Constants.wakeUpClient).
+                        putInt(0).array();
+                System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
+                System.out.println("A partir do socket: " + socket);
+                System.out.println("Bytes: " + bytes.length);
+                sendData(socket, bytes, ipNextNode, Constants.portNet);
 
-            byte[] bytes = ByteBuffer.allocate(restParents.length + 4 * 2).
-                    putInt(Constants.wakeUpClient).
-                    putInt(howMany - 1).
-                    put(restParents).array();
-            System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
-            System.out.println("Tem x elems"+ ((int) (howMany-1) ));
-            System.out.println("TAMANHO ARRRAY ------------" + bytes.length);
-            for(byte b : bytes){
-                System.out.println(b);
             }
-            sendData(socket, bytes, ipNextNode, Constants.portNet);
+            else {
+                byte[] restParents = new byte[data.length - 12];
+                System.arraycopy(data, 12, restParents, 0, restParents.length);
+
+                byte[] bytes = ByteBuffer.allocate(restParents.length + 4 * 2).
+                        putInt(Constants.wakeUpClient).
+                        putInt(howMany - 1).
+                        put(restParents).array();
+                System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
+                System.out.println("Tem x elems" + ((int) (howMany - 1)));
+                System.out.println("TAMANHO ARRRAY ------------" + bytes.length);
+               /* for (byte b : bytes) {
+                    System.out.println(b);
+                }*/
+                sendData(socket, bytes, ipNextNode, Constants.portNet);
+            }
         }
 
     }
