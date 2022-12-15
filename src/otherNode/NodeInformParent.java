@@ -159,6 +159,7 @@ public class NodeInformParent implements Runnable {
                 break;
             case Constants.impossibleConnection:
                 receivedImpossibleConnection();
+                break;
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
@@ -215,10 +216,14 @@ break;
     private void receivedImpossibleConnection() {
         if (altBoot != null){
             try {
+                System.out.println("Envia pedido ao alternativo");
                 SendData.helpAltServer(socket, altBoot);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+        else {
+            System.out.println("Não temos pai, fim :(");
         }
     }
 
@@ -227,6 +232,7 @@ break;
         try {
             this.altBoot = ReceiveData.receiveAltServerInfo(packet, socket, sons);
             System.out.println("Recebeu info sobre servidor alternativo: " + altBoot);
+            System.out.println("Quer enviar aos filhos: " + sons);
         } catch (IOException e) {
             System.out.println("Error receiving/sending info alt server");
             throw new RuntimeException(e);

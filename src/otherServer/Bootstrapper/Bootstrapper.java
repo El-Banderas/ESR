@@ -201,14 +201,25 @@ public class Bootstrapper implements Runnable {
     }
 
     private void startAlterServer() {
+
         try {
+            SendData.sendHelloFromAlt(socket, this.otherBoot);
+        } catch (IOException e) {
+            System.out.println("Error sending hello in alter server");
+            throw new RuntimeException(e);
+        }
 
-        SendData.sendHelloFromAlt(socket, this.otherBoot);
-
-        MessageAndType received = ReceiveData.receiveData(socket);
+        MessageAndType received = new MessageAndType(-1, null);
         while (received.msgType != Constants.StillAliveBootAlt){
-            System.out.println("Receu mensagem estranha no server alternativo: " + received.msgType);
-            received = ReceiveData.receiveData(socket);
+            // Check if it is the first iteration
+            if (received.msgType != -1)
+                System.out.println("Receu mensagem estranha no server alternativo: " + received.msgType);
+
+            try {
+                received = ReceiveData.receiveData(socket);
+            } catch (IOException e) {
+                System.out.println("Timeout");
+            }
         }
         while (true){
             try {
@@ -221,12 +232,7 @@ public class Bootstrapper implements Runnable {
             }
 
         }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-
-    }
-
     private void handleReceivedMessageAlternative(MessageAndType received) {
         System.out.println("Alter receive: " + received.msgType);
         switch (received.msgType) {
@@ -238,13 +244,18 @@ public class Bootstrapper implements Runnable {
             case Constants.changeTree:
                 receivedActiveTree(received.packet);
                 break;
+            case Constants.helpAlterServer:
+                sendXML();
+                break;
 
             default:
                 System.out.println("\n[NodeInfomParen] Received message type: " + Constants.convertMessageType(received.msgType) + "\n");
 
         }
     }
-
+    private void sendXML(){
+        System.out.println("Send XML to sons");
+    }
     private void receivedActiveTree(DatagramPacket packet) {
         topologyTypology.activeNetwork = ReceiveData.getActiveNodes(packet);
     }
@@ -414,10 +425,14 @@ public class Bootstrapper implements Runnable {
 
             System.out.println("Receive lost node msg");
             System.out.println(lostSon);
+            InfoNodo target = new InfoNodo(packet.getAddress(), packet.getPort());
+            SendData.sendImpossibleConnection(socket, target);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             System.out.println("[Bootstrapper] ERROR MESSAGE RECEIVING LOST SON MSG ");
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

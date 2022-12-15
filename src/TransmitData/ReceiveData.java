@@ -326,6 +326,7 @@ public class ReceiveData {
         InfoNodo altServer = new InfoNodo(ipAltServer, portAltSer);
         for (InfoNodo son: sons){
             SendData.sendAltServerInfo(socket, son, altServer);
+            System.out.println("Enviou server alt info ao filho: " + son);
         }
         return altServer ;
     }
