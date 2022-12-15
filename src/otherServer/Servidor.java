@@ -10,7 +10,7 @@ import Common.InfoNodo;
 import otherServer.Bootstrapper.Bootstrapper;
 import otherServer.SendStream.SendStream;
 
-import java.net.*;
+import java.net.InetAddress;
 
 /**
  * O Bootstrapper é que trata da comunicações da rede e assim.
@@ -28,50 +28,50 @@ public class Servidor //extends JFrame implements ActionListener
         InetAddress IP_Bootstrapper = InetAddress.getByName("127.0.0.1");
 
 
-            boolean separateNodes = false;
-            if (separateNodes) {
-                InetAddress sonIP = InetAddress.getByName("localhost");
-                int sonPort = Integer.parseInt(argv[0]);
-                InfoNodo sonInfo = new InfoNodo(sonIP, sonPort);
+        boolean separateNodes = false;
+        if (separateNodes) {
+            InetAddress sonIP = InetAddress.getByName("localhost");
+            int sonPort = Integer.parseInt(argv[0]);
+            InfoNodo sonInfo = new InfoNodo(sonIP, sonPort);
 
 
-                InetAddress thisIP = InetAddress.getByName("localhost");
-                int thisPort = Integer.parseInt(argv[1]);
-                InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
+            InetAddress thisIP = InetAddress.getByName("localhost");
+            int thisPort = Integer.parseInt(argv[1]);
+            InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
 
-                CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
-                System.out.println("OLÀÀÀÀ");
-                // Precisa: serverInfo; filho; coisa partilhada
-                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
-                new Thread(bootstrapper).start();
+            CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
+            System.out.println("OLÀÀÀÀ");
+            // Precisa: serverInfo; filho; coisa partilhada
+            Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
+            new Thread(bootstrapper).start();
 
-                SendStream stream = new SendStream(shared);
-                new Thread(stream).start();
-            } else {
-                System.out.println("Versão correta");
-                InetAddress sonIP = InetAddress.getByName("localhost");
-                int sonPortNet = Integer.parseInt(argv[0]);
-                int sonPortStream = Integer.parseInt(argv[1]);
+            SendStream stream = new SendStream(shared);
+            new Thread(stream).start();
+        } else {
+            System.out.println("Versão correta");
+            InetAddress sonIP = InetAddress.getByName("localhost");
+            int sonPortNet = Integer.parseInt(argv[0]);
+            int sonPortStream = Integer.parseInt(argv[1]);
 
-                InfoNodo sonInfo = new InfoNodo(sonIP, sonPortNet, sonPortStream);
+            InfoNodo sonInfo = new InfoNodo(sonIP, sonPortNet, sonPortStream);
 
-                InetAddress thisIP = InetAddress.getByName("localhost");
-                int thisPort = Integer.parseInt(argv[1]);
-                InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
+            InetAddress thisIP = InetAddress.getByName("localhost");
+            int thisPort = Integer.parseInt(argv[1]);
+            InfoNodo serverInfo = new InfoNodo(thisIP, thisPort);
 
-                CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
+            CommuncationBetweenThreads shared = new CommuncationBetweenThreads(sonInfo);
 
-                // Precisa: serverInfo; filho; coisa partilhada
-                Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
-                new Thread(bootstrapper).start();
+            // Precisa: serverInfo; filho; coisa partilhada
+            Bootstrapper bootstrapper = new Bootstrapper(serverInfo, sonInfo, shared, true);
+            new Thread(bootstrapper).start();
 
-                SendStream stream = new SendStream(shared);
-                new Thread(stream).start();
-            }
-
+            SendStream stream = new SendStream(shared);
+            new Thread(stream).start();
         }
 
-    public static void runServer (InfoNodo serverInfo, boolean isPrinciple){
+    }
+
+    public static void runServer(InfoNodo serverInfo, boolean isPrinciple) {
 
         CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
@@ -84,7 +84,7 @@ public class Servidor //extends JFrame implements ActionListener
 
     }
 
-    public static void runServer (InfoNodo bootInfo, InfoNodo altBootInfo){
+    public static void runServer(InfoNodo bootInfo, InfoNodo altBootInfo) {
 
         CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 
@@ -97,7 +97,7 @@ public class Servidor //extends JFrame implements ActionListener
 
     }
 
-    public static void runServer (){
+    public static void runServer() {
 
         CommuncationBetweenThreads shared = new CommuncationBetweenThreads();
 

@@ -27,7 +27,7 @@ import java.util.TimerTask;
  * TODO:
  * Não ignorar os números de sequência, dar-lhes importância;
  */
-public class ClientInformParent  {
+public class ClientInformParent {
     public InfoNodo parent;
     public InfoNodo boot;
     public InfoNodo thisClient;
@@ -90,23 +90,20 @@ public class ClientInformParent  {
     }
 
     private void handleReceivedMessage(MessageAndType received) throws IOException {
-        switch (received.msgType) {
-            // TODO: Quando deixa de receber still alive está grave, porque só tem um pai.
-            // Talvez atualizar o pai?
-            case Constants.sitllAlive:
-                //System.out.println();
-                break;
-            default:
-                RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
-                store_packet(rtp_packet);
-                numPacketsReceived++;
-                // When the buffer reaches the minimum size, we start the stream
-                if (numPacketsReceived > ConstantesStream.maxSizeBuffer && !startConsumer) {
-                    window = new StreamWindow(shared);
-                    startConsumer = true;
-                    System.out.println("Start consumer");
-                  if (ConstantesStream.showStream)  window.start();
-                }
+        // TODO: Quando deixa de receber still alive está grave, porque só tem um pai.
+        // Talvez atualizar o pai?
+        if (received.msgType == Constants.sitllAlive) {//System.out.println();
+        } else {
+            RTPpacket rtp_packet = new RTPpacket(received.packet.getData(), received.packet.getLength());
+            store_packet(rtp_packet);
+            numPacketsReceived++;
+            // When the buffer reaches the minimum size, we start the stream
+            if (numPacketsReceived > ConstantesStream.maxSizeBuffer && !startConsumer) {
+                window = new StreamWindow(shared);
+                startConsumer = true;
+                System.out.println("Start consumer");
+                if (ConstantesStream.showStream) window.start();
+            }
         }
 
     }
@@ -139,7 +136,7 @@ public class ClientInformParent  {
             try {
                 System.out.println("Envio want stream para");
                 System.out.println(parent);
-                SendData.wantsStream(socket, parent, thisClient.portNet+1);
+                SendData.wantsStream(socket, parent, thisClient.portNet + 1);
                 System.out.println("Current debit: " + shared.getDebit());
                 //System.out.println("Send still alive");
             } catch (IOException ex) {

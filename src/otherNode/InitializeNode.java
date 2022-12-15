@@ -18,8 +18,8 @@ public class InitializeNode {
 
 
     private final DatagramSocket socketStream;
-    private DatagramSocket socket;
-    private InfoNodo boot;
+    private final DatagramSocket socket;
+    private final InfoNodo boot;
 
     private InfoNodo altBoot;
 
@@ -28,11 +28,10 @@ public class InitializeNode {
         this.socket = s;
         this.boot = b;
         try {
-        InfoNodo thisNodo  = new InfoNodo(InetAddress.getByName("127.0.0.1"), thisPort);
-        this.socketStream = null;
-        this.thisNodeNet = thisNodo;
-        }
-        catch (UnknownHostException e) {
+            InfoNodo thisNodo = new InfoNodo(InetAddress.getByName("127.0.0.1"), thisPort);
+            this.socketStream = null;
+            this.thisNodeNet = thisNodo;
+        } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
     }
@@ -76,16 +75,15 @@ public class InitializeNode {
         ByteBuffer msg = ByteBuffer.wrap(neigbours.packet.getData());
         int type = msg.getInt();
         int isThereAlterBot = msg.getInt();
-        if (isThereAlterBot == 1){
+        if (isThereAlterBot == 1) {
             try {
                 if (Constants.Windows) {
                     int portAlterBoot = msg.getInt();
                     InetAddress ipBootAlter = InetAddress.getByName("127.0.0.1");
                     this.altBoot = new InfoNodo(ipBootAlter, portAlterBoot);
-                }
-                else {
+                } else {
                     byte[] ipArray = new byte[Constants.sizeInetAdressByteArray];
-                    System.arraycopy(msg.array(), 4*2, ipArray, 0, Constants.sizeInetAdressByteArray);
+                    System.arraycopy(msg.array(), 4 * 2, ipArray, 0, Constants.sizeInetAdressByteArray);
                     InetAddress ipLostNode = InetAddress.getByAddress(ipArray);
                     this.altBoot = new InfoNodo(ipLostNode, Constants.portNet);
 
@@ -94,11 +92,10 @@ public class InitializeNode {
                 throw new RuntimeException(e);
             }
 
-        }
-        else {
+        } else {
             this.altBoot = null;
         }
-        System.out.println("O boot alternativo é: "+ this.altBoot);
+        System.out.println("O boot alternativo é: " + this.altBoot);
         String word = new String(neigbours.packet.getData());
 
         String[] neighboursList = word.split("END");
@@ -116,11 +113,11 @@ public class InitializeNode {
         int[] portas = new int[neighboursList.length - 1];
 
         for (int i = 1; i < neighboursList.length; i++) {
-            String aux1[] = neighboursList[i].split("\\s+");
+            String[] aux1 = neighboursList[i].split("\\s+");
             ips[i - 1] = aux1[0];
-            String aux2[] = neighboursList[i].split("-", 2);
-            String aux3[] = aux2[1].split("\\s+");
-            String aux4[] = aux3[1].split("}");
+            String[] aux2 = neighboursList[i].split("-", 2);
+            String[] aux3 = aux2[1].split("\\s+");
+            String[] aux4 = aux3[1].split("}");
             portas[i - 1] = Integer.parseInt(aux4[0]);
         }
 

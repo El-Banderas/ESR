@@ -167,7 +167,7 @@ public class SendData {
 
     public static void sendWakeUpClient(DatagramSocket socket, List<InfoNodo> parents) throws IOException {
         InfoNodo sendTo = parents.remove(0);
-        sendTo = parents.remove(0);
+        //sendTo = parents.remove(0);
         if (Constants.Windows) {
             System.out.println("Lista de parents");
             System.out.println(parents);
@@ -189,7 +189,7 @@ public class SendData {
                 buffer.put(parent.ip.getAddress());
             }
             System.out.println("Sending wake up to: " + sendTo);
-            System.out.println("Parents"+ parents);
+            System.out.println("Parents" + parents);
             sendData(socket, buffer.array(), sendTo.ip, sendTo.portNet);
 
         }
@@ -251,8 +251,7 @@ public class SendData {
                 System.out.println("Bytes: " + bytes.length);
                 sendData(socket, bytes, ipNextNode, Constants.portNet);
 
-            }
-            else {
+            } else {
                 byte[] restParents = new byte[data.length - 12];
                 System.arraycopy(data, 12, restParents, 0, restParents.length);
 
@@ -261,7 +260,7 @@ public class SendData {
                         putInt(howMany - 1).
                         put(restParents).array();
                 System.out.println("Sending wake up to: " + ipNextNode + " - " + Constants.portNet);
-                System.out.println("Tem x elems" + ((int) (howMany - 1)));
+                System.out.println("Tem x elems" + (howMany - 1));
                 System.out.println("TAMANHO ARRRAY ------------" + bytes.length);
                /* for (byte b : bytes) {
                     System.out.println(b);

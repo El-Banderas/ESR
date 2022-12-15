@@ -75,8 +75,8 @@ public class Bootstrapper implements Runnable {
      * Boot needs this info because:
      *
      * @param thisBoot - Só precisa da porta agora para criar o socket.
-     * @param sonInfo    - TO send StillAlives, será calculado pela parte do Miguel qual é o filho
-     * @param shared     - Common classe with stream thread.
+     * @param sonInfo  - TO send StillAlives, será calculado pela parte do Miguel qual é o filho
+     * @param shared   - Common classe with stream thread.
      */
     public Bootstrapper(InfoNodo thisBoot, InfoNodo sonInfo, CommuncationBetweenThreads shared, boolean isPrinciple) {
         this.thisBoot = thisBoot;
@@ -159,10 +159,9 @@ public class Bootstrapper implements Runnable {
         try {
             //l.parse("otherServer/config.txt");
             // É preciso corrigir a parte de baixo :)
-            if(Constants.Windows){
+            if (Constants.Windows) {
                 this.topologyTypology.parse("src/otherServer/Config/testWindows.txt");
-            }
-            else {
+            } else {
                 topologyTypology.parse("/home/core/Desktop/ESR/src/otherServer/Config/topCenario1.txt");
             }
             this.topologyTypology.setCompleteNetwork();
@@ -208,7 +207,7 @@ public class Bootstrapper implements Runnable {
         }
 
         MessageAndType received = new MessageAndType(-1, null);
-        while (received.msgType != Constants.StillAliveBootAlt){
+        while (received.msgType != Constants.StillAliveBootAlt) {
             // Check if it is the first iteration
             if (received.msgType != -1)
                 System.out.println("Receu mensagem estranha no server alternativo: " + received.msgType);
@@ -219,18 +218,18 @@ public class Bootstrapper implements Runnable {
                 System.out.println("Timeout");
             }
         }
-        while (true){
+        while (true) {
             try {
                 received = ReceiveData.receiveData(socket);
                 handleReceivedMessageAlternative(received);
-            }
-            catch (IOException e) {
-              //  throw new RuntimeException(e);
+            } catch (IOException e) {
+                //  throw new RuntimeException(e);
                 System.out.println("Não recebe still ALive do boot");
             }
 
         }
-        }
+    }
+
     private void handleReceivedMessageAlternative(MessageAndType received) {
         System.out.println("Alter receive: " + received.msgType);
         switch (received.msgType) {
@@ -251,9 +250,11 @@ public class Bootstrapper implements Runnable {
 
         }
     }
-    private void sendXML(){
+
+    private void sendXML() {
         System.out.println("Send XML to sons");
     }
+
     private void receivedActiveTree(DatagramPacket packet) {
         topologyTypology.activeNetwork = ReceiveData.getActiveNodes(packet);
     }
@@ -349,7 +350,7 @@ public class Bootstrapper implements Runnable {
             this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
             List<InfoNodo> parents = topologyTypology.getPath(newClient);
 
-            if (parents.size() > 0){
+            if (parents.size() > 0) {
                 //this.topologyTypology.addConection(newClient, possibleParent, 0, 0, null, null);
 
                 System.out.println("Sucesso: " + newClient);
@@ -358,8 +359,7 @@ public class Bootstrapper implements Runnable {
                 parents.add(newClient);
                 SendData.sendWakeUpClient(socket, parents);
 
-            }
-            else {
+            } else {
                 this.topologyTypology.removeNode(newClient);
                 System.out.println("Caminho impossível");
                 SendData.sendImpossibleConnection(socket, newClient);
@@ -379,9 +379,9 @@ public class Bootstrapper implements Runnable {
     private void addConnection(InfoNodo from, InfoNodo to, double delay, int numHops, DatagramSocket socket, InfoNodo sonInfo) {
         this.topologyTypology.addConection(from, to, delay, numHops, socket, sonInfo);
         // Se o boot alter estiver ativo, devemos atualizá-lo
-        if (this.otherBoot != null){
+        if (this.otherBoot != null) {
             System.out.println("Enviar ao alt nova árvore");
-            SendData.sendActiveNetwork(socket, otherBoot,topologyTypology.activeNetwork);
+            SendData.sendActiveNetwork(socket, otherBoot, topologyTypology.activeNetwork);
         }
     }
 
@@ -450,7 +450,7 @@ public class Bootstrapper implements Runnable {
         } else {
             System.out.println("Boot - No son connected");
         }
-        if (this.otherBoot != null){
+        if (this.otherBoot != null) {
             try {
                 SendData.sendStillAliveBootAlt(socket, this.otherBoot, shared.timestampStream);
                 System.out.println("Send still alive to alter boot, timestamp: " + shared.timestampStream);

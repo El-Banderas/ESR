@@ -1,14 +1,10 @@
 package Client;
 
-import Common.Constants;
-import Common.InfoNodo;
-
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
  * Depois, estas informações vão ser calculadas e passadas no construtor.
- *
+ * <p>
  * O que recebe inicialmente devem ser outras coisas
  */
 public class MainClient {

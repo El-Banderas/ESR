@@ -2,10 +2,6 @@ package otherServer;
 
 import Common.InfoNodo;
 
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Class with shared variables between server threads (bootstrap, and stream).
  * For now, it doesn't have concurrency control, mas talvez não seja necessário, o problema de enviar quando não deve é baixo.
@@ -23,11 +19,13 @@ public class CommuncationBetweenThreads {
         this.son = son;
         this.timestampStream = 44;
     }
+
     public CommuncationBetweenThreads() {
         this.sendStream = false;
         this.timestampStream = 44;
 
     }
+
     public boolean getSendStream() {
         return sendStream;
     }

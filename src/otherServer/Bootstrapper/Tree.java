@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * This class is responsible for calculating, and store the tree of nodes to deliver the stream content.
- *
+ * <p>
  * Esta chama a TypologyGraph, acho eu. É mais geral.
  */
 

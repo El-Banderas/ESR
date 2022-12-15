@@ -1,23 +1,32 @@
 package otherServer.Bootstrapper;
-import javax.lang.model.util.Elements;
-import javax.xml.parsers.*;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import Common.InfoNodo;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.InetAddress;
-import java.rmi.MarshalledObject;
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class XMLParser {
@@ -45,32 +54,27 @@ public class XMLParser {
     }
 
 
-    public String generateXML(Map<String,InfoNodo> nodes, Map<InfoNodo,List<Connection>> bestPaths){
+    public String generateXML(Map<String, InfoNodo> nodes, Map<InfoNodo, List<Connection>> bestPaths) {
         //int identation = 1;
 
-        StringBuilder xml = new StringBuilder();
-
-        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-        xml.append("<server name=\"" + nodes.get("s1").getidNodo() +  "\" ip=\"" + nodes.get("s1").getIp() +  "\" port=\"" + nodes.get("s1").portNet + "\"" +">");
-
-        xml.append(generateXMLaux(nodes.get("s1"),1, bestPaths));
-
-        xml.append("</server>");
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<server name=\"" + nodes.get("s1").getidNodo() + "\" ip=\"" + nodes.get("s1").getIp() + "\" port=\"" + nodes.get("s1").portNet + "\"" + ">" +
+                generateXMLaux(nodes.get("s1"), 1, bestPaths) +
+                "</server>";
 
 
         //this.setXMLString(xml.toString());
 
-        return  xml.toString();
+        return xml;
 
     }
 
 
-    public List<Connection> getPath(InfoNodo node ,Map<InfoNodo,List<Connection>> bestPaths){
+    public List<Connection> getPath(InfoNodo node, Map<InfoNodo, List<Connection>> bestPaths) {
         List<Connection> con = null;
 
-        for (InfoNodo n : bestPaths.keySet().stream().collect(Collectors.toList())){
-            if(n.getIp().equals(node.getIp()) && n.portNet == node.portNet){
+        for (InfoNodo n : bestPaths.keySet().stream().collect(Collectors.toList())) {
+            if (n.getIp().equals(node.getIp()) && n.portNet == node.portNet) {
                 con = bestPaths.get(n);
             }
         }
@@ -81,16 +85,16 @@ public class XMLParser {
     }
 
 
-    public StringBuilder generateXMLaux(InfoNodo node ,int identation, Map<InfoNodo,List<Connection>> bestPaths) {
+    public StringBuilder generateXMLaux(InfoNodo node, int identation, Map<InfoNodo, List<Connection>> bestPaths) {
         StringBuilder aux = new StringBuilder();
 
-        List<Connection> connections= getPath(node,bestPaths);
+        List<Connection> connections = getPath(node, bestPaths);
 
-        if(connections != null){
-            for (Connection connection :  connections){
+        if (connections != null) {
+            for (Connection connection : connections) {
 
-                aux.append("<node name=\""+connection.to.getidNodo() + "\" ip=\"" + connection.to.getIp() + "\" port=\"" + connection.to.portNet + "\"" +">");
-                aux.append(generateXMLaux(connection.to, identation+1, bestPaths));
+                aux.append("<node name=\"" + connection.to.getidNodo() + "\" ip=\"" + connection.to.getIp() + "\" port=\"" + connection.to.portNet + "\"" + ">");
+                aux.append(generateXMLaux(connection.to, identation + 1, bestPaths));
 
                 aux.append("</node>");
             }
@@ -102,7 +106,7 @@ public class XMLParser {
     }
 
 
-    public byte[] fromStringToBytes(String XMLString){
+    public byte[] fromStringToBytes(String XMLString) {
 
         //using default charset
         byte[] xmlSocket = XMLString.getBytes();
@@ -113,18 +117,13 @@ public class XMLParser {
     }
 
 
-    public String fromBytesToString(byte[] bytes){
+    public String fromBytesToString(byte[] bytes) {
 
         String xml = new String(bytes);
 
         return xml;
 
     }
-
-
-
-
-
 
 
     public void parseXMLAux(NodeList nodeList) {
@@ -183,7 +182,7 @@ public class XMLParser {
 
         Element rootElement = doc.getDocumentElement();
 
-        String ip[] = rootElement.getAttribute("ip").split("/");
+        String[] ip = rootElement.getAttribute("ip").split("/");
 
         String ipToSend = ip[1];
 
@@ -191,7 +190,7 @@ public class XMLParser {
         System.out.println(ipToSend);
 
 
-        return  new InfoNodo(InetAddress.getByName(ipToSend),Integer.parseInt(rootElement.getAttribute("port")));
+        return new InfoNodo(InetAddress.getByName(ipToSend), Integer.parseInt(rootElement.getAttribute("port")));
 
     }
 
@@ -201,20 +200,21 @@ public class XMLParser {
      */
 
     public String innerXml(Node node) {
-        DOMImplementationLS lsImpl = (DOMImplementationLS)node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        DOMImplementationLS lsImpl = (DOMImplementationLS) node.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
         LSSerializer lsSerializer = lsImpl.createLSSerializer();
         lsSerializer.getDomConfig().setParameter("xml-declaration", false);
         NodeList childNodes = node.getChildNodes();
-        StringBuilder sb = new StringBuilder();
-        sb.append(lsSerializer.writeToString(node));
         /*for (int i = 0; i < childNodes.getLength(); i++) {
             sb.append(lsSerializer.writeToString(childNodes.item(i)));
         }*/
-        return sb.toString();
+        return lsSerializer.writeToString(node)
+ /*for (int i = 0; i < childNodes.getLength(); i++) {
+     sb.append(lsSerializer.writeToString(childNodes.item(i)));
+ }*/;
     }
 
 
-    public Map<InfoNodo, String> partitionXML (String xmlString) throws ParserConfigurationException, IOException, SAXException {
+    public Map<InfoNodo, String> partitionXML(String xmlString) throws ParserConfigurationException, IOException, SAXException {
 
         //parseXML(xmlString);
 
@@ -233,7 +233,7 @@ public class XMLParser {
         NodeList childNodes = rootElement.getChildNodes();
 
 
-        for (int i = 0; i<childNodes.getLength(); i++){
+        for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
 
             NodeList innerChilds = node.getChildNodes();
@@ -260,8 +260,6 @@ public class XMLParser {
     }
 
 
-
-
     /*
         Separate the parent from the childs info
      */
@@ -280,28 +278,23 @@ public class XMLParser {
         NodeList childNodes = rootElement.getChildNodes();
 
 
-        InfoNodo parent = new InfoNodo(InetAddress.getByName(rootElement.getAttribute("ip")), 8001,8002);
+        InfoNodo parent = new InfoNodo(InetAddress.getByName(rootElement.getAttribute("ip")), 8001, 8002);
 
 
         info.add(parent);
 
 
-        for (int i = 0; i<childNodes.getLength(); i++){
+        for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
 
-            Element childElem  = (Element) child;
+            Element childElem = (Element) child;
 
             info.add(new InfoNodo(InetAddress.getByName(childElem.getAttribute("ip")), 8001, 8002));
         }
 
 
-
-        return  info;
+        return info;
     }
-
-
-
-
 
 
 }

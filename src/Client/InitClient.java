@@ -13,17 +13,17 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class InitClient {
-    private DatagramSocket socketNet;
-    private DatagramSocket socketStream;
-    private InfoNodo infoBoot;
-    private InfoNodo infoClientNet;
+    private final DatagramSocket socketNet;
+    private final DatagramSocket socketStream;
+    private final InfoNodo infoBoot;
+    private final InfoNodo infoClientNet;
 
     public InitClient(InfoNodo infoBoot, InfoNodo infoClientNet) {
         this.infoBoot = infoBoot;
         this.infoClientNet = infoClientNet;
         try {
             socketNet = new DatagramSocket(infoClientNet.portNet);
-            socketStream = new DatagramSocket(infoClientNet.portNet+1);
+            socketStream = new DatagramSocket(infoClientNet.portNet + 1);
 
         } catch (SocketException e) {
             throw new RuntimeException(e);
@@ -37,7 +37,6 @@ public class InitClient {
             MessageAndType received = ReceiveData.receiveData(socketNet);
 
             handleReceivedMessage(received);
-
 
 
         } catch (IOException e) {

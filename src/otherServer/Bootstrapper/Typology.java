@@ -3,10 +3,7 @@ package otherServer.Bootstrapper;
 import Common.Constants;
 import Common.InfoNodo;
 import TransmitData.SendData;
-import org.xml.sax.SAXException;
 
-import javax.sound.midi.Soundbank;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class Typology {
@@ -115,7 +111,7 @@ public class Typology {
                 // loop through all neighbours of a node
                 String[] aux = parts[0].split(" *: *");
                 InetAddress ip = InetAddress.getByName(aux[1]);
-                if (Constants.Windows == true) {
+                if (Constants.Windows) {
 
                     InfoNodo n = new InfoNodo(aux[0], ip, port);
                     port = port + 10;
@@ -130,9 +126,7 @@ public class Typology {
                 String[] neighbours = parts[1].split(" *, *");
 
                 List<String> nodosaux = new ArrayList<>();
-                for (String v : neighbours) {
-                    nodosaux.add(v);
-                }
+                Collections.addAll(nodosaux, neighbours);
 
 
                 this.networkString.put(aux[0], nodosaux);
@@ -419,7 +413,6 @@ public class Typology {
     }
 
 
-
     public InfoNodo getFather(InfoNodo son) {
 
         InfoNodo father = null;
@@ -499,8 +492,6 @@ public class Typology {
     }
 
 
-
-
     public static void printInfoFromMap(Map<InfoNodo, List<Connection>> bestPaths) {
         for (Map.Entry<InfoNodo, List<Connection>> entry : bestPaths.entrySet()) {
             InfoNodo key = entry.getKey();
@@ -540,7 +531,7 @@ public class Typology {
                     if (con.to.getIp().equals(objective.getIp()) && con.to.portNet == objective.portNet) {
                         //String ip[] = con.from.getIp().toString().split("/");
 
-                        ips.add(new InfoNodo(con.from.getIp(),con.from.portNet));
+                        ips.add(new InfoNodo(con.from.getIp(), con.from.portNet));
 
 
                         objective.portNet = con.from.portNet;
@@ -577,14 +568,14 @@ public class Typology {
 
         System.out.println("[Typology] Eliminei-me");
 
-        for (InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())){
-            if(node.portNet == newClient.portNet && node.getIp().equals(newClient.getIp())){
+        for (InfoNodo node : activeNetwork.keySet().stream().collect(Collectors.toList())) {
+            if (node.portNet == newClient.portNet && node.getIp().equals(newClient.getIp())) {
                 activeNetwork.remove(node);
-            }else{
+            } else {
                 List<Connection> otherConnections = activeNetwork.get(node);
 
-                for (Connection con :  otherConnections){
-                    if (con.getTo().getIp().equals(newClient.getIp()) && con.getTo().portNet == newClient.portNet){
+                for (Connection con : otherConnections) {
+                    if (con.getTo().getIp().equals(newClient.getIp()) && con.getTo().portNet == newClient.portNet) {
                         otherConnections.remove(con);
                     }
                 }

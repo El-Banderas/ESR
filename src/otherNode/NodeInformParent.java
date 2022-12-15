@@ -13,13 +13,13 @@ import otherServer.Bootstrapper.XMLParser;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.*;
-import java.nio.ByteBuffer;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-import static TransmitData.SendData.sendWakeUpClient;
 import static java.lang.System.exit;
 
 /**
@@ -28,26 +28,23 @@ import static java.lang.System.exit;
  */
 public class NodeInformParent implements Runnable {
     public InfoNodo thisNode;
-
-    // Necessary to reconect after lost parent.
-    private InfoNodo bootstrapper;
     public InfoConnection parent;
-
-    // This array is constant, the neibourghs are always the same.
-    //public ArrayList<InfoNodo> neibourghs;
-
     // This array is determined by the formulated tree from the bootstrapper.
     // Based on the state of the connections.
     // We don't need to know the delays
-   // public ArrayList<InfoNodo> interestedSons;
+    // public ArrayList<InfoNodo> interestedSons;
     // The sons come from XML file, we believe that they are alive, but we can't confirm that.
     // The only ones we know are alive are the interested sons, because we receive message from them.
     public ArrayList<InfoNodo> sons;
 
+    // This array is constant, the neibourghs are always the same.
+    //public ArrayList<InfoNodo> neibourghs;
+    // Necessary to reconect after lost parent.
+    private final InfoNodo bootstrapper;
     // Used to send messages, always the same.
     private DatagramSocket socket;
 
-    private ShareNodes shared;
+    private final ShareNodes shared;
 
     // Necessary when connection becomes bad
     private InfoNodo altBoot;
@@ -61,23 +58,23 @@ public class NodeInformParent implements Runnable {
         //this.neibourghs = new ArrayList<>();
         //this.interestedSons = new ArrayList<>();
         this.bootstrapper = boot;
-            this.socket = socket;
+        this.socket = socket;
         this.shared = shared;
         this.socket = socket;
         this.altBoot = altBoot;
     }
 
 
-        @Override
+    @Override
     public void run() {
-            System.out.println("------------------Node Inform Parent começou--------------");
+        System.out.println("------------------Node Inform Parent começou--------------");
         try {
             if (this.thisNode.portNet > 0)
-              //  socket = new DatagramSocket(this.thisNode.portNet);
+                //  socket = new DatagramSocket(this.thisNode.portNet);
                 socket = this.socket;
             else
                 socket = new DatagramSocket();
-                socket.setSoTimeout(Constants.timeoutSockets);
+            socket.setSoTimeout(Constants.timeoutSockets);
         } catch (SocketException e) {
             e.printStackTrace();
             System.out.println("[Client] Error creating socket");
@@ -86,7 +83,7 @@ public class NodeInformParent implements Runnable {
         System.out.println("Node on");
         // De X em X tempo, envia para o parentport um hello com timestamp
         // Falta controlar se recebeu mensagem para atualizar pai.
-        while(true) {
+        while (true) {
             try {
 //                checkSons();
                 checkParent();
@@ -97,7 +94,7 @@ public class NodeInformParent implements Runnable {
                 //int messageType = calculateTypeOfStillAliveMessage();
                 sendStillAliveMSG();
                 //SendData.sendStillAliveMSG(socket, this.parent.ip, this.parent.port, messageType);
-              //  System.out.println(" Send still alive msg, type: " + Constants.convertMessageType(messageType));
+                //  System.out.println(" Send still alive msg, type: " + Constants.convertMessageType(messageType));
                 System.out.println("Escuto msg : " + socket.getLocalPort());
                 MessageAndType received = ReceiveData.receiveData(socket);
                 handleReceivedMessage(received);
@@ -117,9 +114,9 @@ public class NodeInformParent implements Runnable {
      */
     private void checkParent() {
         double timeSinceLastMessage = Constants.getCurrentTime() - parent.timeLastMessage;
-        if (timeSinceLastMessage > Constants.timeToConsiderNodeLost){
+        if (timeSinceLastMessage > Constants.timeToConsiderNodeLost) {
             try {
-                SendData.sendParentLostMSG(socket, bootstrapper, parent.otherNode );
+                SendData.sendParentLostMSG(socket, bootstrapper, parent.otherNode);
                 // Para não mandar mensagens a mais
                 parent.timeLastMessage = Constants.getCurrentTime();
             } catch (IOException e) {
@@ -150,8 +147,8 @@ public class NodeInformParent implements Runnable {
     }
 
     private void handleReceivedMessage(MessageAndType received) throws IOException, ParserConfigurationException, SAXException {
-        System.out.println("Recebe do tipo "+received.msgType);
-        switch (received.msgType){
+        System.out.println("Recebe do tipo " + received.msgType);
+        switch (received.msgType) {
             case Constants.sitllAlive:
                 receivedStillAliveMSG(received.packet);
                 break;
@@ -164,13 +161,13 @@ public class NodeInformParent implements Runnable {
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
-                ReceiveData.receivedTimeStamp(received.packet,this.thisNode.ip,this.thisNode.portNet,this.socket,this.parent);
-    break;
+                ReceiveData.receivedTimeStamp(received.packet, this.thisNode.ip, this.thisNode.portNet, this.socket, this.parent);
+                break;
             case Constants.ConnectionMsg:
                 Connection n = ReceiveData.receiveConnection(received.packet);
                 // falta enviar ao pai
-                SendData.sendConnection(this.socket,n,this.parent.otherNode.ip,this.parent.otherNode.portNet);
-break;
+                SendData.sendConnection(this.socket, n, this.parent.otherNode.ip, this.parent.otherNode.portNet);
+                break;
 
             case Constants.XMLmsg:
                 String xml = ReceiveData.receivedXML(received.packet);
@@ -208,22 +205,21 @@ break;
 
 
             default:
-                System.out.println("\n[NodeInfomParen] Received message type: " +Constants.convertMessageType(received.msgType) + "\n");
+                System.out.println("\n[NodeInfomParen] Received message type: " + Constants.convertMessageType(received.msgType) + "\n");
                 System.out.println("Undefined message, rtp packets are handled in other thread/port.");
                 //receiveMaybeRTPStream(received.packet);
         }
     }
 
     private void receivedImpossibleConnection() {
-        if (altBoot != null){
+        if (altBoot != null) {
             try {
                 System.out.println("Envia pedido ao alternativo");
                 SendData.helpAltServer(socket, altBoot);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-        else {
+        } else {
             System.out.println("Não temos pai, fim :(");
             exit(0);
         }
@@ -251,7 +247,7 @@ break;
         }
     }
 
-    private void handleXML(String xml ) {
+    private void handleXML(String xml) {
 
         // clear the ArrayList of sons
         this.sons.clear();
@@ -266,7 +262,7 @@ break;
             System.out.println("ERROR  Parse XML ");
             throw new RuntimeException(e);
         }
-        for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()){
+        for (Map.Entry<InfoNodo, String> eachSon : xmlSeparated.entrySet()) {
             //Add the son to the ArrayList
             //sons.add(eachSon.getKey());
             // Maybe Problem, children may not exist?
@@ -275,7 +271,7 @@ break;
                     //System.out.println("Envia para o filho " + eachSon.getKey());
                     //System.out.println(eachSon.getValue());
                     XMLParser p = new XMLParser();
-                    Map<InfoNodo,String> sonsInside = p.partitionXML(eachSon.getValue());
+                    Map<InfoNodo, String> sonsInside = p.partitionXML(eachSon.getValue());
                     /*if(sonsInside.size() > 0){
                         for(Map.Entry<InfoNodo, String> son : sonsInside.entrySet()){
                             sons.add(son.getKey());
@@ -284,20 +280,19 @@ break;
                             SendData.sendXML(socket, son.getKey(), son.getValue());
                         }
                     }else{*/
-                        String destiny = p.destiny(eachSon.getValue());
-                        System.out.println("Envia para o filho " + p.destinyInfoNodo(eachSon.getValue()));
+                    String destiny = p.destiny(eachSon.getValue());
+                    System.out.println("Envia para o filho " + p.destinyInfoNodo(eachSon.getValue()));
 
-                        System.out.println(eachSon.getValue());
-                        SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
-                        sons.add(p.destinyInfoNodo(eachSon.getValue()));
+                    System.out.println(eachSon.getValue());
+                    SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
+                    sons.add(p.destinyInfoNodo(eachSon.getValue()));
                     //}
-                }
-                else{
+                } else {
                     System.out.println("O que é?");
                     System.out.println(eachSon.getValue());
                 }
             } catch (IOException e) {
-                System.out.println("Error sending node: "+ eachSon.getKey());
+                System.out.println("Error sending node: " + eachSon.getKey());
                 throw new RuntimeException(e);
             } catch (ParserConfigurationException e) {
                 throw new RuntimeException(e);
@@ -313,7 +308,7 @@ break;
      * Whe this message is received, these happens:
      * Add the son to the interested sons, if he is already there, stays;
      * Send message to parent saying we want stream;
-     *
+     * <p>
      * Problem: If we got 3 interested sons, we send 3 different messages, instead of one, and that's bad.
      * We should join them, with a ?timer? that wakes up, see if there are interested, and send message.
      * In this way, we accumulate messages, but that's harder to implement.
@@ -336,26 +331,26 @@ break;
     }
 
 
-
     /**
      * This function calculates if the new message has too much delay.
-     * @param oldDelay Delay of last message from parent.
+     *
+     * @param oldDelay     Delay of last message from parent.
      * @param currentDelay To compare the new
      * @return If the delay has increased too much, so a message is necessary to be sent.
      */
-    private boolean tooMuchDelay(double oldDelay, double currentDelay){
-            double maxDelay = Math.max(oldDelay, currentDelay);
-            double minDelay = Math.min(oldDelay, currentDelay);
-            double percentageDelay = ((maxDelay - minDelay) / maxDelay) * 100;
-            return percentageDelay > Constants.minDelayToTrigger;
-        }
+    private boolean tooMuchDelay(double oldDelay, double currentDelay) {
+        double maxDelay = Math.max(oldDelay, currentDelay);
+        double minDelay = Math.min(oldDelay, currentDelay);
+        double percentageDelay = ((maxDelay - minDelay) / maxDelay) * 100;
+        return percentageDelay > Constants.minDelayToTrigger;
+    }
 
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
 //        StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
         InfoConnection parentNow = ReceiveData.receiveStillAliveMSG(packet);
         parentNow.timeLastMessage = Constants.getCurrentTime();
 
-        if (tooMuchDelay(parent.delay, parentNow.delay)){
+        if (tooMuchDelay(parent.delay, parentNow.delay)) {
             sendTooMuchDelay(parentNow.otherNode);
         }
         System.out.println("[Node] Receive still alive from parent " + parentNow);
@@ -381,6 +376,7 @@ break;
     /**
      * TODO: Manda para o bootstrapper?
      * When there is too much delay.
+     *
      * @param otherNode
      */
     private void sendTooMuchDelay(InfoNodo otherNode) {
@@ -433,9 +429,11 @@ break;
 
     }
 */
+
     /**
      * Send to parent that a node is lost
      * NÂO DEVE APARECER
+     *
      * @param packet
      */
     private void receiveLostNodeMSG(DatagramPacket packet) {
@@ -455,9 +453,6 @@ break;
         }
 
     }
-
-
-
 
 
 }

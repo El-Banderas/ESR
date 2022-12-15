@@ -8,8 +8,8 @@ public class Constants {
 
     // msg HELLO
 
-    final public static  int hellomesageNode = 10;
-    final public  static int timeStamp = 22;
+    final public static int hellomesageNode = 10;
+    final public static int timeStamp = 22;
     final public static int ConnectionMsg = 100;
     final public static int XMLmsg = 101;
 
@@ -18,24 +18,24 @@ public class Constants {
      * BOOTSRAPPER MESSAGES and other constants
      */
     // Still alive messages
-    final public static  int sitllAlive = 5;
-    final public static  int sendNeibourghs = 33;
+    final public static int sitllAlive = 5;
+    final public static int sendNeibourghs = 33;
     /**
      * STREAM MESSAGES
      */
-    final public static  int streamWanted = 6;
+    final public static int streamWanted = 6;
 
-    final public static  int streamContent = 9;
-    final public static  int tooMuchDelay = 7;
+    final public static int streamContent = 9;
+    final public static int tooMuchDelay = 7;
 
 
-    final public static  int lostNode = 8;
-final public static int StillAliveBootAlt = 23;
-final public static int helloAltBoot = 24;
-final public static int helloClient = 26;
-final public static int impossibleConnection = 27;
-final public static int wakeUpClient = 28;
-final public static int changeTree = 25;
+    final public static int lostNode = 8;
+    final public static int StillAliveBootAlt = 23;
+    final public static int helloAltBoot = 24;
+    final public static int helloClient = 26;
+    final public static int impossibleConnection = 27;
+    final public static int wakeUpClient = 28;
+    final public static int changeTree = 25;
     final public static int altServerInfo = 34;
     final public static int helpAlterServer = 36;
 
@@ -44,16 +44,16 @@ final public static int changeTree = 25;
     // Miliseconds
     final public static int timeToConsiderNodeLost = 10000;
 
-final public static    int sizeInetAdressByteArray = 4;
+    final public static int sizeInetAdressByteArray = 4;
 
-    public static double getCurrentTime(){
+    public static double getCurrentTime() {
 //        LocalDateTime date = LocalDateTime.now();
         //date.toLocalTime().toSecondOfDay();
         return System.currentTimeMillis();
     }
 
-    public static String convertMessageType(int id){
-        switch (id){
+    public static String convertMessageType(int id) {
+        switch (id) {
             case sitllAlive:
                 return "Still alive but not interested.";
 
@@ -69,8 +69,6 @@ final public static    int sizeInetAdressByteArray = 4;
     }
 
 
-
-
     // Não consigo testar, porque no mesmo computador dá sempre 0, praticamente.
     // Percentage to trigger a "Too much delay message".
     final public static int minDelayToTrigger = 40;
@@ -83,14 +81,11 @@ final public static    int sizeInetAdressByteArray = 4;
     public static int arraySize = 150000;
 
 
-    public static boolean Windows = false ;
+    public static boolean Windows = false;
 
 
-    public static  int portNet = 9000;
-    public static  int portStream = 9001;
-
-
-
+    public static int portNet = 9000;
+    public static int portStream = 9001;
 
 
     /**

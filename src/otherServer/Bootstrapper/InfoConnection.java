@@ -10,7 +10,7 @@ public class InfoConnection implements Comparable<InfoConnection> {
     // Conection info
     public double timeLastMessage;
     public boolean isAlive;
-    public boolean interested ;
+    public boolean interested;
 
     public InfoConnection(InfoNodo otherNode, double delay, double timeLastMessage, boolean interested) {
         this.otherNode = otherNode;
@@ -32,23 +32,22 @@ public class InfoConnection implements Comparable<InfoConnection> {
 */
 
 
-
-
     /**
      * Se calhar dá para usar apenas o LocalDateTime, experimentar
      * Checks if the node is alive
+     *
      * @return
      */
-    public boolean isAliveTimeout(){
+    public boolean isAliveTimeout() {
 
         double now = Constants.getCurrentTime();
-        if (now-timeLastMessage > Constants.timeToConsiderNodeLost){
+        if (now - timeLastMessage > Constants.timeToConsiderNodeLost) {
 //            System.out.println("A diferença de tempos é: "+ );
             isAlive = false;
         }
         double differenceTime = now - timeLastMessage;
         if (!isAlive)
-        System.out.println("O nodo é descartado, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
+            System.out.println("O nodo é descartado, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
         else
             System.out.println("o nodo é válido, diferença de tempos: " + differenceTime + " e o máximo é: " + Constants.timeToConsiderNodeLost);
 
@@ -67,10 +66,9 @@ public class InfoConnection implements Comparable<InfoConnection> {
     }
 
 
-    public int compareTo(InfoConnection that){
+    public int compareTo(InfoConnection that) {
         return (int) (this.delay - that.delay);
     }
-
 
 
 }

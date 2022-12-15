@@ -20,7 +20,7 @@ public class ShareVariablesClient {
 
     public ShareVariablesClient() {
         this.receivedContent = new LinkedList<>();
-        this.play=true;
+        this.play = true;
         this.sizeQueue = 0;
         this.sizePackets = 0;
         lastMeasure = Constants.getCurrentTime();
@@ -30,30 +30,31 @@ public class ShareVariablesClient {
      * This function is used when we pause the video, and we drop packets.
      * So, we drop the oldest image, and insert the new one.
      * This way, we keep the buffer updated.
-     *
+     * <p>
      * And, if the buffer isn't full, only adds the image.
+     *
      * @param img
      */
-    public void replaceImage(Image img){
-        if (sizeQueue < ConstantesStream.maxSizeBuffer){
+    public void replaceImage(Image img) {
+        if (sizeQueue < ConstantesStream.maxSizeBuffer) {
             receivedContent.add(img);
-        }
-        else {
+        } else {
             receivedContent.add(img);
             receivedContent.remove();
         }
     }
-    public void insertImage(Image img, int sizePacket){
+
+    public void insertImage(Image img, int sizePacket) {
         receivedContent.add(img);
         sizeQueue++;
         sizePackets += sizePacket;
     }
 
-    public boolean haveImages(){
+    public boolean haveImages() {
         return receivedContent.peek() != null;
     }
 
-    public Image removeImage(){
+    public Image removeImage() {
         sizeQueue--;
         return receivedContent.remove();
     }
@@ -66,13 +67,13 @@ public class ShareVariablesClient {
         return play;
     }
 
-    public double getDebit(){
+    public double getDebit() {
         double currentTime = Constants.getCurrentTime();
         double lastTime = this.lastMeasure;
         double oldsizePackets = sizePackets;
         lastMeasure = Constants.getCurrentTime();
         sizePackets = 0;
-        return oldsizePackets/(currentTime-lastTime);
+        return oldsizePackets / (currentTime - lastTime);
 
     }
 }

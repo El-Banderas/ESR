@@ -3,10 +3,8 @@ package otherNode;
 import Common.Constants;
 import Common.InfoNodo;
 
-
-import java.io.IOException;
-import java.net.*;
-import java.util.ArrayList;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
 /**
  * Currently, there are two developing functions in nodes:
@@ -99,12 +97,12 @@ public class oNode {
 
     }*/
 
-    public static void runNode(InfoNodo boot, InfoNodo thisNodeNet, InfoNodo thisNodeStream){
+    public static void runNode(InfoNodo boot, InfoNodo thisNodeNet, InfoNodo thisNodeStream) {
         DatagramSocket socketNet = null;
         DatagramSocket socketStream = null;
         try {
             socketNet = new DatagramSocket(thisNodeNet.portNet, thisNodeNet.ip);
-            socketStream = new DatagramSocket(thisNodeNet.portNet+1, thisNodeNet.ip);
+            socketStream = new DatagramSocket(thisNodeNet.portNet + 1, thisNodeNet.ip);
             socketNet.setSoTimeout(Constants.timeoutSockets);
             socketStream.setSoTimeout(Constants.timeoutSockets);
 
@@ -113,7 +111,7 @@ public class oNode {
             throw new RuntimeException(e);
         }
         //     InfoNodo boot = new InfoNodo(InetAddress.getByName("localhost"),portBoot);
-        InitializeNode i = new InitializeNode(socketNet,boot, thisNodeNet, socketStream);
+        InitializeNode i = new InitializeNode(socketNet, boot, thisNodeNet, socketStream);
 
 
         i.start();

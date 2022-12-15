@@ -1,7 +1,6 @@
 package Client;
 
 import Common.Stream.ConstantesStream;
-import Common.Stream.VideoStream;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +47,7 @@ public class StreamWindow extends Thread {
         });
 
         //Buttons
-        buttonPanel.setLayout(new GridLayout(1,0));
+        buttonPanel.setLayout(new GridLayout(1, 0));
         buttonPanel.add(playButton);
         buttonPanel.add(pauseButton);
         playButton.addActionListener(new StreamWindow.playButtonListener());
@@ -61,11 +60,11 @@ public class StreamWindow extends Thread {
         mainPanel.setLayout(null);
         mainPanel.add(iconLabel);
         mainPanel.add(buttonPanel);
-        iconLabel.setBounds(0,0,380,280);
-        buttonPanel.setBounds(0,280,380,50);
+        iconLabel.setBounds(0, 0, 380, 280);
+        buttonPanel.setBounds(0, 280, 380, 50);
 
         f.getContentPane().add(mainPanel, BorderLayout.CENTER);
-        f.setSize(new Dimension(390,370));
+        f.setSize(new Dimension(390, 370));
         f.setVisible(true);
 
         //init para a parte do cliente
@@ -79,8 +78,7 @@ public class StreamWindow extends Thread {
     //------------------------------------
     //main
     //------------------------------------
-    public void run()
-    {
+    public void run() {
         System.out.println("Open window");
         cTimer.start();
     }
@@ -94,7 +92,7 @@ public class StreamWindow extends Thread {
     //-----------------------
 
     public class pauseButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
 
             System.out.println("Play Pause pressed !");
             shared.setPlay(false);
@@ -104,7 +102,7 @@ public class StreamWindow extends Thread {
     //Handler for Play button
     //-----------------------
     public class playButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
 
             System.out.println("Play Button pressed !");
             shared.setPlay(true);
@@ -122,7 +120,7 @@ public class StreamWindow extends Thread {
     class clientTimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
 
-            if (shared.isPlay() && shared.haveImages()){
+            if (shared.isPlay() && shared.haveImages()) {
                 Image now = shared.removeImage();
                 icon = new ImageIcon(now);
                 iconLabel.setIcon(icon);

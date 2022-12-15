@@ -2,7 +2,6 @@ import Client.InitClient;
 import Common.Constants;
 import Common.InfoNodo;
 import otherNode.oNode;
-import otherServer.SendStream.SendStream;
 import otherServer.Servidor;
 
 import java.net.InetAddress;
@@ -56,7 +55,7 @@ public class Executable {
                     InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                     InetAddress ipNodeStream = InetAddress.getByName("127.0.0.1");
-                    int portNodeStream = portNodeNet+1;//Integer.parseInt(args[3]);
+                    int portNodeStream = portNodeNet + 1;//Integer.parseInt(args[3]);
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
 
@@ -91,7 +90,6 @@ public class Executable {
                 initClient.runClient();
 
 
-
                 return;
             }
         } else {
@@ -106,8 +104,7 @@ public class Executable {
 
                     InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
                     Servidor.runServer(infoServer, true);
-                }
-                else {
+                } else {
                     System.out.println("Boot Alter Core");
                     //InfoNodo infoServer = new InfoNodo(ipServer, Constants.portNet);
                     System.out.println("Info this node");
@@ -142,7 +139,7 @@ public class Executable {
                     InfoNodo infoNodeNet = new InfoNodo(ipNodeNet, portNodeNet);
 
                     InetAddress ipNodeStream = InetAddress.getByName(args[2]);
-                    int portNodeStream = Constants.portNet+1;
+                    int portNodeStream = Constants.portNet + 1;
                     InfoNodo infoNodeStream = new InfoNodo(ipNodeStream, portNodeStream);
 
                     System.out.println("Info this node");

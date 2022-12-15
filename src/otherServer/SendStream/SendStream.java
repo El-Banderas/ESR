@@ -11,7 +11,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import static Common.Stream.ConstantesStream.*;
-import static java.lang.Thread.sleep;
 
 public class SendStream implements Runnable {
     private final CommuncationBetweenThreads shared;
@@ -22,15 +21,14 @@ public class SendStream implements Runnable {
     // Um destes desaparece
 
 
-
     //video file to request to the server
 
     int imagenb = 0; //image nb of the image currently transmitted
     VideoStream video; //Common.Stream.VideoStream object used to access video frames
-   // static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
+    // static int MJPEG_TYPE = 26; //RTP payload type for MJPEG video
 //    static int FRAME_PERIOD = 10; //Frame period of the video to stream, in ms //Para controlar a velocidade
 
-   // static int VIDEO_LENGTH = 500; //length of the video in frames
+    // static int VIDEO_LENGTH = 500; //length of the video in frames
     // O de cima não devia ser constante?
 
     byte[] sBuf; //buffer used to store the images to send to the client
@@ -40,20 +38,19 @@ public class SendStream implements Runnable {
         this.shared = shared;
         // The port of the server could be random, because no one wants to send data to the server.
 
-        try{
+        try {
             // init para a parte do servidor
             sBuf = new byte[15000]; //allocate memory for the sending buffer
 
             RTPsocket = new DatagramSocket(); //init RTP socket (o mesmo para o cliente e servidor)
             RTPsocket.setSoTimeout(Constants.timeoutSockets); // setimeout to 5s
-            if(Constants.Windows){
+            if (Constants.Windows) {
                 video = new VideoStream(VideoFileName); //init the Common.Stream.VideoStream object:
-            }else {
+            } else {
                 video = new VideoStream(VideoFileNameCORE);
             }
 
-        } catch(SocketException e)
-        {
+        } catch (SocketException e) {
             System.out.println("Teste: erro no socket: " + e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -101,7 +98,7 @@ public class SendStream implements Runnable {
                     rtp_packet.getpacket(packet_bits);
 
                     //send the packet as a DatagramPacket over the UDP socket
-                    senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portNet+1);
+                    senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portNet + 1);
                     RTPsocket.send(senddp);
                     //System.out.println("[SendStream] Envia stream para: " + shared.son.ip + " - " + shared.son.portNet+1);
 

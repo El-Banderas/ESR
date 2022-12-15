@@ -1,6 +1,5 @@
 package otherServer.Bootstrapper;
 
-import Common.Constants;
 import Common.InfoNodo;
 
 import java.io.Serializable;
@@ -78,15 +77,15 @@ public class Connection implements Comparable<Connection>, Serializable {
 
 
     public int compareTo(Connection that) {
-        return (int) ((this.delay*0.6 + this.numHops*0.4 )- (that.delay*0.6 + that.numHops*0.4));
+        return (int) ((this.delay * 0.6 + this.numHops * 0.4) - (that.delay * 0.6 + that.numHops * 0.4));
     }
 
-    public static byte[] toByte(Connection con){
+    public static byte[] toByte(Connection con) {
         byte[] fromBytes = con.from.NodeToBytes();
         byte[] toBytes = con.to.NodeToBytes();
         int sizeInt = 4;
         int sizeDouble = 8;
-        byte[] bytes = ByteBuffer.allocate(sizeInt*3+sizeDouble+fromBytes.length+toBytes.length+1).
+        byte[] bytes = ByteBuffer.allocate(sizeInt * 3 + sizeDouble + fromBytes.length + toBytes.length + 1).
                 putInt(con.numHops).
                 putDouble(con.delay).
                 putInt(fromBytes.length).
@@ -98,7 +97,7 @@ public class Connection implements Comparable<Connection>, Serializable {
 
     }
 
-    public static Connection fromByte(byte[] bytes){
+    public static Connection fromByte(byte[] bytes) {
         int sizeInt = 4;
         int sizeDouble = 8;
 
@@ -111,8 +110,8 @@ public class Connection implements Comparable<Connection>, Serializable {
 
         byte[] fromBytes = new byte[fromBytesLen];
         byte[] toBytes = new byte[toBytesLen];
-        byte[] twoClasses = new byte[fromBytesLen+toBytesLen];
-        System.arraycopy(msg.array(),sizeInt*3+sizeDouble*1 , twoClasses,0,fromBytesLen+toBytesLen);
+        byte[] twoClasses = new byte[fromBytesLen + toBytesLen];
+        System.arraycopy(msg.array(), sizeInt * 3 + sizeDouble, twoClasses, 0, fromBytesLen + toBytesLen);
 
         System.arraycopy(twoClasses, 0, fromBytes, 0, fromBytesLen);
         System.arraycopy(twoClasses, fromBytesLen, toBytes, 0, toBytesLen);

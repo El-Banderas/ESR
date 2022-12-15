@@ -12,7 +12,6 @@ public class ConstantesStream {
     /**
      * If we want to drop packets, when we resume the video, we will get to the current time in stream;
      * If we don't want to, when we resume the video, it will continue the reproduction.
-     *
      */
     public static boolean dropPacketsWhenPause = true;
 
@@ -21,6 +20,6 @@ public class ConstantesStream {
     public static int maxSizeBuffer = 10;
 
 
-    public  static int streamPort = 9020;
+    public static int streamPort = 9020;
 
 }
