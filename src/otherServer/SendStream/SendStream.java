@@ -101,7 +101,10 @@ public class SendStream implements Runnable {
                     rtp_packet.getpacket(packet_bits);
 
                     //send the packet as a DatagramPacket over the UDP socket
-                    senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, shared.son.portNet+1);
+int portDest = shared.son.portNet;
+portDest++;
+                     senddp = new DatagramPacket(packet_bits, packet_length, shared.son.ip, portDest);
+                    System.out.println("Send stream to: "  + portDest);
                     RTPsocket.send(senddp);
                     //System.out.println("[SendStream] Envia stream para: " + shared.son.ip + " - " + shared.son.portNet+1);
 

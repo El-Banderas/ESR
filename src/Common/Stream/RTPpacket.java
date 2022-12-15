@@ -12,8 +12,8 @@ public class RTPpacket{
   public int CC;
   public int Marker;
   public int PayloadType;
-  public int SequenceNumber;
-  public int TimeStamp;
+  public int SequenceNumber; //
+  public int TimeStamp;  //
   public int Ssrc;
   
   //Bitstream of the RTP header

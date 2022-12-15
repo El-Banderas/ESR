@@ -250,7 +250,7 @@ break;
                     }else{*/
                         String destiny = p.destiny(eachSon.getValue());
                         System.out.println("Envia para o filho " + p.destinyInfoNodo(eachSon.getValue()));
-
+sons.add(p.destinyInfoNodo(eachSon.getValue()));
                         System.out.println(eachSon.getValue());
                         SendData.sendXML(socket, p.destinyInfoNodo(eachSon.getValue()), eachSon.getValue());
                     //}
