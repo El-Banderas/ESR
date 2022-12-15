@@ -36,12 +36,12 @@ final public static int helloClient = 26;
 final public static int impossibleConnection = 27;
 final public static int wakeUpClient = 28;
 final public static int changeTree = 25;
-    public static int altServerInfo = 34;
+    final public static int altServerInfo = 34;
 
     // Miliseconds
     final public static int timeoutSockets = 2000;
     // Miliseconds
-    final public static int timeToConsiderNodeLost = 10000; // 1 minute
+    final public static int timeToConsiderNodeLost = 60000;
 
 final public static    int sizeInetAdressByteArray = 4;
 

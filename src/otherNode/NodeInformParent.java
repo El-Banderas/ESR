@@ -156,6 +156,7 @@ public class NodeInformParent implements Runnable {
                 break;
             case Constants.altServerInfo:
                 receivedAltServerInfo(received.packet);
+                break;
             case Constants.timeStamp:
                 // receive packet do nodo c timestamp e calcula delay
                 System.out.println("Timestamp");
@@ -213,7 +214,7 @@ break;
 
         try {
             this.altBoot = ReceiveData.receiveAltServerInfo(packet, socket, sons);
-        System.out.println("Recebeu info sobre servidor alternativo: " + altBoot);
+            System.out.println("Recebeu info sobre servidor alternativo: " + altBoot);
         } catch (IOException e) {
             System.out.println("Error receiving/sending info alt server");
             throw new RuntimeException(e);
@@ -331,6 +332,7 @@ break;
     private void receivedStillAliveMSG(DatagramPacket packet) throws IOException {
 //        StillAliveMsgContent time = ReceiveData.receiveStillAliveMSG(packet);
         InfoConnection parentNow = ReceiveData.receiveStillAliveMSG(packet);
+        parentNow.timeLastMessage = Constants.getCurrentTime();
 
         if (tooMuchDelay(parent.delay, parentNow.delay)){
             sendTooMuchDelay(parentNow.otherNode);
